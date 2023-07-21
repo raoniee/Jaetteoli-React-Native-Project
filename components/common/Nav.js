@@ -1,34 +1,59 @@
 import { StyleSheet, View, Text } from 'react-native'
-import colors from '../../assets/colors/Color'
-import HomeIcon from '../../assets/images/HomeIcon'
+import Color from '../../assets/colors/Color'
+import Home from '../../assets/images/Home'
 import Search from '../../assets/images/Search'
 import Order from '../../assets/images/Order'
 import Subscribe from '../../assets/images/Subscribe'
 import MyPage from '../../assets/images/MyPage'
 
-const Nav = () => {
+const Nav = (props) => {
     return (
         <View style={styles.container}>
             <View style={styles.nav}>
                 <View style={styles.navItem}>
-                    <HomeIcon stroke={colors.gray}></HomeIcon>
-                    <Text style={styles.navItemText}>홈</Text>
+                    <Home stroke={props.status === 'home' ? Color.darkPurple : Color.gray}></Home>
+                    <Text style={{
+                        paddingTop: 5,
+                        color: props.status === 'home' ? Color.darkPurple : Color.gray,
+                        fontSize: 11,
+                        fontWeight: 600,
+                    }}>홈</Text>
                 </View>
                 <View style={styles.navItem}>
-                    <Search stroke={colors.gray}></Search>
-                    <Text style={styles.navItemText}>검색</Text>
+                    <Search stroke={props.status === 'search' ? Color.darkPurple : Color.gray}></Search>
+                    <Text style={{
+                        paddingTop: 5,
+                        color: props.status === 'search' ? Color.darkPurple : Color.gray,
+                        fontSize: 11,
+                        fontWeight: 600,
+                    }}>검색</Text>
                 </View>
                 <View style={styles.navItem}>
-                    <Order stroke={colors.gray}></Order>
-                    <Text style={styles.navItemText}>주문내역</Text>
+                    <Order stroke={props.status === 'order' ? Color.darkPurple : Color.gray}></Order>
+                    <Text style={{
+                        paddingTop: 5,
+                        color: props.status === 'order' ? Color.darkPurple : Color.gray,
+                        fontSize: 11,
+                        fontWeight: 600,
+                    }}>주문내역</Text>
                 </View>
                 <View style={styles.navItem}>
-                    <Subscribe stroke={colors.gray}></Subscribe>
-                    <Text style={styles.navItemText}>찜</Text>
+                    <Subscribe stroke={props.status === 'subscribe' ? Color.darkPurple : Color.gray}></Subscribe>
+                    <Text style={{
+                        paddingTop: 5,
+                        color: props.status === 'subscribe' ? Color.darkPurple : Color.gray,
+                        fontSize: 11,
+                        fontWeight: 600,
+                    }}>찜</Text>
                 </View>
                 <View style={styles.navItem}>
-                    <MyPage stroke={colors.gray}></MyPage>
-                    <Text style={styles.navItemText}>마이떨이</Text>
+                    <MyPage stroke={props.status === 'myPage' ? Color.darkPurple : Color.gray}></MyPage>
+                    <Text style={{
+                        paddingTop: 5,
+                        color: props.status === 'myPage' ? Color.darkPurple : Color.gray,
+                        fontSize: 11,
+                        fontWeight: 600,
+                    }}>마이떨이</Text>
                 </View>
             </View>
         </View>
@@ -39,9 +64,10 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         height: 92,
-        borderRadius: '30 30 0 0',
-        backgroundColor: colors.white,
-        shadowColor: colors.black,
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        backgroundColor: Color.white,
+        shadowColor: Color.black,
         shadowOffset: {
             width: 0,
             height: 2,
@@ -64,12 +90,6 @@ const styles = StyleSheet.create({
     navItem: {
         alignItems: 'center',
     },
-    navItemText: {
-        paddingTop: 5,
-        color: colors.gray,
-        fontSize: 11,
-        fontWeight: 600,
-    }
 });
 
 export default Nav;
