@@ -1,7 +1,7 @@
 import React from "react";
 import { SvgXml } from "react-native-svg";
 
-const HomeIcon = (props) => {
+const Home = (props) => {
   return (
     <SvgXml xml={`
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -11,4 +11,4 @@ const HomeIcon = (props) => {
   )
 };
 
-export default HomeIcon;
+export default Home;
