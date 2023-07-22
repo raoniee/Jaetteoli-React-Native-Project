@@ -8,6 +8,7 @@ import Review from '../../assets/images/Review';
 import Subscribe from '../../assets/images/Subscribe';
 import MyPageListItem from './MyPageListItem';
 import Nav from '../common/Nav';
+import profile from '../../assets/images/profile.png'
 
 const MyPage = () => {
 
@@ -19,7 +20,7 @@ const MyPage = () => {
         <View style={styles.container}>
             <View style={styles.background}>
                 <View style={styles.profile}>
-                    {!userProfile && <View style={styles.profileImgNone}></View>}
+                    {!userProfile && <Image source={profile} style={styles.profileImg}></Image>}
                     {userProfile && <Image source={userProfile} style={styles.profileImg}></Image>}
                 </View>
                 <View style={styles.profileId}>

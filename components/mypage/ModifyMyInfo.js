@@ -1,8 +1,9 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Image } from 'react-native';
 import React, { useState } from 'react';
 import Color from '../../assets/colors/Color';
 import Camera from '../../assets/images/Camera';
 import ArrowRight from '../../assets/images/ArrowRight';
+import profile from '../../assets/images/profile.png';
 
 const ModifyMyInfo = () => {
 
@@ -16,7 +17,7 @@ const ModifyMyInfo = () => {
         <View style={styles.container}>
             <View style={styles.InfoWrapper}>
                 <View style={styles.profile}>
-                    {!userProfile && <View style={styles.profileImgNone}></View>}
+                    {!userProfile && <Image source={profile} style={styles.profileImg}></Image>}
                     {userProfile && <Image source={userProfile} style={styles.profileImg}></Image>}
                     <View style={styles.camera}>
                         <Camera fill={Color.white}></Camera>
@@ -76,15 +77,9 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         marginBottom: 50,
     },
-    profileImgNone: {
+    profileImg: {
         width: 98,
         height: 98,
-        borderRadius: '100%',
-        backgroundColor: Color.lightPurple,
-    },
-    profileImg: {
-        width: 108,
-        height: 108,
         borderRadius: '100%',
     },
     camera: {
