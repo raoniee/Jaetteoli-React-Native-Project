@@ -2,6 +2,7 @@ import {
   FlatList,
   Platform,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -34,54 +35,56 @@ const BeforeSeach = () => {
           />
         </View>
       </View>
-      {/* 최근 검색어 */}
-      <View style={styles.recentSearchOuterContainer}>
-        <View style={styles.recentSearchInnerContainer}>
-          <View style={styles.recentSearchTitleContainer}>
-            <Clock />
-            <Text style={styles.title}>최근 검색어</Text>
+      <ScrollView>
+        {/* 최근 검색어 */}
+        <View style={styles.recentSearchOuterContainer}>
+          <View style={styles.recentSearchInnerContainer}>
+            <View style={styles.recentSearchTitleContainer}>
+              <Clock />
+              <Text style={styles.title}>최근 검색어</Text>
+            </View>
+            <View style={styles.allDeleteConatiner}>
+              <Text style={styles.semiText}>전체삭제</Text>
+            </View>
           </View>
-          <View style={styles.allDeleteConatiner}>
-            <Text style={styles.semiText}>전체삭제</Text>
+          <View style={styles.recentSearchFlatContainer}>
+            <FlatList
+              data={recentSearchData}
+              horizontal={true}
+              scrollEnabled={true}
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item, index }) => {
+                return <RecentItem index={index} item={item} />;
+              }}
+            />
           </View>
         </View>
-        <View style={styles.recentSearchFlatContainer}>
-          <FlatList
-            data={recentSearchData}
-            horizontal={true}
-            scrollEnabled={true}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item, index }) => {
-              return <RecentItem index={index} item={item} />;
-            }}
-          />
-        </View>
-      </View>
 
-      {/* 인기 검색어 */}
+        {/* 인기 검색어 */}
 
-      <View style={styles.popularOuterContainer}>
-        <View style={styles.popularInnerContainer}>
-          <View style={styles.popularTitleContainer}>
-            <Graph />
-            <Text style={styles.title}>인기 검색어</Text>
+        <View style={styles.popularOuterContainer}>
+          <View style={styles.popularInnerContainer}>
+            <View style={styles.popularTitleContainer}>
+              <Graph />
+              <Text style={styles.title}>인기 검색어</Text>
+            </View>
+            <View>
+              <Text style={styles.semiText}>07.18 18:00 기준</Text>
+            </View>
           </View>
-          <View>
-            <Text style={styles.semiText}>07.18 18:00 기준</Text>
+          {/* flatlist*/}
+          <View style={styles.popularSearchFlatContainer}>
+            <FlatList
+              data={popularSearchData}
+              scrollEnabled={false}
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item, index }) => {
+                return <PopularItem index={index} item={item} />;
+              }}
+            />
           </View>
         </View>
-        {/* flatlist*/}
-        <View style={styles.popularSearchFlatContainer}>
-          <FlatList
-            data={popularSearchData}
-            scrollEnabled={false}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item, index }) => {
-              return <PopularItem index={index} item={item} />;
-            }}
-          />
-        </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -89,6 +92,7 @@ const BeforeSeach = () => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
+    marginTop: 15,
   },
   arrowLeft: {
     paddingLeft: 16,
@@ -158,29 +162,30 @@ const styles = StyleSheet.create({
     border: 1,
   },
   popularOuterContainer: {
-    marginTop:74,
+    marginTop: 74,
+    marginBottom: 74,
   },
-  popularInnerContainer:{
-    flexDirection:'row',
-    justifyContent:'space-between',
-    alignItems:'center',
-    marginHorizontal:16
+  popularInnerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginHorizontal: 16,
   },
-  popularTitleContainer:{
-    flexDirection:'row',
-    alignItems:'center'
+  popularTitleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  title:{
+  title: {
     fontFamily: "Pretendard-Bold",
     fontSize: 16,
     fontWeight: "800",
     marginLeft: 10,
   },
-  popularSearchFlatContainer:{
-    marginTop:33,
-    marginLeft:12,
-    marginRight:17,
-  }
+  popularSearchFlatContainer: {
+    marginTop: 33,
+    marginLeft: 12,
+    marginRight: 17,
+  },
 });
 
 export default BeforeSeach;

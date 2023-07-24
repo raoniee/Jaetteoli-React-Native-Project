@@ -30,7 +30,7 @@ const AfterSearch = () => {
         <FlatList
           data={searchResultData}
           scrollEnabled={true}
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={true}
           renderItem={({ item, index }) => {
             let star;
             if (item.rating <= 5.0 && item.rating >= 4.0) {
@@ -124,10 +124,10 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   searchResultContainer: {
-    marginHorizontal: 26,
     marginBottom: 80,
   },
   searchItemContainer: {
+    marginHorizontal: 26,
     height: 250,
     marginBottom: 20,
   },
