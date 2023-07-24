@@ -5,10 +5,11 @@ import Home from "./components/home/Home";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import WriteReview from './components/review/WriteReview';
-import ManageReview from './components/mypage/ManageReview';
-import MyPage from './components/mypage/MyPage';
-import ModifyMyInfo from './components/mypage/ModifyMyInfo';
+import WriteReview from "./components/review/WriteReview";
+import ManageReview from "./components/mypage/ManageReview";
+import MyPage from "./components/mypage/MyPage";
+import ModifyMyInfo from "./components/mypage/ModifyMyInfo";
+import MembershipStart from "./components/membership/MembershipStart";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -21,7 +22,7 @@ export default function App() {
     "Pretendard-Bold": require("./assets/fonts/Pretendard-Bold.ttf"), // 700
     "Pretendard-ExtraBold": require("./assets/fonts/Pretendard-ExtraBold.ttf"), // 800
     "Pretendard-Black": require("./assets/fonts/Pretendard-Black.ttf"), //900
-    "Pretendard": require("./assets/fonts/Pretendard-Regular.ttf"), //400
+    Pretendard: require("./assets/fonts/Pretendard-Regular.ttf"), //400
   });
 
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function App() {
 
   return (
     <>
-      <WriteReview />
+      <MembershipStart />
       <StatusBar style="auto" />
     </>
   );
