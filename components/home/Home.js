@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     text: {
-        fontFamily:'Pretendard-SemiBold',
+        fontFamily:'Pretendard-Bold',
         color: Color.white,
         fontSize: 28,
         lineHeight: 36,

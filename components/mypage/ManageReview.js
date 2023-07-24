@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     },
     reviewCountText: {
         fontSize: 18,
-        fontWeight: 500,
+        fontFamily:'Pretendard-Medium',
         lineHeight: 35,
     },
     devider: {

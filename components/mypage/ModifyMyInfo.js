@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     index: {
         paddingLeft: 20,
         fontSize: 16,
-        fontWeight: 600,
+        fontFamily:'Pretendard-SemiBold',
         marginBottom: 10,
     },
     userInfo: {
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     },
     info: {
         fontSize: 16,
-        fontWeight: 500,
+        fontFamily:'Pretendard-Medium',
         color: Color.darkGray,
     }
 });

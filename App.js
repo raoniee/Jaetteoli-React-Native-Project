@@ -6,19 +6,22 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import WriteReview from './components/review/WriteReview';
+import ManageReview from './components/mypage/ManageReview';
+import MyPage from './components/mypage/MyPage';
+import ModifyMyInfo from './components/mypage/ModifyMyInfo';
 
 export default function App() {
   let [fontsLoaded] = useFonts({
-    "Pretendard-Black": require("./assets/fonts/Pretendard-Black.ttf"),
-    "Pretendard-Bold": require("./assets/fonts/Pretendard-Bold.ttf"),
-    "Pretendard-ExtraBold": require("./assets/fonts/Pretendard-ExtraBold.ttf"),
-    "Pretendard-ExtraLight": require("./assets/fonts/Pretendard-ExtraLight.ttf"),
-    "Pretendard-Light": require("./assets/fonts/Pretendard-Light.ttf"),
-    "Pretendard-Medium": require("./assets/fonts/Pretendard-Medium.ttf"),
-    "Pretendard-Regular": require("./assets/fonts/Pretendard-Regular.ttf"),
-    "Pretendard-SemiBold": require("./assets/fonts/Pretendard-SemiBold.ttf"),
-    "Pretendard-Thin": require("./assets/fonts/Pretendard-Thin.ttf"),
-    Pretendard: require("./assets/fonts/Pretendard-Regular.ttf"),
+    "Pretendard-Thin": require("./assets/fonts/Pretendard-Thin.ttf"), // 100
+    "Pretendard-ExtraLight": require("./assets/fonts/Pretendard-ExtraLight.ttf"), // 200
+    "Pretendard-Light": require("./assets/fonts/Pretendard-Light.ttf"), // 300
+    "Pretendard-Regular": require("./assets/fonts/Pretendard-Regular.ttf"), //400
+    "Pretendard-Medium": require("./assets/fonts/Pretendard-Medium.ttf"), // 500
+    "Pretendard-SemiBold": require("./assets/fonts/Pretendard-SemiBold.ttf"), // 600
+    "Pretendard-Bold": require("./assets/fonts/Pretendard-Bold.ttf"), // 700
+    "Pretendard-ExtraBold": require("./assets/fonts/Pretendard-ExtraBold.ttf"), // 800
+    "Pretendard-Black": require("./assets/fonts/Pretendard-Black.ttf"), //900
+    Pretendard: require("./assets/fonts/Pretendard-Regular.ttf"), //400
   });
 
   useEffect(() => {
@@ -37,7 +40,6 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Home />
       <StatusBar style="auto" />
     </View>
   );

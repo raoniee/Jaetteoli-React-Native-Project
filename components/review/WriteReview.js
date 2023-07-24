@@ -53,12 +53,12 @@ const styles = StyleSheet.create({
     },
     storeName: {
         fontSize: 18,
-        fontWeight: 600,
+        fontFamily:'Pretendard-SemiBold',
         lineHeight: 35,
     },
     orderMenu: {
         fontSize: 16,
-        fontWeight: 400,
+        fontFamily:'Pretendard-Regular',
         lineHeight: 35,
         color: Color.darkGray,
     },
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     addPictureText: {
         color: Color.purple,
         fontSize: 14,
-        fontWeight: 400,
+        fontFamily:'Pretendard-Regular',
         lineHeight: 20,
         marginLeft: 5,
     },

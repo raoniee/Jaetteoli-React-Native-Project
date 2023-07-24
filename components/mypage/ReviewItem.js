@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     },
     storeText: {
         fontSize: 16,
-        fontWeight: 600,
+        fontFamily:'Pretendard-SemiBold',
         lineHeight: 35,
     },
     star: {
@@ -102,12 +102,12 @@ const styles = StyleSheet.create({
         position: 'absolute', left: 5 * 15 + 11,
         color: Color.lightGray,
         fontSize: 12,
-        fontWeight: 400,
+        fontFamily:'Pretendard-Regular',
         lineHeight: 35
     },
     contents: {
         fontSize: 15,
-        fontWeight: 400,
+        fontFamily:'Pretendard-Regular',
         lineHeight: 35,
         marginBottom: 10,
     },
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
         right: 16,
         color: Color.lightGray,
         fontSize: 12,
-        fontWeight: 500,
+        fontFamily:'Pretendard-Medium',
         lineHeight: 35
     },
     reviewImg: {
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     },
     menuText: {
         fontSize: 12,
-        fontWeight: 500,
+        fontFamily:'Pretendard-Medium',
         lineHeight: 20,
     },
     comment: {
@@ -163,13 +163,13 @@ const styles = StyleSheet.create({
     },
     profileText: {
         fontSize: 15,
-        fontWeight: 500,
+        fontFamily:'Pretendard-Medium',
         lineHeight: 35,
         marginLeft: 15,
     },
     commentText: {
         fontSize: 15,
-        fontWeight: 400,
+        fontFamily:'Pretendard-Regular',
         lineHeight: 35
     }
 })

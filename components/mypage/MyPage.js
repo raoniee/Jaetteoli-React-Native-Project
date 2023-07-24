@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     userId: {
         textAlign: 'center',
         fontSize: 18,
-        fontWeight: 500,
+        fontFamily:'Pretendard-Medium',
         lineHeight: 35,
         color: Color.white,
     },

@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 16,
-        fontWeight: 400,
+        fontFamily:'Pretendard-Regular',
         lineHeight: 35,
         marginLeft: 10,
     },
