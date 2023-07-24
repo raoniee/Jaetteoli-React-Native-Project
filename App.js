@@ -39,9 +39,10 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
+    <>
+      <WriteReview />
       <StatusBar style="auto" />
-    </View>
+    </>
   );
 }
 
