@@ -21,7 +21,7 @@ export default function App() {
     "Pretendard-Bold": require("./assets/fonts/Pretendard-Bold.ttf"), // 700
     "Pretendard-ExtraBold": require("./assets/fonts/Pretendard-ExtraBold.ttf"), // 800
     "Pretendard-Black": require("./assets/fonts/Pretendard-Black.ttf"), //900
-    Pretendard: require("./assets/fonts/Pretendard-Regular.ttf"), //400
+    "Pretendard": require("./assets/fonts/Pretendard-Regular.ttf"), //400
   });
 
   useEffect(() => {
