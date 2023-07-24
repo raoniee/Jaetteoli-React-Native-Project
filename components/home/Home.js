@@ -10,7 +10,7 @@ const Home = () => {
                 <View style={styles.imageDarker}>
                     <View style={styles.textBtnWrapper}>
                         <Text style={styles.text}>일상의 고민은{'\n'}여기에,{'\n'}재떨이</Text>
-                        <Button title='재떨이 시작하기' backgroundColor={Color.white} color={Color.darkPurple} margin='0 0 150 0' />
+                        <Button title='재떨이 시작하기' backgroundColor={Color.white} color={Color.darkPurple} margin='0 0 150 0' height={62}/>
                     </View>
                 </View>
             </ImageBackground>
@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
         fontSize: 28,
         lineHeight: 36,
         letterSpacing: -0.3,
-        fontWeight: 700,
         width: '100%',
         paddingLeft: 20,
     },

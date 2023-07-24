@@ -5,7 +5,7 @@ const Button = (props) => {
 
     const buttonStyle = {
         width: 353,
-        height: 62,
+        height: props.height,
         borderRadius: 30,
         backgroundColor: props.backgroundColor,
         justifyContent: 'center',
@@ -19,7 +19,7 @@ const Button = (props) => {
     const buttonTextStyle = {
         color: props.color,
         fontSize: 18,
-        fontWeight: '600',
+        fontFamily: 'Pretendard-SemiBold',
         lineHeight: 36,
         letterSpacing: -0.3,
     };
