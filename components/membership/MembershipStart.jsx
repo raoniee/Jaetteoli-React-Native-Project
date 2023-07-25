@@ -33,7 +33,7 @@ export default function MembershipStart() {
       </View>
       <View style={styles.agreebottom}>
         <Text style={styles.agreetitle}>
-          특별한 혜택과 최신 소식을 받아보세요!
+          특별한 혜택과 최신 소식을 받아보세요
         </Text>
         <AgreeSentence
           text="[선택] 서비스/이벤트 정보 제공을 위한 개인정보 수집 이용 동의"
