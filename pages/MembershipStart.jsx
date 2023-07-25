@@ -10,9 +10,10 @@ import {
   TouchableHighlight,
   Image,
 } from "react-native";
-import Color from "../../assets/colors/Color";
-import AngleRight from "../../assets/images/AngleRight";
-import CheckOn from "../../assets/images/CheckOn";
+import Button from "../components/common/Button";
+import Color from "../assets/colors/Color";
+import AngleRight from "../assets/images/AngleRight";
+import CheckOn from "../assets/images/CheckOn";
 
 export default function MembershipStart() {
   return (

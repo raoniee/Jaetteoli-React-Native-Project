@@ -9,8 +9,10 @@ import WriteReview from "./components/review/WriteReview";
 import ManageReview from "./components/mypage/ManageReview";
 import MyPage from "./components/mypage/MyPage";
 import ModifyMyInfo from "./components/mypage/ModifyMyInfo";
-import MembershipStart from "./components/membership/MembershipStart";
-import Login from "./components/login/Login";
+//
+import LoginStart from "./pages/LoginStart";
+import MembershipStart from "./pages/MembershipStart";
+import SearchAccunt from "./pages/SearchAccount";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -42,7 +44,7 @@ export default function App() {
 
   return (
     <>
-      <Login />
+      <SearchAccunt />
       <StatusBar style="auto" />
     </>
   );
