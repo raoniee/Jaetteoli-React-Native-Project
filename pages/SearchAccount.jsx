@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,16 +10,43 @@ import {
   TouchableHighlight,
   Image,
 } from "react-native";
-import GoMembership from "../components/login/GoMembership";
-import LoginHeader from "../components/login/LoginHeader";
+import Color from "../assets/colors/Color";
 
 import IDSearch from "../components/searchaccout/IDSearch";
+import PWSearch from "../components/searchaccout/PWSearch";
+import GoMembership from "../components/login/GoMembership";
 
 export default function SearchAccunt() {
+  const [option, setOption] = useState(true);
+
+  const id = () => setOption(true);
+  const pw = () => setOption(false);
+
   return (
     <View style={styles.container}>
-      <LoginHeader />
-      <IDSearch />
+      <View style={styles.header}>
+        <TouchableOpacity onPress={id}>
+          <Text
+            style={{
+              ...styles.search_option,
+              color: option ? Color.black : Color.lightGray,
+            }}
+          >
+            아이디 찾기
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={pw}>
+          <Text
+            style={{
+              ...styles.search_option,
+              color: !option ? Color.black : Color.lightGray,
+            }}
+          >
+            비밀번호 찾기
+          </Text>
+        </TouchableOpacity>
+      </View>
+      {option ? <IDSearch /> : <PWSearch />}
       <GoMembership />
     </View>
   );
@@ -30,9 +57,18 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     alignItems: "center",
+    marginTop: 128,
   },
-  input_box: {
-    marginTop: 100, //
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     width: 354,
+    height: 25,
+  },
+  search_option: {
+    fontFamily: "Pretendard-Medium",
+    fontSize: 15,
+    width: 175,
+    textAlign: "center",
   },
 });

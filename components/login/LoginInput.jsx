@@ -6,7 +6,12 @@ export default function LoginInput(props) {
   return (
     <>
       <Text style={styles.label}>{props.text}</Text>
-      <TextInput style={styles.input} placeholder={props.placeholder} />
+      <TextInput
+        style={styles.input}
+        placeholder={props.placeholder}
+        keyboardType={props.keyboardType}
+        returnKeyType="done"
+      />
     </>
   );
 }
@@ -22,6 +27,6 @@ const styles = StyleSheet.create({
     height: 62,
     borderRadius: 30,
     paddingLeft: 20,
-    marginBottom: 15,
+    marginBottom: 20,
   },
 });
