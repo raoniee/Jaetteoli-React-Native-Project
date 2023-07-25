@@ -26,24 +26,38 @@ export default function SearchAccunt() {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={id}>
-          <Text
+          <View
             style={{
-              ...styles.search_option,
-              color: option ? Color.black : Color.lightGray,
+              borderBottomColor: option ? Color.darkPurple : "",
+              borderBottomWidth: option ? 3 : "",
             }}
           >
-            아이디 찾기
-          </Text>
+            <Text
+              style={{
+                ...styles.search_option,
+                color: option ? Color.black : Color.lightGray,
+              }}
+            >
+              아이디 찾기
+            </Text>
+          </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={pw}>
-          <Text
+          <View
             style={{
-              ...styles.search_option,
-              color: !option ? Color.black : Color.lightGray,
+              borderBottomColor: !option ? Color.darkPurple : "",
+              borderBottomWidth: !option ? 3 : "",
             }}
           >
-            비밀번호 찾기
-          </Text>
+            <Text
+              style={{
+                ...styles.search_option,
+                color: !option ? Color.black : Color.lightGray,
+              }}
+            >
+              비밀번호 찾기
+            </Text>
+          </View>
         </TouchableOpacity>
       </View>
       {option ? <IDSearch /> : <PWSearch />}
@@ -70,5 +84,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     width: 175,
     textAlign: "center",
+    paddingBottom: 5,
   },
 });

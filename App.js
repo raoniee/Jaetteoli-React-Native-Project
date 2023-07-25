@@ -44,7 +44,7 @@ export default function App() {
 
   return (
     <>
-      <MembershipStart />
+      <SearchAccunt />
       <StatusBar style="auto" />
     </>
   );
