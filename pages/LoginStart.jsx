@@ -10,11 +10,12 @@ import {
   TouchableHighlight,
   Image,
 } from "react-native";
-import Button from "../common/Button";
-import Color from "../../assets/colors/Color";
-import logo from "../../assets/images/logo.png";
+import Button from "../components/common/Button";
+import Color from "../assets/colors/Color";
+import logo from "../assets/images/logo.png";
+import GoMembership from "../components/login/GoMembership";
 
-export default function Login() {
+export default function LoginStart() {
   return (
     <View style={styles.container}>
       <Image style={styles.logo} source={logo} />
@@ -43,12 +44,7 @@ export default function Login() {
         margin="0 0 100 0"
         height={62}
       />
-      <View style={styles.membership_warp}>
-        <Text style={styles.membership_text}>새로운 계정이 필요하신가요?</Text>
-        <TouchableWithoutFeedback>
-          <Text style={styles.membership_go}>회원가입</Text>
-        </TouchableWithoutFeedback>
-      </View>
+      <GoMembership />
     </View>
   );
 }
@@ -112,20 +108,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Color.gray,
     lineHeight: 21,
-  },
-  membership_warp: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  membership_text: {
-    fontFamily: "Pretendard-Medium",
-    fontSize: 14,
-  },
-  membership_go: {
-    fontFamily: "Pretendard-SemiBold",
-    fontSize: 14,
-    color: Color.darkPurple,
-    textDecorationLine: "underline",
   },
 });
