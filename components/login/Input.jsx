@@ -1,5 +1,5 @@
 import React from "react";
 
-export default function BlueBTN() {
+export default function Input() {
   return <div></div>;
 }
