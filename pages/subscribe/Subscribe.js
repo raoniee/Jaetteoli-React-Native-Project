@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
   },
   subscribeContainer: {
-    marginBottom: 20,
+    marginBottom: 100,
   },
   header: {
     marginBottom: 10,
