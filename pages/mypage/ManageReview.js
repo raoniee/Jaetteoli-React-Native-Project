@@ -5,6 +5,7 @@ import Color from '../../assets/colors/Color';
 import ArrowRight from '../../assets/images/ArrowRight';
 import Star from '../../assets/images/Star';
 import profile from '../../assets/images/profile.png';
+import Header from '../../components/common/Header';
 
 const ManageReview = () => {
 
@@ -132,6 +133,7 @@ const ManageReview = () => {
 
     return (
         <SafeAreaView style={styles.container}>
+            <Header title='리뷰관리' />
             <FlatList 
                 data={reviews} 
                 renderItem={renderItem} 
@@ -153,7 +155,7 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     reviewCount: {
-        marginTop: 98,
+        marginTop: 10,
         width: '100%',
         height: 75,
         paddingLeft: 16,

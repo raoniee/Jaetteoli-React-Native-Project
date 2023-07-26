@@ -5,11 +5,15 @@ import Home from "./pages/home/Home";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import WriteReview from './pages/review/WriteReview';
-import ManageReview from './pages/mypage/ManageReview';
-import MyPage from './pages/mypage/MyPage';
-import ModifyMyInfo from './pages/mypage/ModifyMyInfo';
+import WriteReview from "./pages/review/WriteReview";
+import ManageReview from "./pages/mypage/ManageReview";
+import MyPage from "./pages/mypage/MyPage";
+import ModifyMyInfo from "./pages/mypage/ModifyMyInfo";
 import AlramList from './pages/mypage/AlramList';
+//
+import LoginStart from "./pages/login/LoginStart";
+import MembershipStart from "./pages/membership/MembershipStart";
+import SearchAccunt from "./pages/accountsearch/SearchAccount";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -22,7 +26,7 @@ export default function App() {
     "Pretendard-Bold": require("./assets/fonts/Pretendard-Bold.ttf"), // 700
     "Pretendard-ExtraBold": require("./assets/fonts/Pretendard-ExtraBold.ttf"), // 800
     "Pretendard-Black": require("./assets/fonts/Pretendard-Black.ttf"), //900
-    "Pretendard": require("./assets/fonts/Pretendard-Regular.ttf"), //400
+    Pretendard: require("./assets/fonts/Pretendard-Regular.ttf"), //400
   });
 
   useEffect(() => {
@@ -41,7 +45,7 @@ export default function App() {
 
   return (
     <>
-      <Home />
+      <AlramList />
       <StatusBar style="auto" />
     </>
   );

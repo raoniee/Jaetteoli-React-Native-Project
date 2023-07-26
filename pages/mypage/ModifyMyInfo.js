@@ -1,9 +1,10 @@
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { StyleSheet, View, Text, Image, SafeAreaView } from 'react-native';
 import React, { useState } from 'react';
 import Color from '../../assets/colors/Color';
 import Camera from '../../assets/images/Camera';
 import ArrowRight from '../../assets/images/ArrowRight';
 import profile from '../../assets/images/profile.png';
+import Header from '../../components/common/Header';
 
 const ModifyMyInfo = () => {
 
@@ -14,7 +15,9 @@ const ModifyMyInfo = () => {
     const [userPhoneNum, setUserPhoneNum] = useState('01012345678');
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView>
+            <Header title='내 정보 수정'/>
+            <View style={styles.container}>
             <View style={styles.InfoWrapper}>
                 <View style={styles.profile}>
                     {!userProfile && <Image source={profile} style={styles.profileImg}></Image>}
@@ -48,6 +51,7 @@ const ModifyMyInfo = () => {
                 </View>
             </View>
         </View>
+        </SafeAreaView>
     );
 }
 
@@ -56,7 +60,6 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%',
-        paddingTop: 152,
         paddingLeft: 20,
         paddingRight: 20,
     },
@@ -64,6 +67,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         alignItems: 'center',
+        marginTop: 55,
     },
     profile: {
         width: 110,

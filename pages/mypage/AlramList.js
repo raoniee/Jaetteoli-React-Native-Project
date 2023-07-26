@@ -2,6 +2,7 @@ import { FlatList, SafeAreaView, StyleSheet, Switch, Text, View, TouchableOpacit
 import React, { useState } from 'react';
 import Color from '../../assets/colors/Color';
 import Alram from '../../assets/images/Alram';
+import Header from '../../components/common/Header';
 
 const AlramList = () => {
 
@@ -35,6 +36,7 @@ const AlramList = () => {
 
     return (
         <SafeAreaView style={styles.container}>
+            <Header title='알림센터'/>
             <FlatList
                 data={alrams}
                 renderItem={renderItem}
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
     pushAlramList: {
         paddingLeft: 16,
         paddingRight: 16,
-        marginTop: 126,
+        marginTop: 28,
     },
     pushAlram: {
         width: '100%',
