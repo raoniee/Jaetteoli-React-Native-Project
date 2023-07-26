@@ -46,7 +46,7 @@ const HeaderTitle = styled.Text`
 `
 
 export default function Header({ navigation, color, backgroundColor, title, left = 1, right = 1}) {
-    const LeftComponent = left === 0 ? left === 1 ? color === 'white' ? WhiteLeft : DefaultLeft : EmptyView : X;
+    const LeftComponent = left === 0 ? EmptyView : left === 1 ? color === 'white' ? WhiteLeft : DefaultLeft : X;
     const BellComponent = right === 1 ? color === 'white' ? WhiteBell : DefaultBell : EmptyView;
     const BasketComponent = right === 1 ? color === 'white' ? WhiteCart : DefaultCart : EmptyView;
 
