@@ -9,6 +9,7 @@ import DefaultLeftSVG from '../../assets/images/default_left.svg';
 import DefaultBellSVG from '../../assets/images/default_bell.svg';
 import DefaultCartSVG from '../../assets/images/default_cart.svg';
 import XSVG from '../../assets/images/x.svg';
+import { useNavigation } from '@react-navigation/native';
 
 const HeaderWrapper = styled.View`
   position: relative;
@@ -45,7 +46,8 @@ const HeaderTitle = styled.Text`
   font-weight: 500;
 `
 
-export default function Header({ navigation, color, backgroundColor, title, left = 1, right = 1}) {
+export default function Header({ color, backgroundColor, title, left = 1, right = 1}) {
+    const navigation = useNavigation()
     const LeftComponent = left === 0 ? EmptyView : left === 1 ? color === 'white' ? WhiteLeft : DefaultLeft : X;
     const BellComponent = right === 1 ? color === 'white' ? WhiteBell : DefaultBell : EmptyView;
     const BasketComponent = right === 1 ? color === 'white' ? WhiteCart : DefaultCart : EmptyView;
@@ -53,7 +55,7 @@ export default function Header({ navigation, color, backgroundColor, title, left
     return (
         <View style={{ position: 'relative', backgroundColor: backgroundColor ? backgroundColor : null}}>
             <HeaderWrapper>
-                <TouchableOpacity onPress={() => navigation.navigate('MenuDetailPage')}>
+                <TouchableOpacity onPress={() => navigation.pop()}>
                     <LeftComponent />
                 </TouchableOpacity>
                 <HeaderRightWrapper>

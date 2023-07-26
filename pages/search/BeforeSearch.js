@@ -1,6 +1,7 @@
 import {
   FlatList,
   Platform,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -12,30 +13,64 @@ import ArrowLeft from "../../assets/images/ArrowLeft";
 import Color from "../../assets/colors/Color";
 import SearchImg from "../../assets/images/SearchImg";
 import Clock from "../../assets/images/Clock";
-import RecentItem from "./item/RecentItem";
-import { recentSearchData, popularSearchData } from "./dummy/dummy";
+import RecentItem from "../../components/search/item/RecentItem";
+import {
+  recentSearchData,
+  popularSearchData,
+} from "../../components/search/dummy/dummy";
 import Graph from "../../assets/images/Graph";
-import PopularItem from "./item/PopularItem";
+import PopularItem from "../../components/search/item/PopularItem";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 
-const BeforeSeach = () => {
+const BeforeSeach = ({ navigation, route }) => {
+  const [inputText, setInputText] = useState(
+    route.params !== undefined ? route.params.searchText : ""
+  );
+
+  useEffect(() => {
+    if (route.params !== undefined) {
+      setInputText(route.params.searchText);
+    }
+  }, [route.params]);
+
+  const moveToAfterSearch = () => {
+    navigation.popToTop(); // 스택에 쌓인 모든 화면을 제거하고 AfterSearch 화면으로 이동
+    navigation.navigate("AfterSearch", { searchText: inputText });
+  };
+
+  const moveToPop = () => {
+    // 결과 화면으로 이동하면서 입력된 텍스트를 전달
+    navigation.pop();
+  };
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.white}>
       <View style={styles.container}>
         {/* 검색창 */}
-        <View style={styles.arrowLeft}>
-          <ArrowLeft stroke={Color.lightGray} />
-        </View>
+        <Pressable
+          onPress={moveToPop}
+          android_ripple={{ color: Color.lightPurple }}
+          style={({ pressed }) => pressed && styles.pressedItem}
+        >
+          <View style={styles.arrowLeft}>
+            <ArrowLeft stroke={Color.lightGray} />
+          </View>
+        </Pressable>
         <View style={styles.searchContainer}>
           <View style={styles.searchImg}>
-            <SearchImg />
+            <SearchImg stroke={Color.gray} />
           </View>
           <TextInput
             placeholder="검색하기"
             style={styles.searchInputContainer}
+            onChangeText={setInputText}
+            value={inputText}
+            onSubmitEditing={moveToAfterSearch}
           />
         </View>
       </View>
-      <ScrollView>
+      <ScrollView style={styles.bottomMargin}>
         {/* 최근 검색어 */}
         <View style={styles.recentSearchOuterContainer}>
           <View style={styles.recentSearchInnerContainer}>
@@ -90,6 +125,9 @@ const BeforeSeach = () => {
 };
 
 const styles = StyleSheet.create({
+  white: {
+    backgroundColor: Color.white,
+  },
   container: {
     flexDirection: "row",
     marginTop: 15,
@@ -127,6 +165,9 @@ const styles = StyleSheet.create({
     fontFamily: "Pretendard",
     fontSize: 15,
     fontWeight: 500,
+  },
+  bottomMargin: {
+    marginBottom: 80,
   },
   recentSearchOuterContainer: {
     marginTop: 32,
