@@ -1,14 +1,15 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import Nav from "./components/common/Nav";
-import Home from "./components/home/Home";
+import Home from "./pages/home/Home";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import WriteReview from './components/review/WriteReview';
-import ManageReview from './components/mypage/ManageReview';
-import MyPage from './components/mypage/MyPage';
-import ModifyMyInfo from './components/mypage/ModifyMyInfo';
+import WriteReview from './pages/review/WriteReview';
+import ManageReview from './pages/mypage/ManageReview';
+import MyPage from './pages/mypage/MyPage';
+import ModifyMyInfo from './pages/mypage/ModifyMyInfo';
+import AlramList from './pages/mypage/AlramList';
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -40,7 +41,7 @@ export default function App() {
 
   return (
     <>
-      <WriteReview />
+      <Home />
       <StatusBar style="auto" />
     </>
   );
