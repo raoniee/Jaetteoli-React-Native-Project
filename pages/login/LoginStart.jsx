@@ -10,10 +10,10 @@ import {
   TouchableHighlight,
   Image,
 } from "react-native";
-import Button from "../components/common/Button";
-import Color from "../assets/colors/Color";
-import logo from "../assets/images/logo.png";
-import GoMembership from "../components/login/GoMembership";
+import Button from '../../components/common/Button';
+import Color from "../../assets/colors/Color";
+import logo from "../../assets/images/logo.png";
+import GoMembership from "../../components/login/GoMembership";
 
 export default function LoginStart() {
   return (

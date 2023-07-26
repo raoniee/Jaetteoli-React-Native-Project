@@ -10,11 +10,11 @@ import {
   TouchableHighlight,
   Image,
 } from "react-native";
-import Button from "../components/common/Button";
-import Color from "../assets/colors/Color";
-import AngleRight from "../assets/images/AngleRight";
-import CheckOn from "../assets/images/CheckOn";
-import AgreeSentence from "../components/membership/AgreeSentence";
+import Button from "../../components/common/Button";
+import Color from "../../assets/colors/Color";
+import AngleRight from "../../assets/images/AngleRight";
+import CheckOn from "../../assets/images/CheckOn";
+import AgreeSentence from "../../components/membership/AgreeSentence";
 
 export default function MembershipStart() {
   return (

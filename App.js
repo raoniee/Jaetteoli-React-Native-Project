@@ -10,8 +10,8 @@ import ManageReview from "./components/mypage/ManageReview";
 import MyPage from "./components/mypage/MyPage";
 import ModifyMyInfo from "./components/mypage/ModifyMyInfo";
 //
-import LoginStart from "./pages/LoginStart";
-import MembershipStart from "./pages/MembershipStart";
+import LoginStart from "./pages/login/LoginStart";
+import MembershipStart from "./pages/membership/MembershipStart";
 import SearchAccunt from "./pages/accountsearch/SearchAccount";
 
 export default function App() {
