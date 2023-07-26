@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  SafeAreaView,
   StyleSheet,
   Text,
   View,
@@ -12,60 +13,60 @@ import {
 } from "react-native";
 import Button from "../../components/common/Button";
 import Color from "../../assets/colors/Color";
-import AngleRight from "../../assets/images/AngleRight";
-import CheckOn from "../../assets/images/CheckOn";
 import AgreeSentence from "../../components/membership/AgreeSentence";
+import Header from "../../components/common/Header";
+import Check from "../../assets/images/Check";
 
 export default function MembershipStart() {
   return (
-    <View style={styles.container}>
-      <View>
-        <Text style={styles.title}>재떨이 고객님 회원가입을 시작합니다.</Text>
-        <View style={styles.allagreebox}>
-          <TouchableOpacity>
-            <TextInput
-              editable={false}
-              style={styles.allagreecheck}
-            ></TextInput>
-          </TouchableOpacity>
-          <Text style={styles.allagreetext}>전체동의</Text>
+    <SafeAreaView style={styles.wrap}>
+      <Header title="회원가입" right={0} />
+      <View style={styles.container}>
+        <View>
+          <Text style={styles.title}>재떨이 고객님 회원가입을 시작합니다.</Text>
+          <View style={styles.allagreebox}>
+            <TouchableOpacity>
+              <View style={styles.allagreecheck}>
+                <Check stroke={Color.white} width={21} height={21} />
+              </View>
+            </TouchableOpacity>
+            <Text style={styles.allagreetext}>전체동의</Text>
+          </View>
+          <View style={styles.agreetop}>
+            <Text style={styles.agreetitle}>
+              서비스 이용을 위해 동의가 필요합니다.
+            </Text>
+            <AgreeSentence text="[필수] 이용약관 동의" />
+            <AgreeSentence text="[필수] 개인정보 수집이용 동의" />
+          </View>
+          <View style={styles.agreebottom}>
+            <Text style={styles.agreetitle}>
+              특별한 혜택과 최신 소식을 받아보세요
+            </Text>
+            <AgreeSentence
+              text="[선택] 서비스/이벤트 정보 제공을 위한 개인정보 수집 이용 동의"
+              //arrow={true}
+            />
+            <AgreeSentence text="[선택] 광고성 정보 수신동의" sns={true} />
+          </View>
         </View>
-        <View style={styles.agreetop}>
-          <Text style={styles.agreetitle}>
-            서비스 이용을 위해 동의가 필요합니다.
-          </Text>
-          <AgreeSentence text="[필수] 이용약관 동의" />
-          <AgreeSentence text="[필수] 개인정보 수집이용 동의" />
-        </View>
-        <View style={styles.agreebottom}>
-          <Text style={styles.agreetitle}>
-            특별한 혜택과 최신 소식을 받아보세요
-          </Text>
-          <AgreeSentence
-            text="[선택] 서비스/이벤트 정보 제공을 위한 개인정보 수집 이용 동의"
-            arrow={true}
-          />
-          <AgreeSentence text="[선택] 광고성 정보 수신동의" sns={true} />
-        </View>
+        <Button
+          title="휴대폰으로 인증하기"
+          backgroundColor={Color.darkPurple}
+          color={Color.white}
+          //margin="0 0 600 0"
+          height={62}
+        />
       </View>
-      <Button
-        title="휴대폰으로 인증하기"
-        backgroundColor={Color.darkPurple}
-        color={Color.white}
-        //margin="0 0 600 0"
-        height={62}
-      />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    //backgroundColor: "blue",
-    flex: 1,
     flexDirection: "column",
     gap: 100,
-    marginTop: 173,
+    marginTop: 66,
     marginBottom: 110,
     marginHorizontal: 16,
   },
@@ -90,9 +91,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginVertical: 13,
     marginLeft: 20,
+    paddingTop: 3.5,
+    paddingLeft: 2,
     borderWidth: 1,
     borderColor: Color.gray,
-    //backgroundColor: Color.darkPurple,
+    backgroundColor: Color.purple,
   },
   allagreetext: {
     fontFamily: "Pretendard-Regular",

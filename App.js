@@ -9,7 +9,7 @@ import WriteReview from "./pages/review/WriteReview";
 import ManageReview from "./pages/mypage/ManageReview";
 import MyPage from "./pages/mypage/MyPage";
 import ModifyMyInfo from "./pages/mypage/ModifyMyInfo";
-import AlramList from './pages/mypage/AlramList';
+import AlramList from "./pages/mypage/AlramList";
 //
 import LoginStart from "./pages/login/LoginStart";
 import MembershipStart from "./pages/membership/MembershipStart";
@@ -45,7 +45,7 @@ export default function App() {
 
   return (
     <>
-      <AlramList />
+      <SearchAccunt />
       <StatusBar style="auto" />
     </>
   );

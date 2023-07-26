@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import Color from "../../assets/colors/Color";
 import AngleRight from "../../assets/images/AngleRight";
-import CheckOn from "../../assets/images/CheckOn";
+import Check from "../../assets/images/Check";
 import Button from "../common/Button";
 
 export default function AgreeSentence(props) {
@@ -20,7 +20,7 @@ export default function AgreeSentence(props) {
     <>
       <View style={styles.agreesentence}>
         <TouchableOpacity>
-          <CheckOn />
+          <Check stroke={Color.gray} width={24} height={24} />
         </TouchableOpacity>
         <TouchableWithoutFeedback>
           <View style={styles.agreemore}>
@@ -38,15 +38,15 @@ function AdAgree() {
     <>
       <View style={styles.adagree}>
         <TouchableOpacity>
-          <CheckOn />
+          <Check stroke={Color.gray} width={24} height={24} />
         </TouchableOpacity>
         <Text style={styles.adgree_text}>SMS</Text>
         <TouchableOpacity>
-          <CheckOn />
+          <Check stroke={Color.gray} width={24} height={24} />
         </TouchableOpacity>
         <Text style={styles.adgree_text}>이메일</Text>
         <TouchableOpacity>
-          <CheckOn />
+          <Check stroke={Color.gray} width={24} height={24} />
         </TouchableOpacity>
         <Text style={styles.adgree_text}>전화</Text>
       </View>
@@ -72,8 +72,7 @@ const styles = StyleSheet.create({
   agreetext: {
     fontFamily: "Pretendard-Regular",
     fontSize: 13,
-    lineHeight: 20,
-    marginLeft: 15,
+    color: Color.gray,
   },
   adagree: {
     position: "absolute",
@@ -84,7 +83,8 @@ const styles = StyleSheet.create({
   adgree_text: {
     fontFamily: "Pretendard-Regular",
     fontSize: 13,
-    marginLeft: 8,
+    color: Color.gray,
+    marginLeft: 5,
     marginRight: 18,
   },
   adagree_desc: {

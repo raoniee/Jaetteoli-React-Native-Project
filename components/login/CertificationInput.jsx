@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: Color.brightGray,
-    width: 354,
     height: 62,
     borderRadius: 30,
     paddingLeft: 20,

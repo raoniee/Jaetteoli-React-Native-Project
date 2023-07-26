@@ -25,6 +25,8 @@ export default function GoMembership() {
 
 const styles = StyleSheet.create({
   membership_warp: {
+    position: "absolute",
+    bottom: 30,
     width: "100%",
     flexDirection: "row",
     justifyContent: "center",
