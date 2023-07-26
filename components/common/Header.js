@@ -2,12 +2,12 @@ import styled from 'styled-components/native';
 import {View, Text, Button, TouchableOpacity, SafeAreaView} from 'react-native';
 import { WithLocalSvg } from 'react-native-svg';
 import Constants from 'expo-constants';
-import WhiteLeftSVG from '../assest/images/white_left.svg';
-import WhiteBellSVG from '../assest/images/white_bell.svg';
-import WhiteCartSVG from '../assest/images/white_cart.svg';
-import DefaultLeftSVG from '../assest/images/default_left.svg';
-import DefaultBellSVG from '../assest/images/default_bell.svg';
-import DefaultCartSVG from '../assest/images/default_cart.svg';
+import WhiteLeftSVG from '../../assest/images/white_left.svg';
+import WhiteBellSVG from '../../assest/images/white_bell.svg';
+import WhiteCartSVG from '../../assest/images/white_cart.svg';
+import DefaultLeftSVG from '../../assest/images/default_left.svg';
+import DefaultBellSVG from '../../assest/images/default_bell.svg';
+import DefaultCartSVG from '../../assest/images/default_cart.svg';
 
 const HeaderWrapper = styled.View`
   position: relative;
