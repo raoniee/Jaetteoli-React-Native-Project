@@ -2,7 +2,7 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-nativ
 import React, { useState } from 'react';
 import Color from '../../assets/colors/Color';
 import Camera from '../../assets/images/Camera';
-import Button from '../common/Button';
+import Button from '../../components/common/Button';
 import StarStroke from '../../assets/images/StarStroke';
 
 const WriteReview = () => {

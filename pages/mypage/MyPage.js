@@ -7,7 +7,7 @@ import Order from '../../assets/images/Order';
 import Review from '../../assets/images/Review';
 import Subscribe from '../../assets/images/Subscribe';
 import MyPageListItem from './MyPageListItem';
-import Nav from '../common/Nav';
+import Nav from '../../components/common/Nav';
 import profile from '../../assets/images/profile.png'
 
 const MyPage = () => {
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     profileImgNone: {
         width: 98,
         height: 98,
-        borderRadius: '100%',
+        borderRadius: 50,
         backgroundColor: Color.white,
     },
     profileImg: {
