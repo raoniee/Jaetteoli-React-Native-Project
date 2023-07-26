@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   StyleSheet,
+  SafeAreaView,
   Text,
   View,
   TouchableOpacity,
@@ -9,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   TouchableHighlight,
   Image,
+  Dimensions,
 } from "react-native";
 import Color from "../../assets/colors/Color";
 
@@ -17,6 +19,8 @@ import PWSearch from "../../components/searchaccout/PWSearch";
 import GoMembership from "../../components/login/GoMembership";
 import Header from "../../components/common/Header";
 
+const { width: SCREEN_WIDTH, height: SCREEN_HIGHT } = Dimensions.get("window");
+
 export default function SearchAccunt() {
   const [option, setOption] = useState(true);
 
@@ -24,68 +28,73 @@ export default function SearchAccunt() {
   const pw = () => setOption(false);
 
   return (
-    <View style={styles.container}>
-      <Header />
-      <View style={styles.header}>
-        <TouchableOpacity onPress={id}>
-          <View
-            style={{
-              borderBottomColor: option ? Color.darkPurple : "",
-              borderBottomWidth: option ? 3 : "",
-            }}
-          >
-            <Text
+    <SafeAreaView style={styles.wrap}>
+      <Header title="아이디_비밀번호 찾기" right={0} />
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={id}>
+            <View
               style={{
-                ...styles.search_option,
-                color: option ? Color.black : Color.lightGray,
+                borderBottomColor: option ? Color.darkPurple : "",
+                borderBottomWidth: option ? 3 : "",
               }}
             >
-              아이디 찾기
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={pw}>
-          <View
-            style={{
-              borderBottomColor: !option ? Color.darkPurple : "",
-              borderBottomWidth: !option ? 3 : "",
-            }}
-          >
-            <Text
+              <Text
+                style={{
+                  ...styles.search_option,
+                  color: option ? Color.black : Color.lightGray,
+                }}
+              >
+                아이디 찾기
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={pw}>
+            <View
               style={{
-                ...styles.search_option,
-                color: !option ? Color.black : Color.lightGray,
+                borderBottomColor: !option ? Color.darkPurple : "",
+                borderBottomWidth: !option ? 3 : "",
               }}
             >
-              비밀번호 찾기
-            </Text>
-          </View>
-        </TouchableOpacity>
+              <Text
+                style={{
+                  ...styles.search_option,
+                  color: !option ? Color.black : Color.lightGray,
+                }}
+              >
+                비밀번호 찾기
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        {option ? <IDSearch /> : <PWSearch />}
       </View>
-      {option ? <IDSearch /> : <PWSearch />}
       <GoMembership />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  wrap: {
     flex: 1,
+    position: "relative",
+  },
+  container: {
     flexDirection: "column",
     alignItems: "center",
-    marginTop: 128,
+    marginTop: 34,
+    marginHorizontal: 20,
   },
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    width: 354,
-    height: 25,
+    width: "100%",
+    height: SCREEN_HIGHT / 35,
   },
   search_option: {
     fontFamily: "Pretendard-Medium",
     fontSize: 15,
-    width: 175,
     textAlign: "center",
+    width: SCREEN_WIDTH / 2.3,
     paddingBottom: 5,
   },
 });

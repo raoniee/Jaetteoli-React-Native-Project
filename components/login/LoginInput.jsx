@@ -5,7 +5,7 @@ import { StyleSheet, Text, TextInput } from "react-native";
 export default function LoginInput(props) {
   return (
     <>
-      <Text style={styles.label}>{props.text}</Text>
+      <Text style={styles.label}>{props.label}</Text>
       <TextInput
         style={styles.input}
         placeholder={props.placeholder}
@@ -18,12 +18,13 @@ export default function LoginInput(props) {
 
 const styles = StyleSheet.create({
   label: {
+    fontFamily: "Pretendard-Medium",
+    fontSize: 16,
     marginLeft: 20,
     marginBottom: 10,
   },
   input: {
     backgroundColor: Color.brightGray,
-    width: 354,
     height: 62,
     borderRadius: 30,
     paddingLeft: 20,
