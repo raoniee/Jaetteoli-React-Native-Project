@@ -12,7 +12,7 @@ import ModifyMyInfo from "./components/mypage/ModifyMyInfo";
 //
 import LoginStart from "./pages/LoginStart";
 import MembershipStart from "./pages/MembershipStart";
-import SearchAccunt from "./pages/SearchAccount";
+import SearchAccunt from "./pages/accountsearch/SearchAccount";
 
 export default function App() {
   let [fontsLoaded] = useFonts({

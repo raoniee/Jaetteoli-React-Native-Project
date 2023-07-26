@@ -10,11 +10,12 @@ import {
   TouchableHighlight,
   Image,
 } from "react-native";
-import Color from "../assets/colors/Color";
+import Color from "../../assets/colors/Color";
 
-import IDSearch from "../components/searchaccout/IDSearch";
-import PWSearch from "../components/searchaccout/PWSearch";
-import GoMembership from "../components/login/GoMembership";
+import IDSearch from "../../components/searchaccout/IDSearch";
+import PWSearch from "../../components/searchaccout/PWSearch";
+import GoMembership from "../../components/login/GoMembership";
+import Header from "../../components/common/Header";
 
 export default function SearchAccunt() {
   const [option, setOption] = useState(true);
@@ -24,6 +25,7 @@ export default function SearchAccunt() {
 
   return (
     <View style={styles.container}>
+      <Header />
       <View style={styles.header}>
         <TouchableOpacity onPress={id}>
           <View
