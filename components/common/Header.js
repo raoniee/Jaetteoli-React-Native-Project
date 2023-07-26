@@ -8,6 +8,7 @@ import WhiteCartSVG from '../../assets/images/white_cart.svg';
 import DefaultLeftSVG from '../../assets/images/default_left.svg';
 import DefaultBellSVG from '../../assets/images/default_bell.svg';
 import DefaultCartSVG from '../../assets/images/default_cart.svg';
+import XSVG from '../../assets/images/x.svg';
 
 const HeaderWrapper = styled.View`
   position: relative;
@@ -31,7 +32,6 @@ const HeaderTitleWrapper = styled.View`
   position: absolute;
   width: 100%;
   height: 100%;
-  margin: 5px 0;
   align-items: center;
   justify-content: center;
 `
@@ -43,25 +43,24 @@ const HeaderTitle = styled.Text`
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
-  line-height: 35px;
 `
 
-export default function Header({ navigation, color, title, cart = 1, bell = 1}) {
-    const LeftComponent = color === 'white' ? WhiteLeft : DefaultLeft;
-    const BellComponent = bell === 1 ? color === 'white' ? WhiteBell : DefaultBell : EmptyView;
-    const BasketComponent = cart === 1 ? color === 'white' ? WhiteCart : DefaultCart : EmptyView;
+export default function Header({ navigation, color, backgroundColor, title, left = 1, right = 1}) {
+    const LeftComponent = left === 0 ? left === 1 ? color === 'white' ? WhiteLeft : DefaultLeft : EmptyView : X;
+    const BellComponent = right === 1 ? color === 'white' ? WhiteBell : DefaultBell : EmptyView;
+    const BasketComponent = right === 1 ? color === 'white' ? WhiteCart : DefaultCart : EmptyView;
 
     return (
-        <View style={{ position: 'relative', backgroundColor: 'white'}}>
+        <View style={{ position: 'relative', backgroundColor: backgroundColor ? backgroundColor : null}}>
             <HeaderWrapper>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('MenuDetailPage')}>
                     <LeftComponent />
                 </TouchableOpacity>
                 <HeaderRightWrapper>
                     <TouchableOpacity>
                         <BellComponent />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('ShopBasketPage')}>
                         <BasketComponent />
                     </TouchableOpacity>
                 </HeaderRightWrapper>
@@ -114,6 +113,13 @@ const WhiteCart = () => (
         width={24}
         height={24}
         asset={WhiteCartSVG} />
+)
+
+const X = () => (
+    <WithLocalSvg
+        width={34}
+        height={24}
+        asset={XSVG}/>
 )
 
 const EmptyView = styled.View`
