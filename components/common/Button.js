@@ -4,7 +4,7 @@ const Button = (props) => {
     const marginValues = props.margin ? props.margin.split(' ').map(val => Number(val)) : [0, 0, 0, 0];
 
     const buttonStyle = {
-        width: 353,
+        width: '100%',
         height: props.height,
         borderRadius: 30,
         backgroundColor: props.backgroundColor,
