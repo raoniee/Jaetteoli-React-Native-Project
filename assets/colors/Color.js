@@ -4,6 +4,7 @@ const Color = {
     
     purple: '#8377E9',
     darkPurple: '#604EF8', // 메인 컬러
+    middlePurple: '#F7F5FD',
     lightPurple: '#F5F3FF',
     gray: '#777777',
     darkGray: '#555555',

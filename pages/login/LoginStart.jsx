@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
+  SafeAreaView,
   Text,
   View,
   TouchableOpacity,
@@ -10,53 +11,77 @@ import {
   TouchableHighlight,
   Image,
 } from "react-native";
-import Button from '../../components/common/Button';
+import Button from "../../components/common/Button";
 import Color from "../../assets/colors/Color";
 import logo from "../../assets/images/logo.png";
 import GoMembership from "../../components/login/GoMembership";
+import Check from "../../assets/images/Check";
 
 export default function LoginStart() {
+  const [saveId, SetSaveId] = useState(false);
+
+  const handleSaveId = () => SetSaveId((prev) => !prev);
+
   return (
-    <View style={styles.container}>
-      <Image style={styles.logo} source={logo} />
-      <TextInput style={styles.id_input} placeholder="아이디" />
-      <TextInput style={styles.pw_input} placeholder="비밀번호" />
-      <View style={styles.login_option}>
-        <View style={styles.idsave_wrap}>
-          <TouchableWithoutFeedback onPress={() => console.log("press!")}>
-            <TextInput
-              editable={false}
-              style={styles.idsave_checkbox}
-            ></TextInput>
-          </TouchableWithoutFeedback>
-          <Text style={styles.idsave_text}>아이디 저장</Text>
+    <SafeAreaView style={styles.wrap}>
+      <View style={styles.container}>
+        <Image style={styles.logo} source={logo} />
+        <TextInput
+          style={styles.id_input}
+          placeholder="아이디"
+          keyboardType="ascii-capable"
+          returnKeyType="done"
+        />
+        <TextInput
+          style={styles.pw_input}
+          placeholder="비밀번호"
+          secureTextEntry={true}
+          returnKeyType="done"
+        />
+        <View style={styles.login_option}>
+          <View style={styles.idsave_wrap}>
+            <TouchableOpacity onPress={handleSaveId}>
+              <View
+                style={{
+                  ...styles.idsave_checkbox,
+                  backgroundColor: saveId ? Color.purple : Color.white,
+                  borderWidth: saveId ? 0 : 1,
+                }}
+              >
+                <Check stroke={Color.white} width={21} height={21} />
+              </View>
+            </TouchableOpacity>
+            <Text style={styles.idsave_text}>아이디 저장</Text>
+          </View>
+          <View>
+            <TouchableWithoutFeedback>
+              <Text style={styles.searchgo}>아이디_비밀번호 찾기</Text>
+            </TouchableWithoutFeedback>
+          </View>
         </View>
-        <View>
-          <TouchableWithoutFeedback>
-            <Text style={styles.searchgo}>아이디_비밀번호 찾기</Text>
-          </TouchableWithoutFeedback>
-        </View>
+        <Button
+          title="로그인"
+          backgroundColor={Color.darkPurple}
+          color={Color.white}
+          margin="0 0 100 0"
+          height={62}
+        />
       </View>
-      <Button
-        title="로그인"
-        backgroundColor={Color.darkPurple}
-        color={Color.white}
-        margin="0 0 100 0"
-        height={62}
-      />
       <GoMembership />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  wrap: {
+    flex: 1,
+    position: "relative",
+  },
   container: {
     flex: 1,
     alignItems: "center",
-    width: 353,
-    marginTop: 140, //
-    marginBottom: 165,
-    marginHorizontal: 10, //
+    marginTop: 140,
+    marginHorizontal: 20,
   },
   logo: {
     width: 87,
@@ -92,10 +117,11 @@ const styles = StyleSheet.create({
     width: 21,
     height: 21,
     borderRadius: 5,
-    borderWidth: 1,
     borderColor: Color.gray,
     marginLeft: 10,
     marginRight: 10,
+    paddingTop: 4.5,
+    paddingLeft: 3,
   },
   idsave_text: {
     fontFamily: "Pretendard-SemiBold",
