@@ -20,7 +20,6 @@ import {
 } from "../../components/search/dummy/dummy";
 import Graph from "../../assets/images/Graph";
 import PopularItem from "../../components/search/item/PopularItem";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 
 const BeforeSeach = ({ navigation, route }) => {
@@ -165,9 +164,6 @@ const styles = StyleSheet.create({
     fontFamily: "Pretendard",
     fontSize: 15,
     fontWeight: 500,
-  },
-  bottomMargin: {
-    marginBottom: 80,
   },
   recentSearchOuterContainer: {
     marginTop: 32,
