@@ -17,6 +17,9 @@ import { StatusBar } from "react-native";
 import AfterSearch from "./pages/search/AfterSearch";
 import BeforeSeach from "./pages/search/BeforeSearch";
 import OrderDetail from "./pages/orderhistory/OrderDetail";
+import ShopBasketPage from "./pages/cart/ShopBasketPage";
+import OrderPage from "./pages/cart/OrderPage";
+import MenuDetailPage from "./pages/menuDetail/MenuDetailPage";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -52,69 +55,81 @@ export default function App() {
       {/* <StatusBar style="auto" /> */}
       <NavigationContainer>
         {/* NavigationContainer를 추가하여 Navigation 기능을 제공합니다. */}
-        <Tab.Navigator
-          screenOptions={{
-            tabBarStyle: {
-              borderWidth: 1,
-              borderBottomWidth: 0,
-              borderColor: "#E5E5E5",
-              borderTopLeftRadius: 30,
-              borderTopRightRadius: 30,
-              backgroundColor: "white", // 배경을 투명하게 설정
-              elevation: 0, // 안드로이드에서 기본 그림자를 제거
-              position: "absolute",
-              overflow: "hidden",
-              zIndex: 10,
-            },
-            tabBarActiveTintColor: Color.darkPurple, // 탭이 활성화되었을 때 글자 색상
-            tabBarInactiveTintColor: Color.gray, // 탭이 비활성화되었을 때 글자 색상
-            headerShown: false,
-          }}
-        >
-          <Tab.Screen
-            name="홈"
-            component={Home}
-            options={{
-              tabBarIcon: ({ color, size }) => <HomeIcon stroke={color} />,
-            }}
-          />
-          <Tab.Screen
-            name="검색"
-            component={SearchStack}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <Ionicons name="search" color={color} size={size} />
-              ),
-              tabBarVisible: false, // 검색 화면에서 바텀 네비게이션을 숨기기 위해 추가
-            }}
-          />
-          <Tab.Screen
-            name="주문내역"
-            component={OrderHistoryStack}
-            options={{
-              tabBarIcon: ({ color, size }) => <OrderIcon stroke={color} />,
-            }}
-          />
-          <Tab.Screen
-            name="구독"
-            component={SubscribeStack}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <Ionicons name="heart" color={color} size={size} />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="마이떨이"
-            component={MyPage}
-            options={{
-              tabBarIcon: ({ color, size }) => <ProfileIcon stroke={color} />,
-            }}
-          />
-        </Tab.Navigator>
+        <Stack.Navigator
+            screenOptions={{headerShown: false}}>
+            <Stack.Screen name="MainTabs" component={MainTabs} />
+            <Stack.Screen name="ShopBasketPage" component={ShopBasketPage} />
+            <Stack.Screen name="OrderPage" component={OrderPage} />
+            <Stack.Screen name="MenuDetailPage" component={MenuDetailPage} />
+        </Stack.Navigator>
       </NavigationContainer>
     </>
   );
+}
+
+function MainTabs() {
+    return (
+        <Tab.Navigator
+            screenOptions={{
+                tabBarStyle: {
+                    borderWidth: 1,
+                    borderBottomWidth: 0,
+                    borderColor: "#E5E5E5",
+                    borderTopLeftRadius: 30,
+                    borderTopRightRadius: 30,
+                    backgroundColor: "white", // 배경을 투명하게 설정
+                    elevation: 0, // 안드로이드에서 기본 그림자를 제거
+                    position: "absolute",
+                    overflow: "hidden",
+                    zIndex: 10,
+                },
+                tabBarActiveTintColor: Color.darkPurple, // 탭이 활성화되었을 때 글자 색상
+                tabBarInactiveTintColor: Color.gray, // 탭이 비활성화되었을 때 글자 색상
+                headerShown: false,
+            }}
+        >
+            <Tab.Screen
+                name="홈"
+                component={Home}
+                options={{
+                    tabBarIcon: ({ color, size }) => <HomeIcon stroke={color} />,
+                }}
+            />
+            <Tab.Screen
+                name="검색"
+                component={SearchStack}
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="search" color={color} size={size} />
+                    ),
+                    tabBarVisible: false, // 검색 화면에서 바텀 네비게이션을 숨기기 위해 추가
+                }}
+            />
+            <Tab.Screen
+                name="주문내역"
+                component={OrderHistoryStack}
+                options={{
+                    tabBarIcon: ({ color, size }) => <OrderIcon stroke={color} />,
+                }}
+            />
+            <Tab.Screen
+                name="구독"
+                component={SubscribeStack}
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="heart" color={color} size={size} />
+                    ),
+                }}
+            />
+            <Tab.Screen
+                name="마이떨이"
+                component={MyPage}
+                options={{
+                    tabBarIcon: ({ color, size }) => <ProfileIcon stroke={color} />,
+                }}
+            />
+        </Tab.Navigator>
+    )
 }
 
 function SearchStack() {
