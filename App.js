@@ -25,6 +25,7 @@ import ManageReview from "./pages/mypage/ManageReview";
 import InitAddress from "./pages/map/InitAddress";
 import MapFind from "./pages/map/MapFind";
 import Stores from "./pages/main/Stores";
+import Main from "./pages/main/Main";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -150,6 +151,7 @@ function HomeStack() {
     >
       <Stack.Screen name="InitAddress" component={InitAddress} />
       <Stack.Screen name="Stores" component={Stores} />
+      <Stack.Screen name="Main" component={Main} />
     </Stack.Navigator>
   );
 }
