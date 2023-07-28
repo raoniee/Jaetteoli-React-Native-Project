@@ -10,7 +10,6 @@ import {
   View,
 } from "react-native";
 import Color from "../../assets/colors/Color";
-import locationImgContainer from "../../assets/images/locationImgContainer";
 import { searchResultData } from "../../components/search/dummy/dummy";
 import EmptyHeart from "../../assets/images/EmptyHeart";
 import { FontAwesome } from "@expo/vector-icons"; // expo-vector-icons 라이브러리 필요
