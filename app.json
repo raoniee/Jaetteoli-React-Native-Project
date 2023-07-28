@@ -15,12 +15,24 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jaetteolicompany.jaetteoli",
+      "buildNumber": "1.0.0",
+      "config": {
+        "googleMapsApiKey": "AIzaSyDF6-GEUKJr1rL-43XSaB6QPpeHaPUhvKg"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.jaetteolicompany.jaetteoli",
+      "versionCode": 1,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDF6-GEUKJr1rL-43XSaB6QPpeHaPUhvKg"
+        }
       }
     },
     "web": {
