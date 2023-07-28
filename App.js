@@ -24,6 +24,7 @@ import AlramList from "./pages/mypage/AlramList";
 import ManageReview from "./pages/mypage/ManageReview";
 import InitAddress from "./pages/map/InitAddress";
 import MapFind from "./pages/map/MapFind";
+import Stores from "./pages/main/Stores";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -98,7 +99,7 @@ function MainTabs() {
     >
       <Tab.Screen
         name="홈"
-        component={InitAddress}
+        component={HomeStack}
         options={{
           tabBarIcon: ({ color, size }) => <HomeIcon stroke={color} />,
         }}
@@ -137,6 +138,19 @@ function MainTabs() {
         }}
       />
     </Tab.Navigator>
+  );
+}
+
+function HomeStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="InitAddress" component={InitAddress} />
+      <Stack.Screen name="Stores" component={Stores} />
+    </Stack.Navigator>
   );
 }
 
