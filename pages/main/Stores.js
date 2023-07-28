@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import Color from "../../assets/colors/Color";
-import SearchImg from "../../assets/images/SearchImg";
+import locationImgContainer from "../../assets/images/locationImgContainer";
 import { searchResultData } from "../../components/search/dummy/dummy";
 import EmptyHeart from "../../assets/images/EmptyHeart";
 import { FontAwesome } from "@expo/vector-icons"; // expo-vector-icons 라이브러리 필요
@@ -30,7 +30,6 @@ const Stores = ({ navigation, route }) => {
   }, [route.params]);
 
   const handleSubmit = () => {
-    // 결과 화면으로 이동하면서 입력된 텍스트를 전달
     navigation.navigate("BeforeSearch", {
       searchText: inputText,
     });
@@ -42,7 +41,6 @@ const Stores = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* 검색창 */}
       <Header
         left={1}
         right={1}
@@ -55,19 +53,19 @@ const Stores = ({ navigation, route }) => {
         android_ripple={{ color: Color.lightPurple }}
         style={({ pressed }) => pressed && styles.pressedItem}
       >
-        <View style={styles.searchContainer}>
-          <View style={styles.searchImg}>
+        <View style={styles.storeContainer}>
+          <View style={styles.locationImgContainer}>
             <Location stroke={Color.darkPurple} />
           </View>
           {inputText === "" ? (
-            <Text style={styles.searchInputContainerLightGray}>검색하기</Text>
+            <Text style={styles.storeInputContainerLightGray}>검색하기</Text>
           ) : (
-            <Text style={styles.searchInputContainer} >{inputText}</Text>
+            <Text style={styles.storeInputContainer} >{inputText}</Text>
           )}
         </View>
       </Pressable>
       {/* 목록 */}
-      <View style={styles.searchResultContainer}>
+      <View style={styles.storeResultContainer}>
         <FlatList
           data={searchResultData}
           scrollEnabled={true}
@@ -82,7 +80,7 @@ const Stores = ({ navigation, route }) => {
               star = <FontAwesome name="star-o" style={styles.star} />;
             }
             return (
-              <View index={index} style={styles.searchItemContainer}>
+              <View index={index} style={styles.storeItemContainer}>
                 <View style={styles.imgContainer}>
                   <View style={styles.firstImgContiner}>
                     <Image
@@ -140,7 +138,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Color.white,
   },
-  searchContainer: {
+  storeContainer: {
     flexDirection: "row",
     marginHorizontal: 26,
     marginBottom: 20,
@@ -159,11 +157,11 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  searchImg: {
+  locationImgContainer: {
     marginLeft: 26,
     marginVertical: 10,
   },
-  searchInputContainerLightGray:{
+  storeInputContainerLightGray:{
     flex: 1,
     paddingLeft: 10,
     fontFamily: "Pretendard",
@@ -171,17 +169,17 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     color:Color.lightGray
   },
-  searchInputContainer: {
+  storeInputContainer: {
     flex: 1,
     paddingLeft: 10,
     fontFamily: "Pretendard",
     fontSize: 15,
     fontWeight: 500,
   },
-  searchResultContainer: {
+  storeResultContainer: {
     marginBottom: 150,
   },
-  searchItemContainer: {
+  storeItemContainer: {
     marginHorizontal: 26,
     height: 250,
     marginBottom: 20,
