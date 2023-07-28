@@ -35,7 +35,7 @@ const Stores = ({ navigation, route }) => {
   };
 
   const moveToMap = () => {
-    navigation.navigate('MapFind') //메인화면으로 바꾸기
+    navigation.navigate('Main') //메인화면으로 바꾸기
   }
 
   return (

@@ -96,8 +96,7 @@ const MapFind = () => {
 
   const moveToHome = () => {
     //home이동
-    navigation.navigate('Stores', { currentAddress: currentAddress }) //홈화면으로 갈수있게 바꿔야함.
-    console.log("홈이동");
+    navigation.navigate('Main', { currentAddress: currentAddress })
   };
 
   return (
@@ -116,17 +115,6 @@ const MapFind = () => {
         provider={PROVIDER_GOOGLE}
         onRegionChangeComplete={handleRegionChangeComplete}
       >
-        {/* {markerData.map((item) => (
-          <Marker
-            key={item.key}
-            coordinate={{
-              latitude: item.latitude,
-              longitude: item.longitude,
-            }}
-          >
-            <CustomMarker title={item.title} />
-          </Marker>
-        ))} */}
       </MapView>
       <View pointerEvents="none" style={styles.addressContainer}>
         <CustomMarker title="" />
