@@ -85,8 +85,8 @@ const MapFind = () => {
         mapViewRef.current.animateToRegion({
           latitude,
           longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001,
         });
       }
     } catch (error) {
