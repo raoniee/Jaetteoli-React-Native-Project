@@ -21,14 +21,14 @@ const InitAddress = () => {
     console.log(data.jibunAddress);
     console.log(data.roadAddress);
     setShowPostcode(false); //다시 돌아올때 상태
-    navigation.navigate("Stores", {
+    navigation.navigate("Main", {
       jibun: data.jibunAddress,
       currentAddress: data.roadAddress,
-    }); /* 메인화면으로 이동하게 바꿔야함 */
+    });
   };
 
   const moveToSelectMap = () => {
-    navigation.navigate("MapFind"); /* 다음페이지 */
+    navigation.navigate("MapFind");
   }
 
   return (
