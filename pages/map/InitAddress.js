@@ -21,11 +21,15 @@ const InitAddress = () => {
     console.log(data.jibunAddress);
     console.log(data.roadAddress);
     setShowPostcode(false); //다시 돌아올때 상태
-    navigation.navigate("MapFind", {
-      jibun: data.jibunAddress,
-      road: data.roadAddress,
-    }); /* 다음페이지 */
+    // navigation.navigate("MapFind", {
+    //   jibun: data.jibunAddress,
+    //   road: data.roadAddress,
+    // }); /* 다음페이지 */
   };
+
+  const moveToSelectMap = () => {
+    navigation.navigate("MapFind"); /* 다음페이지 */
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -43,7 +47,7 @@ const InitAddress = () => {
                 </Text>
               </View>
             </Pressable>
-            <Pressable>
+            <Pressable onPress={moveToSelectMap}>
               <View style={styles.currentMap}>
                 <Text style={styles.currentMapText}>현재 위치로 주소 찾기</Text>
               </View>
