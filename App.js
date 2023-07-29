@@ -18,7 +18,10 @@ import BeforeSeach from "./pages/search/BeforeSearch";
 import OrderDetail from "./pages/orderhistory/OrderDetail";
 import ShopBasketPage from "./pages/cart/ShopBasketPage";
 import OrderPage from "./pages/cart/OrderPage";
-import MenuDetailPage from "./pages/menuDetail/MenuDetailPage";
+import MenuDetailPage from "./pages/store/MenuDetailPage";
+import OrderCompletePage from "./pages/cart/OrderCompletePage";
+import StoreDetailPage from "./pages/store/StoreDetailPage";
+import StoreMapPage from "./pages/store/StoreMapPage";
 import ModifyMyInfo from "./pages/mypage/ModifyMyInfo";
 import AlramList from "./pages/mypage/AlramList";
 import ManageReview from "./pages/mypage/ManageReview";
@@ -70,10 +73,13 @@ export default function App() {
       {/* <StatusBar style="auto" /> */}
       <NavigationContainer>
         {/* NavigationContainer를 추가하여 Navigation 기능을 제공합니다. */}
-        {/* <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen name="ShopBasketPage" component={ShopBasketPage} />
           <Stack.Screen name="OrderPage" component={OrderPage} />
+          <Stack.Screen name="OrderCompletePage" component={OrderCompletePage} />
+          <Stack.Screen name="StoreDetailPage" component={StoreDetailPage} />
+          <Stack.Screen name="StoreMapPage" component={StoreMapPage} />
           <Stack.Screen name="MenuDetailPage" component={MenuDetailPage} />
           <Stack.Screen name="ModifyMyInfo" component={ModifyMyInfo} />
           <Stack.Screen name="AlramList" component={AlramList} />
@@ -82,9 +88,8 @@ export default function App() {
           <Stack.Screen name="MapFind" component={MapFind} />
           <Stack.Screen name="WriteReview" component={WriteReview} />
           <Stack.Screen name="TermsOfService" component={TermsOfService} />
-        </Stack.Navigator> */}
+        </Stack.Navigator>
         {/* <LoginStart /> */}
-        <MembershipAccount />
       </NavigationContainer>
     </>
   );

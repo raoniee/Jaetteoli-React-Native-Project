@@ -127,9 +127,9 @@ export default function OrderPage({ navigation }) {
                             <PhoneSafeCheckComponent>
                                 {safeCheck ?
                                     <WithLocalSvg
-                                    width={19}
-                                    height={19}
-                                    asset={CheckSVG}/> : null}
+                                        width={19}
+                                        height={19}
+                                        asset={CheckSVG}/> : null}
                             </PhoneSafeCheckComponent>
                             <PhoneSafeText>
                                 안심번호 사용
@@ -219,7 +219,7 @@ export default function OrderPage({ navigation }) {
                     </CreditTotalPriceSection>
                 </OrderWrapper>
                 <PaymentWrapper>
-                    <PaymentButton>
+                    <PaymentButton onPress={() => navigation.navigate('OrderCompletePage')}>
                         <PaymentText>
                             결제하기
                         </PaymentText>
@@ -305,7 +305,7 @@ const ShopAddressWrapper = styled.View`
 `
 
 const ShopAddressText = styled.Text`
-  color: var(--unnamed, #2F2F38);
+  color: #2F2F38;
   font-family: "Pretendard-Medium";
   font-size: 15px;
   font-style: normal;
@@ -344,7 +344,6 @@ const CommonTextSection = styled.View`
 
 const CommonText = styled.Text`
   color: #000;
-  font-feature-settings: 'clig' off, 'liga' off;
   font-family: "Pretendard-SemiBold";
   font-size: 16px;
   font-style: normal;
@@ -551,7 +550,7 @@ const PaymentText = styled.Text`
   font-weight: 600;
 `
 
-function CustomModal({isVisible, onBackdropPress = () => {}, children}) {
+export function CustomModal({isVisible, onBackdropPress = () => {}, children}) {
     const opacity = useState(new Animated.Value(0))[0];
     const translateY = useState(new Animated.Value(totalHeight * 0.1))[0]
     const [ display, setDisplay ] = useState(isVisible);
@@ -608,11 +607,9 @@ const SetPickupTimeWrapper = styled(Animated.View)`
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 415px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex: 1 0 0;
   align-self: stretch;
   background: white;
   border-radius: 30px 30px 0 0;
