@@ -14,6 +14,7 @@ import RightSVG from '../../assets/images/right.svg';
 import CheckSVG from '../../assets/images/check.svg';
 import Ellipse1 from '../../assets/images/Ellipse1.svg';
 import Ellipse0 from '../../assets/images/Ellipse0.svg';
+import CustomModal from "../../components/modal/CustomModal";
 
 
 // 안드로이드
@@ -63,7 +64,7 @@ export default function OrderPage({ navigation }) {
                 left={1}
                 right={1}
                 backgroundColor='white'
-                title='리뷰쓰기'
+                title='주문하기'
                 navigation={navigation}/>
             <Container showsVerticalScrollIndicator={false}>
                 <OrderWrapper gap={10}>
@@ -229,29 +230,32 @@ export default function OrderPage({ navigation }) {
             <CustomModal
                 isVisible={visibleModal}
                 onBackdropPress={cancel}>
-                <SetPickupTimeSection1>
-                    <TouchableOpacity onPress={cancel}>
-                        <SetPickupTimeEditText>
-                            취소
-                        </SetPickupTimeEditText>
-                    </TouchableOpacity>
-                    <SetPickupTimeTitleText>
-                        시간설정
-                    </SetPickupTimeTitleText>
-                    <TouchableOpacity
-                        onPress={save}>
-                        <SetPickupTimeEditText>
-                            저장
-                        </SetPickupTimeEditText>
-                    </TouchableOpacity>
-                </SetPickupTimeSection1>
-                <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    mode={'time'}
-                    is24Hour={false}
-                    display="spinner"
-                    onChange={onChange}/>
+                <SetPickupTimeWrapper>
+                    <SetPickupTimeSection1>
+                        <TouchableOpacity onPress={cancel}>
+                            <SetPickupTimeEditText>
+                                취소
+                            </SetPickupTimeEditText>
+                        </TouchableOpacity>
+                        <SetPickupTimeTitleText>
+                            시간설정
+                        </SetPickupTimeTitleText>
+                        <TouchableOpacity
+                            onPress={save}>
+                            <SetPickupTimeEditText>
+                                저장
+                            </SetPickupTimeEditText>
+                        </TouchableOpacity>
+                    </SetPickupTimeSection1>
+                    <DateTimePicker
+                        testID="dateTimePicker"
+                        value={date}
+                        mode={'time'}
+                        is24Hour={false}
+                        display="spinner"
+                        onChange={onChange}/>
+                </SetPickupTimeWrapper>
+
             </CustomModal>
         </SafeAreaView>
     )
@@ -419,7 +423,7 @@ const PhoneSafeUnCheckBox = styled.View`
   width: 21px;
   height: 21px;
   border-radius: 5px;
-  border: 2px solid #777;
+  border: 1px solid #777;
 `
 
 const PhoneSafeText = styled.Text`
@@ -550,69 +554,12 @@ const PaymentText = styled.Text`
   font-weight: 600;
 `
 
-export function CustomModal({isVisible, onBackdropPress = () => {}, children}) {
-    const opacity = useState(new Animated.Value(0))[0];
-    const translateY = useState(new Animated.Value(totalHeight * 0.1))[0]
-    const [ display, setDisplay ] = useState(isVisible);
-
-    useEffect(() => {
-        if (isVisible)
-            setDisplay(isVisible)
-        Animated.parallel([
-            Animated.timing(opacity, {
-                toValue: isVisible ? 1 : 0,
-                duration: 300,
-                useNativeDriver: true,
-            }),
-            Animated.timing(translateY, {
-                toValue: isVisible ? 0 : totalHeight * 0.1,
-                duration: 300,
-                useNativeDriver: true,
-            })
-        ]).start(() => {
-            if (!isVisible && display)
-                setDisplay(false)
-        })
-    }, [isVisible])
-    return (
-        <>
-            {display &&
-                <TouchableWithoutFeedback onPress={onBackdropPress}>
-                    <SetPickupTimeContainer style={{ opacity }} >
-                        <TouchableWithoutFeedback>
-                            <SetPickupTimeWrapper style={{ transform: [{translateY}] }}>
-                                {children}
-                            </SetPickupTimeWrapper>
-                        </TouchableWithoutFeedback>
-                    </SetPickupTimeContainer>
-                </TouchableWithoutFeedback>
-            }
-
-        </>
-    )
-}
-
-const SetPickupTimeContainer = styled(Animated.View)`
-  position: absolute;
-  top:0;
-  left:0;
-  background: rgba(0, 0, 0, 0.50);
-  width: 100%;
-  height: ${totalHeight}px;
-`
-
-const SetPickupTimeWrapper = styled(Animated.View)`
+const SetPickupTimeWrapper = styled.View`
+    width: 100%;
+  height: 415px;
   display: flex;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  align-self: stretch;
-  background: white;
-  border-radius: 30px 30px 0 0;
 `
 
 const SetPickupTimeSection1 = styled.View`
