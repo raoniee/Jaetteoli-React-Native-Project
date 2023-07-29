@@ -2009,6 +2009,11 @@
   dependencies:
     "invariant" "^2.2.4"
 
+"@react-native-community/geolocation@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.npmjs.org/@react-native-community/geolocation/-/geolocation-3.0.6.tgz"
+  integrity sha512-+iidKFgw1HxCJSHVnlywAKu6uerdpDAKTXLRnlsUdhgqtgTiIixb496Z267iPVFmIO1bp4lOU6UiwzmvcyXdbg==
+
 "@react-native/assets-registry@^0.72.0":
   "integrity" "sha512-Im93xRJuHHxb1wniGhBMsxLwcfzdYreSZVQGDoMJgkd6+Iky61LInGEHnQCTN0fKNYF1Dvcofb4uMmE1RQHXHQ=="
   "resolved" "https://registry.npmjs.org/@react-native/assets-registry/-/assets-registry-0.72.0.tgz"
@@ -5829,10 +5834,17 @@
     "lodash" "^4.17.21"
     "prop-types" "^15.7.2"
 
+<<<<<<< HEAD
 "react-native-maps@1.7.1":
   "integrity" "sha512-CHVLzL+Q2jiUGgbt4/vosxVI1SukWyaLGjD62VLgR/wZpnH4Umi9ql1bmKDPWcfj2C1QZwMU0Yc7rXTbvZUIiw=="
   "resolved" "https://registry.npmjs.org/react-native-maps/-/react-native-maps-1.7.1.tgz"
   "version" "1.7.1"
+=======
+react-native-maps@^1.7.1:
+  version "1.7.1"
+  resolved "https://registry.npmjs.org/react-native-maps/-/react-native-maps-1.7.1.tgz"
+  integrity sha512-CHVLzL+Q2jiUGgbt4/vosxVI1SukWyaLGjD62VLgR/wZpnH4Umi9ql1bmKDPWcfj2C1QZwMU0Yc7rXTbvZUIiw==
+>>>>>>> 54e3db4b965ca26c3594f16023e3742496c465ac
   dependencies:
     "@types/geojson" "^7946.0.10"
 

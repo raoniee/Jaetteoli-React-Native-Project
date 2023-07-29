@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  Modal,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import Header from "../../components/common/Header";
 import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import MapView, { Circle } from "react-native-maps";
@@ -11,9 +18,14 @@ import Color from "../../assets/colors/Color";
 import Gps from "../../assets/images/Gps";
 import { useNavigation } from "@react-navigation/native";
 
-const MapFind = () => {
+
+//목록보기 누르면 그 버튼아래 컴포넌트들이 보이고 누르면 목록보기 화면으로 이동해야함('Stores')
+//Gps 버튼 누르면 내 위치로 이동해야함(구현완료)
+const Main = ({ route }) => {
   const navigation = useNavigation();
-  const [currentAddress, setCurrentAddress] = useState("");
+  const [currentAddress, setCurrentAddress] = useState(
+    route.params.currentAddress
+  );
   const [currentLocation, setCurrentLocation] = useState({
     latitude: 35.538377,
     longitude: 129.31136,
@@ -65,11 +77,9 @@ const MapFind = () => {
       longitude: region.longitude,
     };
     setCurrentLocation(center);
-
-    // 디바운싱 적용: 지도 영역 변경이 멈춘 후 2000ms 이후에 주소 가져오기 함수 실행
     debouncedGetCurrentAddress(center.latitude, center.longitude);
   };
-  // 화면 중심에 위치한 마커의 위도, 경도 정보
+  // 화면 중심에 위치한 마커의 위도, 경도 정보 (쓸 필요있으면)
   const centerMarkerCoordinate = {
     latitude: currentLocation.latitude,
     longitude: currentLocation.longitude,
@@ -85,8 +95,8 @@ const MapFind = () => {
         mapViewRef.current.animateToRegion({
           latitude,
           longitude,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
         });
       }
     } catch (error) {
@@ -94,15 +104,13 @@ const MapFind = () => {
     }
   };
 
-  const moveToHome = () => {
-    //home이동
-    navigation.navigate('Main', { currentAddress: currentAddress })
-  };
-
   return (
     <SafeAreaView style={styles.screen}>
-      <Header left={1} right={0} title="지도에서 주소 찾기" />
-
+      <Header left={1} right={1} title="오늘의 떨이" />
+      {/* 주소 */}
+      <View>
+        <Text>{currentAddress}</Text>
+      </View>
       <MapView
         ref={mapViewRef}
         style={styles.map}
@@ -115,11 +123,21 @@ const MapFind = () => {
         provider={PROVIDER_GOOGLE}
         onRegionChangeComplete={handleRegionChangeComplete}
       >
+        {markerData.map((item) => (
+          <Marker
+            key={item.key}
+            coordinate={{
+              latitude: item.latitude,
+              longitude: item.longitude,
+            }}
+          >
+            <CustomMarker title={item.title} />
+          </Marker>
+        ))}
       </MapView>
       <View pointerEvents="none" style={styles.addressContainer}>
         <CustomMarker title="" />
       </View>
-
       <Pressable
         onPress={moveMyPoint}
         android_ripple={{ color: Color.lightPurple }}
@@ -136,31 +154,11 @@ const MapFind = () => {
           <Gps stroke={Color.darkGray} />
         </View>
       </Pressable>
-      <View
-        style={[
-          styles.modalContainer,
-          Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-        ]}
-      >
-        <View style={styles.modalContent}>
-          <Text style={styles.addressText}>{currentAddress}</Text>
-          <Pressable
-            onPress={moveToHome}
-            android_ripple={{ color: Color.lightPurple }}
-            style={({ pressed }) => pressed && styles.pressedItem}
-          >
-            <View style={styles.settingContainer}>
-              <Text style={styles.settingText}>선택한 위치로 설정</Text>
-            </View>
-          </Pressable>
-        </View>
-      </View>
     </SafeAreaView>
   );
 };
 
-export default MapFind;
-
+export default Main;
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
@@ -197,16 +195,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "transparent",
-  },
-  modalContainer: {
-    position: "absolute",
-    width: "100%",
-    bottom: 0,
-    height: 220,
-    backgroundColor: Color.white,
-    zIndex: 100,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
   },
   shadowIOS: {
     shadowColor: Color.black,
