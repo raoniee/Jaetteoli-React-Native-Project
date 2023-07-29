@@ -1,11 +1,16 @@
-import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import Color from '../../assets/colors/Color';
 import Camera from '../../assets/images/Camera';
 import Button from '../../components/common/Button';
 import StarStroke from '../../assets/images/StarStroke';
+import Header from '../../components/common/Header';
 
 const WriteReview = () => {
+
+    const navigation = useNavigation();
+
     const [orderInfo, setOrderInfo] = useState({
         storeName: '울산미주구리',
         orderMenu: [
@@ -23,60 +28,63 @@ const WriteReview = () => {
     const [starRating, setStarRating] = useState(0);
 
     return (
-        <View style={styles.container}>
-            <View style={styles.orderInfo}>
-                <Text style={styles.storeName}>{orderInfo.storeName}</Text>
-                <Text style={styles.orderMenu}>{orderInfo.orderMenu.map((orderMenu) => orderMenu.menuName).join(', ')}</Text>
+        <SafeAreaView style={styles.container}>
+            <Header left={2} right={0} backgroundColor={Color.white} title='리뷰쓰기' navigation={navigation} />
+            <View style={styles.container}> 
+                <View style={styles.orderInfo}>
+                    <Text style={styles.storeName}>{orderInfo.storeName}</Text>
+                    <Text style={styles.orderMenu}>{orderInfo.orderMenu.map((orderMenu) => orderMenu.menuName).join(', ')}</Text>
+                </View>
+                {(starRating === 0) && <View style={styles.star}>
+                    <TouchableOpacity onPress={() => { setStarRating(1) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(2) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(3) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(4) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(5) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
+                </View>}
+                {(starRating === 1) && <View style={styles.star}>
+                    <TouchableOpacity onPress={() => { setStarRating(1) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(2) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(3) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(4) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(5) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
+                </View>}
+                {(starRating === 2) && <View style={styles.star}>
+                    <TouchableOpacity onPress={() => { setStarRating(1) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(2) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(3) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(4) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(5) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
+                </View>}
+                {(starRating === 3) && <View style={styles.star}>
+                    <TouchableOpacity onPress={() => { setStarRating(1) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(2) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(3) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(4) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(5) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
+                </View>}
+                {(starRating === 4) && <View style={styles.star}>
+                    <TouchableOpacity onPress={() => { setStarRating(1) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(2) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(3) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(4) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(5) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
+                </View>}
+                {(starRating === 5) && <View style={styles.star}>
+                    <TouchableOpacity onPress={() => { setStarRating(1) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(2) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(3) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(4) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setStarRating(5) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
+                </View>}
+                <View style={styles.addPicture}>
+                    <Camera fill={Color.purple}></Camera>
+                    <Text style={styles.addPictureText}>사진 첨부하기</Text>
+                </View>
+                <TextInput placeholder='음식에 대한 리뷰를 남겨주세요!' placeholderTextColor={Color.lightGray} multiline style={styles.review}></TextInput>
+                <Button title='완료' backgroundColor={Color.darkPurple} color={Color.white} margin='50 0 0 0' height={50}></Button>
             </View>
-            {(starRating === 0) && <View style={styles.star}>
-                <TouchableOpacity onPress={() => { setStarRating(1) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(2) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(3) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(4) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(5) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
-            </View>}
-            {(starRating === 1) && <View style={styles.star}>
-                <TouchableOpacity onPress={() => { setStarRating(1) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(2) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(3) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(4) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(5) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
-            </View>}
-            {(starRating === 2) && <View style={styles.star}>
-                <TouchableOpacity onPress={() => { setStarRating(1) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(2) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(3) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(4) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(5) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
-            </View>}
-            {(starRating === 3) && <View style={styles.star}>
-                <TouchableOpacity onPress={() => { setStarRating(1) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(2) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(3) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(4) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(5) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
-            </View>}
-            {(starRating === 4) && <View style={styles.star}>
-                <TouchableOpacity onPress={() => { setStarRating(1) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(2) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(3) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(4) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(5) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
-            </View>}
-            {(starRating === 5) && <View style={styles.star}>
-                <TouchableOpacity onPress={() => { setStarRating(1) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(2) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(3) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(4) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
-                <TouchableOpacity onPress={() => { setStarRating(5) }}><StarStroke stroke={Color.black} fill={Color.yellow}></StarStroke></TouchableOpacity>
-            </View>}
-            <View style={styles.addPicture}>
-                <Camera fill={Color.purple}></Camera>
-                <Text style={styles.addPictureText}>사진 첨부하기</Text>
-            </View>
-            <TextInput placeholder='음식에 대한 리뷰를 남겨주세요!' placeholderTextColor={Color.lightGray} multiline style={styles.review}></TextInput>
-            <Button title='완료' backgroundColor={Color.darkPurple} color={Color.white} margin='50 0 0 0' height={50}></Button>
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -87,9 +95,10 @@ const styles = StyleSheet.create({
         height: '100%',
         paddingLeft: 16,
         paddingRight: 16,
+        backgroundColor: Color.white,
     },
     orderInfo: {
-        marginTop: 155,
+        marginTop: 60,
         marginBottom: 20,
         width: '100%',
         alignItems: 'center',

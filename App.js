@@ -24,6 +24,8 @@ import AlramList from "./pages/mypage/AlramList";
 import ManageReview from "./pages/mypage/ManageReview";
 import InitAddress from "./pages/map/InitAddress";
 import MapFind from "./pages/map/MapFind";
+import WriteReview from './pages/review/WriteReview';
+import TermsOfService from './pages/termsOfService/TermsOfService';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -69,6 +71,8 @@ export default function App() {
           <Stack.Screen name="ManageReview" component={ManageReview} />
           <Stack.Screen name="BeforeSearch" component={BeforeSeach} />
           <Stack.Screen name="MapFind" component={MapFind} />
+          <Stack.Screen name="WriteReview" component={WriteReview} />
+          <Stack.Screen name="TermsOfService" component={TermsOfService} />
         </Stack.Navigator>
       </NavigationContainer>
     </>
