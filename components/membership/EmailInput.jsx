@@ -1,0 +1,135 @@
+import React, { useState } from "react";
+import Color from "../../assets/colors/Color";
+import {
+  StyleSheet,
+  SafeAreaView,
+  Text,
+  View,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+  TouchableWithoutFeedback,
+  TouchableHighlight,
+  Image,
+  Dimensions,
+} from "react-native";
+import ArrowDown from "../../assets/images/ArrowDown";
+import DropDownPicker from "react-native-dropdown-picker";
+
+const { width: SCREEN_WIDTH, height: SCREEN_HIGHT } = Dimensions.get("window");
+
+export default function EmailInput(props) {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
+    { label: "직접 입력", value: "0" },
+    { label: "naver.com", value: "1" },
+    { label: "gmail.com", value: "2" },
+    { label: "daum.net", value: "3" },
+    { label: "hanmail.net", value: "4" },
+    { label: "nate.net", value: "5" },
+  ]);
+  //const [text, setText] = useState("");
+
+  return (
+    <>
+      <Text style={styles.label}>이메일</Text>
+      <View style={styles.frontemail}>
+        <TextInput
+          style={styles.halfinput}
+          placeholder="이메일 앞자리"
+          returnKeyType="done"
+        />
+        <Text style={styles.at}>@</Text>
+        <TextInput
+          style={styles.halfinput}
+          placeholder=""
+          returnKeyType="done"
+        />
+      </View>
+      <TouchableOpacity>
+        <View>
+          <DropDownPicker
+            open={open}
+            value={value}
+            items={items}
+            setOpen={setOpen}
+            setValue={setValue}
+            setItems={setItems}
+            dropDownDirection="BOTTOM"
+            scrollViewProps={{
+              nestedScrollEnabled: true,
+            }}
+            placeholder="이메일 선택"
+            style={{
+              borderWidth: 0,
+              backgroundColor: Color.brightGray,
+              height: 62,
+              borderRadius: 30,
+              paddingHorizontal: 20,
+              marginBottom: 20,
+            }}
+            textStyle={{
+              fontFamily: "Pretendard-Regular",
+              fontSize: 14,
+              color: Color.lightGray,
+            }}
+            dropDownContainerStyle={{
+              borderWidth: 0,
+              backgroundColor: "#EEEEEE",
+              height: 130,
+              paddingHorizontal: 10,
+            }}
+            // selectedItemContainerStyle={{
+            //   backgroundColor: "#EEEEEE",
+            // }}
+          />
+        </View>
+      </TouchableOpacity>
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  label: {
+    fontFamily: "Pretendard-Medium",
+    fontSize: 16,
+    color: Color.gray,
+    marginLeft: 20,
+    marginBottom: 10,
+  },
+  frontemail: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  halfinput: {
+    backgroundColor: Color.brightGray,
+    height: 62,
+    borderRadius: 30,
+    width: SCREEN_WIDTH - 235,
+    paddingLeft: 20,
+    marginBottom: 20,
+  },
+  at: {
+    lineHeight: 62,
+  },
+  dropdown: {
+    position: "relative",
+    backgroundColor: Color.brightGray,
+    height: 62,
+    borderRadius: 30,
+    paddingLeft: 20,
+    marginBottom: 20,
+  },
+  // dropdown_menu: {
+  //   lineHeight: 62,
+  //   color: Color.lightGray,
+  //   fontFamily: "Pretendard-Regular",
+  //   fontSize: 14,
+  // },
+  // arrowdown: {
+  //   position: "absolute",
+  //   top: 20,
+  //   right: 21,
+  // },
+});

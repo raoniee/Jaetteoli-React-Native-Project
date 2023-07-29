@@ -26,8 +26,15 @@ import InitAddress from "./pages/map/InitAddress";
 import MapFind from "./pages/map/MapFind";
 import Stores from "./pages/main/Stores";
 import Main from "./pages/main/Main";
-import WriteReview from './pages/review/WriteReview';
-import TermsOfService from './pages/termsOfService/TermsOfService';
+import WriteReview from "./pages/review/WriteReview";
+import TermsOfService from "./pages/termsOfService/TermsOfService";
+import LoginStart from "./pages/login/LoginStart";
+import IDshow from "./pages/accountsearch/IDshow";
+import SearchAccunt from "./pages/accountsearch/SearchAccount";
+import MembershipInfo from "./pages/membership/MembershipInfo";
+import MembershipAccount from "./pages/membership/MembershipAccount";
+import MembershipEnd from "./pages/membership/MembershipEnd";
+import MembershipAgree from "./pages/membership/MembershipAgree";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -63,7 +70,7 @@ export default function App() {
       {/* <StatusBar style="auto" /> */}
       <NavigationContainer>
         {/* NavigationContainer를 추가하여 Navigation 기능을 제공합니다. */}
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {/* <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen name="ShopBasketPage" component={ShopBasketPage} />
           <Stack.Screen name="OrderPage" component={OrderPage} />
@@ -75,7 +82,9 @@ export default function App() {
           <Stack.Screen name="MapFind" component={MapFind} />
           <Stack.Screen name="WriteReview" component={WriteReview} />
           <Stack.Screen name="TermsOfService" component={TermsOfService} />
-        </Stack.Navigator>
+        </Stack.Navigator> */}
+        {/* <LoginStart /> */}
+        <MembershipAccount />
       </NavigationContainer>
     </>
   );

@@ -120,8 +120,6 @@ const styles = StyleSheet.create({
     borderColor: Color.gray,
     marginLeft: 10,
     marginRight: 10,
-    paddingTop: 4.5,
-    paddingLeft: 3,
   },
   idsave_text: {
     fontFamily: "Pretendard-SemiBold",
