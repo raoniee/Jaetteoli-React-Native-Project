@@ -1,6 +1,15 @@
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
-import {View, Text, Button, TouchableOpacity, SafeAreaView, Dimensions, Platform } from 'react-native';
+import {
+    View,
+    Text,
+    Button,
+    TouchableOpacity,
+    SafeAreaView,
+    Dimensions,
+    Platform,
+    TouchableWithoutFeedback
+} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Constants from 'expo-constants';
 import { WithLocalSvg } from 'react-native-svg';
@@ -26,16 +35,19 @@ export default function ShopBasketPage({ navigation }) {
         <SafeAreaView style={{backgroundColor: 'white'}}>
             <Header
                 title='장바구니'
-                backgroundColor='white'
-                navigation={navigation}/>
+                backgroundColor='white'/>
             <ContainerScrollView showsVerticalScrollIndicator={false}>
                 <Container>
                     <CartContainer>
                         <ShopWrapper>
-                            <ShopImage resizeMode="cover" source={{uri: 'https://s3-alpha-sig.figma.com/img/dc3f/fab0/770d06d808e97bcc6bba2bed883bf55b?Expires=1691366400&Signature=jj0WemQiRINpwE~sArwik3nGMq9~aui8gwfowCfoJhyvRC5IzaGzCSCVNw04Onb1C2Rqb-J2wNgMsSCcOWyMhOgFjs5c0e6tK2EaDiAZkP4yowcisYjci2UK7VudXYhNzUoMepJ32oh6-TKK9-U~zLWk41bec14hyfph~TGcWvcTijoLYh5Mu3-cBxDM00nkqNaCGbBEZkBtVm-l85Zi~e8xQbtxY6aatxhoSSTJQmV8iZf0w0GPYVPLCt6SgJqmVbSxeg1l1P6DbT1qE9h~Dbo-wrBE1WjUNqmIkA8po1dY9PBzIg2oW745z8idsAEZUKWbqk5-UTA0it2OTuAbhA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}} />
-                            <ShopText>
-                                울산미주구리
-                            </ShopText>
+                            <TouchableWithoutFeedback onPress={() => navigation.navigate('StoreDetailPage')}>
+                                <ShopSection>
+                                    <ShopImage resizeMode="cover" source={{uri: 'https://s3-alpha-sig.figma.com/img/dc3f/fab0/770d06d808e97bcc6bba2bed883bf55b?Expires=1691366400&Signature=jj0WemQiRINpwE~sArwik3nGMq9~aui8gwfowCfoJhyvRC5IzaGzCSCVNw04Onb1C2Rqb-J2wNgMsSCcOWyMhOgFjs5c0e6tK2EaDiAZkP4yowcisYjci2UK7VudXYhNzUoMepJ32oh6-TKK9-U~zLWk41bec14hyfph~TGcWvcTijoLYh5Mu3-cBxDM00nkqNaCGbBEZkBtVm-l85Zi~e8xQbtxY6aatxhoSSTJQmV8iZf0w0GPYVPLCt6SgJqmVbSxeg1l1P6DbT1qE9h~Dbo-wrBE1WjUNqmIkA8po1dY9PBzIg2oW745z8idsAEZUKWbqk5-UTA0it2OTuAbhA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}} />
+                                    <ShopText>
+                                        울산미주구리
+                                    </ShopText>
+                                </ShopSection>
+                            </TouchableWithoutFeedback>
                         </ShopWrapper>
                         <MenuContainer>
                             <MenuWrapper>
@@ -46,45 +58,47 @@ export default function ShopBasketPage({ navigation }) {
                                         asset={CancelSVG} />
                                 </CancelTouch>
                                 <MenuImage resizeMode="cover" source={{uri: 'https://s3-alpha-sig.figma.com/img/dc3f/fab0/770d06d808e97bcc6bba2bed883bf55b?Expires=1691366400&Signature=jj0WemQiRINpwE~sArwik3nGMq9~aui8gwfowCfoJhyvRC5IzaGzCSCVNw04Onb1C2Rqb-J2wNgMsSCcOWyMhOgFjs5c0e6tK2EaDiAZkP4yowcisYjci2UK7VudXYhNzUoMepJ32oh6-TKK9-U~zLWk41bec14hyfph~TGcWvcTijoLYh5Mu3-cBxDM00nkqNaCGbBEZkBtVm-l85Zi~e8xQbtxY6aatxhoSSTJQmV8iZf0w0GPYVPLCt6SgJqmVbSxeg1l1P6DbT1qE9h~Dbo-wrBE1WjUNqmIkA8po1dY9PBzIg2oW745z8idsAEZUKWbqk5-UTA0it2OTuAbhA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}} />
-                                <MenuSection>
-                                    <MenuTitle>
-                                        도다리 1KG
-                                    </MenuTitle>
-                                    <OriginalPriceSection>
-                                        <OriginalPriceText>
-                                            40,000원
-                                        </OriginalPriceText>
-                                        <DiscountRate>
-                                            50 %
-                                        </DiscountRate>
-                                    </OriginalPriceSection>
-                                    <DiscountSection>
-                                        <WithLocalSvg
-                                            width={24}
-                                            height={22.75}
-                                            asset={ArrowRightSVG} />
-                                        <DiscountPriceText>
-                                            20,000원
-                                        </DiscountPriceText>
-                                    </DiscountSection>
-                                    <QuantitySection>
-                                        <TouchableOpacity>
+                                <TouchableWithoutFeedback onPress={() => navigation.navigate('MenuDetailPage')}>
+                                    <MenuSection>
+                                        <MenuTitle>
+                                            도다리 1KG
+                                        </MenuTitle>
+                                        <OriginalPriceSection>
+                                            <OriginalPriceText>
+                                                40,000원
+                                            </OriginalPriceText>
+                                            <DiscountRate>
+                                                50 %
+                                            </DiscountRate>
+                                        </OriginalPriceSection>
+                                        <DiscountSection>
                                             <WithLocalSvg
-                                                width={22}
-                                                height={20}
-                                                asset={MinusSVG} />
-                                        </TouchableOpacity>
-                                        <QuantityText>
-                                            2개
-                                        </QuantityText>
-                                        <TouchableOpacity>
-                                            <WithLocalSvg
-                                                width={22}
-                                                height={20}
-                                                asset={PlusSVG} />
-                                        </TouchableOpacity>
-                                    </QuantitySection>
-                                </MenuSection>
+                                                width={24}
+                                                height={22.75}
+                                                asset={ArrowRightSVG} />
+                                            <DiscountPriceText>
+                                                20,000원
+                                            </DiscountPriceText>
+                                        </DiscountSection>
+                                        <QuantitySection>
+                                            <TouchableOpacity>
+                                                <WithLocalSvg
+                                                    width={22}
+                                                    height={20}
+                                                    asset={MinusSVG} />
+                                            </TouchableOpacity>
+                                            <QuantityText>
+                                                2개
+                                            </QuantityText>
+                                            <TouchableOpacity>
+                                                <WithLocalSvg
+                                                    width={22}
+                                                    height={20}
+                                                    asset={PlusSVG} />
+                                            </TouchableOpacity>
+                                        </QuantitySection>
+                                    </MenuSection>
+                                </TouchableWithoutFeedback>
                             </MenuWrapper>
                         </MenuContainer>
 
@@ -135,8 +149,14 @@ const CartContainer = styled.View`
 const ShopWrapper = styled.View`
   display: flex;
   width: 360px;
-  height: 35px;
   margin: 18px 0 22px;
+  flex-direction: row;
+  justify-content: flex-start;
+`
+
+const ShopSection = styled.View`
+  display: flex;
+  height: 35px;
   gap: 10px;
   flex-direction: row;
   justify-content: left;
@@ -174,7 +194,7 @@ const MenuWrapper = styled.View`
   border-radius: 30px;
   background: #FFF;
   padding: 14px 29px 15px 12px;
-  
+
   ${Platform.select({
     ios: `
       shadow-color: #000;
