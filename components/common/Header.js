@@ -143,7 +143,7 @@ const WhiteCart = () => {
 const X = () => {
     const navigation = useNavigation();
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity onPress={() => navigation.navigate('MainTabs')}>
             <WithLocalSvg
                 width={34}
                 height={24}
