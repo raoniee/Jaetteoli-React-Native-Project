@@ -19,9 +19,15 @@ import FillHeart from "../../assets/images/FillHeart";
 import Globe from "../../assets/images/Globe";
 import { useEffect, useState } from "react";
 import Header from "../../components/common/Header";
+import { useIsFocused } from "@react-navigation/native";
 
 const AfterSearch = ({ navigation, route }) => {
-  const [inputText, setInputText] = useState(route.params !== undefined ? route.params.searchText: "");
+  const [initData, setInitData] = useState([]);
+  const isFocused = useIsFocused();
+
+  const [inputText, setInputText] = useState(
+    route.params !== undefined ? route.params.searchText : ""
+  );
 
   useEffect(() => {
     if (route.params !== undefined) {
@@ -29,11 +35,35 @@ const AfterSearch = ({ navigation, route }) => {
     }
   }, [route.params]);
 
+  const handleHeartClick = (itemKey) => {
+    setInitData((prevData) =>
+      prevData.map((item) =>
+        item.key === itemKey ? { ...item, like: !item.like } : item
+      )
+    );
+
+    // Here, you can make the API call using axios.
+    // For demonstration purposes, let's just log the API call.
+    console.log("API 호출: ", itemKey);
+  };
+
+  useEffect(() => {
+    if (isFocused) {
+      // 구독 가게 목록 api 호출
+      console.log("검색 가게 목록 api 호출");
+      setInitData(searchResultData);
+    }
+  }, [isFocused]);
+
   const handleSubmit = () => {
     // 결과 화면으로 이동하면서 입력된 텍스트를 전달
     navigation.navigate("BeforeSearch", {
       searchText: inputText,
     });
+  };
+
+  const moveToDetailStore = () => {
+    navigation.navigate("StoreDetailPage");
   };
 
   return (
@@ -58,14 +88,14 @@ const AfterSearch = ({ navigation, route }) => {
           {inputText === "" ? (
             <Text style={styles.searchInputContainerLightGray}>검색하기</Text>
           ) : (
-            <Text style={styles.searchInputContainer} >{inputText}</Text>
+            <Text style={styles.searchInputContainer}>{inputText}</Text>
           )}
         </View>
       </Pressable>
       {/* 목록 */}
       <View style={styles.searchResultContainer}>
         <FlatList
-          data={searchResultData}
+          data={initData}
           scrollEnabled={true}
           showsVerticalScrollIndicator={true}
           renderItem={({ item, index }) => {
@@ -78,47 +108,53 @@ const AfterSearch = ({ navigation, route }) => {
               star = <FontAwesome name="star-o" style={styles.star} />;
             }
             return (
-              <View index={index} style={styles.searchItemContainer}>
-                <View style={styles.imgContainer}>
-                  <View style={styles.firstImgContiner}>
-                    <Image
-                      source={require("../../components/orderhistory/dummy/image1.png")}
-                      resizeMode="stretch"
-                      style={styles.firstImg}
-                    />
-                  </View>
-                  <View style={styles.rightContiner}>
-                    <View style={styles.secondImgContiner}>
+              <Pressable onPress={moveToDetailStore}>
+                <View index={index} style={styles.searchItemContainer}>
+                  <View style={styles.imgContainer}>
+                    <View style={styles.firstImgContiner}>
                       <Image
-                        source={require("../../components/orderhistory/dummy/image2.png")}
+                        source={require("../../components/orderhistory/dummy/image1.png")}
                         resizeMode="stretch"
-                        style={styles.secondImg}
+                        style={styles.firstImg}
                       />
                     </View>
-                    <View style={styles.thirdImgContainer}>
-                      <Image
-                        source={require("../../components/orderhistory/dummy/image4.png")}
-                        resizeMode="stretch"
-                        style={styles.thirdImg}
-                      />
+                    <View style={styles.rightContiner}>
+                      <View style={styles.secondImgContiner}>
+                        <Image
+                          source={require("../../components/orderhistory/dummy/image2.png")}
+                          resizeMode="stretch"
+                          style={styles.secondImg}
+                        />
+                      </View>
+                      <View style={styles.thirdImgContainer}>
+                        <Image
+                          source={require("../../components/orderhistory/dummy/image4.png")}
+                          resizeMode="stretch"
+                          style={styles.thirdImg}
+                        />
+                      </View>
                     </View>
                   </View>
-                </View>
-                <View style={styles.resultBottomContainer}>
-                  <View>
-                    <View style={styles.menuContainer}>
-                      <Text style={styles.menu}>{item.name}</Text>
-                      {star}
-                      <Text style={styles.rating}>{item.rating}</Text>
+                  <View style={styles.resultBottomContainer}>
+                    <View>
+                      <View style={styles.menuContainer}>
+                        <Text style={styles.menu}>{item.name}</Text>
+                        {star}
+                        <Text style={styles.rating}>{item.rating}</Text>
+                      </View>
+                      <View style={styles.locationContainer}>
+                        <Location />
+                        <Text>{item.distance}</Text>
+                      </View>
                     </View>
-                    <View style={styles.locationContainer}>
-                      <Location />
-                      <Text>{item.distance}</Text>
-                    </View>
+                    <TouchableOpacity
+                      onPress={() => handleHeartClick(item.key)}
+                    >
+                      {item.like ? <FillHeart /> : <EmptyHeart />}
+                    </TouchableOpacity>
                   </View>
-                  <View>{item.like ? <FillHeart /> : <EmptyHeart />}</View>
                 </View>
-              </View>
+              </Pressable>
             );
           }}
         />
@@ -159,13 +195,13 @@ const styles = StyleSheet.create({
     marginLeft: 26,
     marginVertical: 10,
   },
-  searchInputContainerLightGray:{
+  searchInputContainerLightGray: {
     flex: 1,
     paddingLeft: 10,
     fontFamily: "Pretendard",
     fontSize: 15,
     fontWeight: 500,
-    color:Color.lightGray
+    color: Color.lightGray,
   },
   searchInputContainer: {
     flex: 1,

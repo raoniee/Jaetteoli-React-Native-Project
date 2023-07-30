@@ -1,16 +1,13 @@
-import { Image, StyleSheet, Text } from "react-native";
+import { Image, Pressable, StyleSheet, Text } from "react-native";
 import Color from "../../assets/colors/Color";
 import MapMarker from "../../assets/images/MapMarker";
 
 const CustomMarker = ({title}) => (
-  <>
+
+  <Pressable >
     <Text style={styles.text}>{title}</Text>
-    {/* <Image
-      source={require("../../assets/images/marker.png")}
-      style={{ width: 30, height: 30, resizeMode: "contain" }}
-    /> */}
     <MapMarker />
-  </>
+  </Pressable>
 );
 
 const styles = StyleSheet.create({

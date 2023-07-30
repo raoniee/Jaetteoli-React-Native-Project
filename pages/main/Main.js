@@ -1,15 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Modal,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Header from "../../components/common/Header";
 import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
-import MapView, { Circle } from "react-native-maps";
+import MapView from "react-native-maps";
 import CustomMarker from "../../components/map/CustomMarker";
 import { markerData } from "../../components/map/dummy/dummy";
 import * as Location from "expo-location";
@@ -17,10 +10,11 @@ import _ from "lodash"; // lodash 라이브러리 가져오기
 import Color from "../../assets/colors/Color";
 import Gps from "../../assets/images/Gps";
 import { useNavigation } from "@react-navigation/native";
+import LocationImg from "../../assets/images/Location";
+import List from "../../assets/images/List";
+import { subscribeData } from "../../components/subscribe/dummy/dummy";
+import MainStore from "../../components/main/MainStore";
 
-
-//목록보기 누르면 그 버튼아래 컴포넌트들이 보이고 누르면 목록보기 화면으로 이동해야함('Stores')
-//Gps 버튼 누르면 내 위치로 이동해야함(구현완료)
 const Main = ({ route }) => {
   const navigation = useNavigation();
   const [currentAddress, setCurrentAddress] = useState(
@@ -30,7 +24,13 @@ const Main = ({ route }) => {
     latitude: 35.538377,
     longitude: 129.31136,
   });
+  const [listClicked, setListClicked] = useState(false);
   const mapViewRef = useRef(null);
+
+  useEffect(() => {
+    //지도 마커 찍기 api호출
+    console.log("지도 마커 찍기 api호출");
+  }, []);
 
   const getCurrentAddress = async (latitude, longitude) => {
     try {
@@ -76,9 +76,15 @@ const Main = ({ route }) => {
       latitude: region.latitude,
       longitude: region.longitude,
     };
-    setCurrentLocation(center);
-    debouncedGetCurrentAddress(center.latitude, center.longitude);
+
+    // setCurrentLocation(center);
+    // debouncedGetCurrentAddress(center.latitude, center.longitude);
   };
+
+  const lookStoreCloseHandler = () => {
+    setListClicked(false);
+  };
+
   // 화면 중심에 위치한 마커의 위도, 경도 정보 (쓸 필요있으면)
   const centerMarkerCoordinate = {
     latitude: currentLocation.latitude,
@@ -95,21 +101,37 @@ const Main = ({ route }) => {
         mapViewRef.current.animateToRegion({
           latitude,
           longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001,
         });
+        setCurrentLocation({ latitude, longitude }); // Update the state to reflect the new location
+        getCurrentAddress(latitude, longitude); // Update the address based on the new location
       }
     } catch (error) {
       console.error("현재 위치를 가져오는 중 오류 발생:", error);
     }
   };
 
+  const clickedStoreHandler = () => {
+    setListClicked(true);
+  };
+
+  const moveToStores = () => {
+    navigation.navigate("Stores", { currentAddress: currentAddress });
+  };
+
+  const moveToDetailStore = () => {
+    //가게 상세-메뉴로 이동(가게 id넘겨줘야함)
+    navigation.navigate("StoreDetailPage", { id: "hi" });
+  };
+
   return (
     <SafeAreaView style={styles.screen}>
       <Header left={1} right={1} title="오늘의 떨이" />
       {/* 주소 */}
-      <View>
-        <Text>{currentAddress}</Text>
+      <View style={styles.myAddressContainer}>
+        <LocationImg stroke={Color.darkPurple} />
+        <Text style={styles.addressText}>{currentAddress}</Text>
       </View>
       <MapView
         ref={mapViewRef}
@@ -122,6 +144,8 @@ const Main = ({ route }) => {
         }}
         provider={PROVIDER_GOOGLE}
         onRegionChangeComplete={handleRegionChangeComplete}
+        onRegionChange={lookStoreCloseHandler}
+        showsUserLocation
       >
         {markerData.map((item) => (
           <Marker
@@ -130,30 +154,52 @@ const Main = ({ route }) => {
               latitude: item.latitude,
               longitude: item.longitude,
             }}
+            onPress={clickedStoreHandler}
           >
             <CustomMarker title={item.title} />
           </Marker>
         ))}
       </MapView>
-      <View pointerEvents="none" style={styles.addressContainer}>
-        <CustomMarker title="" />
-      </View>
-      <Pressable
-        onPress={moveMyPoint}
-        android_ripple={{ color: Color.lightPurple }}
-        style={({ pressed }) => pressed && styles.pressedItem}
-      >
-        <View
-          style={[
-            styles.myPointContainer,
-            Platform.OS === "ios"
-              ? styles.shadowSettiongIOS
-              : styles.shadowSettingAndroid,
-          ]}
-        >
-          <Gps stroke={Color.darkGray} />
+      <View style={styles.bottomContainer}>
+        <View style={styles.listGpsContainer}>
+          <Pressable
+            onPress={moveToStores}
+            android_ripple={{ color: Color.lightPurple }}
+            style={({ pressed }) => pressed && styles.pressedItem}
+          >
+            <View
+              style={[
+                styles.lookListContainer,
+                Platform.OS === "ios"
+                  ? styles.shadowSettiongIOS
+                  : styles.shadowSettingAndroid,
+              ]}
+            >
+              <List stroke={Color.purple} />
+              <Text style={styles.listText}>목록보기</Text>
+            </View>
+          </Pressable>
+          <Pressable
+            onPress={moveMyPoint}
+            android_ripple={{ color: Color.lightPurple }}
+            style={({ pressed }) => pressed && styles.pressedItem}
+          >
+            <View
+              style={[
+                styles.myPointContainer,
+                Platform.OS === "ios"
+                  ? styles.shadowSettiongIOS
+                  : styles.shadowSettingAndroid,
+              ]}
+            >
+              <Gps stroke={Color.darkGray} />
+            </View>
+          </Pressable>
         </View>
-      </Pressable>
+        {listClicked && (
+          <MainStore item={subscribeData[0]} onPress={moveToDetailStore} />
+        )}
+      </View>
     </SafeAreaView>
   );
 };
@@ -167,24 +213,35 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
-  addressText: {
-    padding: 16,
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  myPointContainer: {
+  myAddressContainer: {
     position: "absolute",
-    bottom: 220,
-    zIndex: 100,
-    marginBottom: 15,
-    right: 0,
-    marginRight: 20,
-    width: 45,
+    top: 120,
+    flexDirection: "row",
+    zIndex: 200,
+    left: 16,
+    right: 16,
     height: 45,
+    paddingVertical: 10,
     backgroundColor: Color.white,
-    justifyContent: "center",
+    borderRadius: 30,
     alignItems: "center",
-    borderRadius: 22.5,
+    paddingLeft: 26,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.12,
+        shadowRadius: 6,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
+  },
+  addressText: {
+    marginLeft: 10,
+    fontFamily: "Pretendard-Medium",
+    fontSize: 15,
   },
   addressContainer: {
     position: "absolute",
@@ -208,13 +265,6 @@ const styles = StyleSheet.create({
   pressedItem: {
     opacity: 0.75,
   },
-  addressText: {
-    marginTop: 50,
-    marginLeft: 40,
-    marginBottom: 35,
-    fontFamily: "Pretendard-Medium",
-    fontSize: 16,
-  },
   settingContainer: {
     marginHorizontal: 20,
     backgroundColor: Color.darkPurple,
@@ -237,5 +287,39 @@ const styles = StyleSheet.create({
   },
   shadowSettingAndroid: {
     elevation: 6,
+  },
+  bottomContainer: {
+    position: "relative",
+    bottom: 100,
+  },
+  myPointContainer: {
+    position: "absolute",
+    top: 0,
+    right: 16,
+    width: 45,
+    height: 45,
+    backgroundColor: Color.white,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 22.5,
+  },
+  lookListContainer: {
+    position: "absolute",
+    top: 0,
+    left: 16,
+    flexDirection: "row",
+    height: 45,
+    backgroundColor: Color.white,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 35,
+    paddingVertical: 15,
+    paddingHorizontal: 16,
+  },
+  listText: {
+    fontFamily: "Pretendard-Medium",
+    fontSize: 15,
+    color: Color.black,
+    marginLeft: 5,
   },
 });
