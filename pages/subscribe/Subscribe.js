@@ -16,8 +16,34 @@ import EmptyHeart from "../../assets/images/EmptyHeart";
 import { subscribeData } from "../../components/subscribe/dummy/dummy";
 import Color from "../../assets/colors/Color";
 import Header from "../../components/common/Header";
+import { useEffect, useState } from "react";
+import { useIsFocused } from "@react-navigation/native";
 
 const Subscribe = () => {
+  const [initData, setInitData] = useState([]);
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      // 구독 가게 목록 api 호출
+      console.log("구독 가게 목록 api 호출");
+      setInitData(subscribeData);
+    }
+  }, [isFocused]);
+
+  const handleHeartClick = (itemKey) => {
+    setInitData((prevData) =>
+      prevData.map((item) =>
+        item.key === itemKey ? { ...item, like: !item.like } : item
+      )
+    );
+
+    // Here, you can make the API call using axios.
+    // For demonstration purposes, let's just log the API call.
+    console.log("API 호출: ", itemKey);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* 목록 */}
@@ -33,7 +59,7 @@ const Subscribe = () => {
         </View>
 
         <FlatList
-          data={subscribeData}
+          data={initData}
           scrollEnabled={true}
           showsVerticalScrollIndicator={true}
           renderItem={({ item, index }) => {
@@ -84,7 +110,9 @@ const Subscribe = () => {
                       <Text>{item.distance}</Text>
                     </View>
                   </View>
-                  <View>{item.like ? <FillHeart /> : <EmptyHeart />}</View>
+                  <TouchableOpacity onPress={() => handleHeartClick(item.key)}>
+                    {item.like ? <FillHeart /> : <EmptyHeart />}
+                  </TouchableOpacity>
                 </View>
               </View>
             );

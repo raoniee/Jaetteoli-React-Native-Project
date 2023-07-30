@@ -33,6 +33,11 @@ const BeforeSeach = ({ navigation, route }) => {
     }
   }, [route.params]);
 
+  useEffect(() => {
+    //검색기록, 검색어 순위 api호출
+    console.log('검색기록, 검색어 순위 api호출')
+  }, [])
+
   const moveToAfterSearch = () => {
     navigation.popToTop(); // 스택에 쌓인 모든 화면을 제거하고 AfterSearch 화면으로 이동
     navigation.navigate("AfterSearch", { searchText: inputText });

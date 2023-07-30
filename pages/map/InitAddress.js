@@ -28,6 +28,7 @@ const InitAddress = () => {
   };
 
   const moveToSelectMap = () => {
+    //api 호출하기
     navigation.navigate("MapFind");
   }
 

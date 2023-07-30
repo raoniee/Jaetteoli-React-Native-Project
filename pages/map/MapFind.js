@@ -4,7 +4,6 @@ import Header from "../../components/common/Header";
 import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import MapView, { Circle } from "react-native-maps";
 import CustomMarker from "../../components/map/CustomMarker";
-import { markerData } from "../../components/map/dummy/dummy";
 import * as Location from "expo-location";
 import _ from "lodash"; // lodash 라이브러리 가져오기
 import Color from "../../assets/colors/Color";
@@ -95,6 +94,7 @@ const MapFind = () => {
   };
 
   const moveToHome = () => {
+    //api호출하기
     //home이동
     navigation.navigate('Main', { currentAddress: currentAddress })
   };

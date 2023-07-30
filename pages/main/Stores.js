@@ -18,9 +18,21 @@ import FillHeart from "../../assets/images/FillHeart";
 import Globe from "../../assets/images/Globe";
 import { useEffect, useState } from "react";
 import Header from "../../components/common/Header";
+import { useIsFocused } from "@react-navigation/native";
 
 const Stores = ({ navigation, route }) => {
-  const [inputText, setInputText] = useState(route.params !== undefined ? route.params.currentAddress: "");
+  const [inputText, setInputText] = useState(
+    route.params !== undefined ? route.params.currentAddress : ""
+  );
+  const [initData, setInitData] = useState([]);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      console.log("가게 목록 api 호출");
+      setInitData(searchResultData);
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     if (route.params !== undefined) {
@@ -28,15 +40,23 @@ const Stores = ({ navigation, route }) => {
     }
   }, [route.params]);
 
-  const handleSubmit = () => {
-    navigation.navigate("BeforeSearch", {
-      searchText: inputText,
+  const moveToMap = () => {
+    navigation.navigate("Main", {
+      currentAddress: route.params.currentAddress,
     });
   };
 
-  const moveToMap = () => {
-    navigation.navigate('Main') //메인화면으로 바꾸기
-  }
+  const handleHeartClick = (itemKey) => {
+    setInitData((prevData) =>
+      prevData.map((item) =>
+        item.key === itemKey ? { ...item, like: !item.like } : item
+      )
+    );
+
+    // Here, you can make the API call using axios.
+    // For demonstration purposes, let's just log the API call.
+    console.log("API 호출: ", itemKey);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -48,7 +68,6 @@ const Stores = ({ navigation, route }) => {
         color={Color.lightGray}
       />
       <Pressable
-        onPress={handleSubmit}
         android_ripple={{ color: Color.lightPurple }}
         style={({ pressed }) => pressed && styles.pressedItem}
       >
@@ -59,14 +78,14 @@ const Stores = ({ navigation, route }) => {
           {inputText === "" ? (
             <Text style={styles.storeInputContainerLightGray}>검색하기</Text>
           ) : (
-            <Text style={styles.storeInputContainer} >{inputText}</Text>
+            <Text style={styles.storeInputContainer}>{inputText}</Text>
           )}
         </View>
       </Pressable>
       {/* 목록 */}
       <View style={styles.storeResultContainer}>
         <FlatList
-          data={searchResultData}
+          data={initData}
           scrollEnabled={true}
           showsVerticalScrollIndicator={true}
           renderItem={({ item, index }) => {
@@ -117,7 +136,9 @@ const Stores = ({ navigation, route }) => {
                       <Text>{item.distance}</Text>
                     </View>
                   </View>
-                  <View>{item.like ? <FillHeart /> : <EmptyHeart />}</View>
+                  <TouchableOpacity onPress={() => handleHeartClick(item.key)}>
+                    {item.like ? <FillHeart /> : <EmptyHeart />}
+                  </TouchableOpacity>
                 </View>
               </View>
             );
@@ -160,13 +181,13 @@ const styles = StyleSheet.create({
     marginLeft: 26,
     marginVertical: 10,
   },
-  storeInputContainerLightGray:{
+  storeInputContainerLightGray: {
     flex: 1,
     paddingLeft: 10,
     fontFamily: "Pretendard",
     fontSize: 15,
     fontWeight: 500,
-    color:Color.lightGray
+    color: Color.lightGray,
   },
   storeInputContainer: {
     flex: 1,
