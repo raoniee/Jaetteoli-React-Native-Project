@@ -1,13 +1,46 @@
 import { FlatList, SafeAreaView, StyleSheet, Switch, Text, View, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import * as Notifications from 'expo-notifications';
 import Color from '../../assets/colors/Color';
 import Alram from '../../assets/images/Alram';
 import Header from '../../components/common/Header';
 
 const AlramList = () => {
 
+    const checkNotificationPermission = async () => {
+        const { status } = await Notifications.getPermissionsAsync();
+        if (status === 'granted') {
+            setIsEnabled(true)
+            console.log('ㅇㅋ')
+        } else if (status === 'denied') {
+            setIsEnabled(false)
+            console.log('ㄴㄴ')
+        }
+    };
+
+    useEffect(() => {
+        checkNotificationPermission();
+    }, []);
+
     const [isEnabled, setIsEnabled] = useState(true);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+    const toggleSwitch = async () => {
+        if (isEnabled) {
+            // 알림 권한 해제하기
+            if (Platform.OS === 'ios') {
+                await Notifications.setNotificationCategoryAsync('default'); // 기본 알림 카테고리 사용
+            } else if (Platform.OS === 'android') {
+                await Notifications.setNotificationChannelAsync('default', {
+                    name: 'Default',
+                    importance: Notifications.AndroidImportance.DEFAULT,
+                });
+            }
+        } else {
+            // 알림 권한 요청하기
+            await Notifications.requestPermissionsAsync();
+        }
+        checkNotificationPermission(); // 권한 상태 다시 확인
+    };
 
     // 알람 데이터
     const [alrams, setAlrams] = useState([
@@ -39,7 +72,7 @@ const AlramList = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Header title='알림센터'/>
+            <Header title='알림센터' />
             <FlatList
                 data={alrams}
                 renderItem={renderItem}
@@ -84,6 +117,7 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%',
+        backgroundColor: Color.white,
     },
     pushAlramList: {
         paddingLeft: 16,
