@@ -160,42 +160,40 @@ const Main = ({ route }) => {
           </Marker>
         ))}
       </MapView>
-      <View style={styles.bottomContainer}>
-        <View style={styles.listGpsContainer}>
-          <Pressable
-            onPress={moveToStores}
-            android_ripple={{ color: Color.lightPurple }}
-            style={({ pressed }) => pressed && styles.pressedItem}
+      <View style={listClicked ? styles.totalBottomContainer : styles.bottomContainer}>
+        <Pressable
+          onPress={moveToStores}
+          android_ripple={{ color: Color.lightPurple }}
+          style={({ pressed }) => pressed && styles.pressedItem}
+        >
+          <View
+            style={[
+              styles.lookListContainer,
+              Platform.OS === "ios"
+                ? styles.shadowSettiongIOS
+                : styles.shadowSettingAndroid,
+            ]}
           >
-            <View
-              style={[
-                styles.lookListContainer,
-                Platform.OS === "ios"
-                  ? styles.shadowSettiongIOS
-                  : styles.shadowSettingAndroid,
-              ]}
-            >
-              <List stroke={Color.purple} />
-              <Text style={styles.listText}>목록보기</Text>
-            </View>
-          </Pressable>
-          <Pressable
-            onPress={moveMyPoint}
-            android_ripple={{ color: Color.lightPurple }}
-            style={({ pressed }) => pressed && styles.pressedItem}
+            <List stroke={Color.purple} />
+            <Text style={styles.listText}>목록보기</Text>
+          </View>
+        </Pressable>
+        <Pressable
+          onPress={moveMyPoint}
+          android_ripple={{ color: Color.lightPurple }}
+          style={({ pressed }) => pressed && styles.pressedItem}
+        >
+          <View
+            style={[
+              styles.myPointContainer,
+              Platform.OS === "ios"
+                ? styles.shadowSettiongIOS
+                : styles.shadowSettingAndroid,
+            ]}
           >
-            <View
-              style={[
-                styles.myPointContainer,
-                Platform.OS === "ios"
-                  ? styles.shadowSettiongIOS
-                  : styles.shadowSettingAndroid,
-              ]}
-            >
-              <Gps stroke={Color.darkGray} />
-            </View>
-          </Pressable>
-        </View>
+            <Gps stroke={Color.darkGray} />
+          </View>
+        </Pressable>
         {listClicked && (
           <MainStore item={subscribeData[0]} onPress={moveToDetailStore} />
         )}
@@ -290,7 +288,11 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     position: "relative",
-    bottom: 100,
+    bottom: 120,
+  },
+  totalBottomContainer:{
+    position: "relative",
+    bottom: 370,
   },
   myPointContainer: {
     position: "absolute",

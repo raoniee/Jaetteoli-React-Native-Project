@@ -5,6 +5,7 @@ import Color from "../../assets/colors/Color";
 import SearchImg from "../../assets/images/SearchImg";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../../components/common/Header";
+import AddressHeader from "../../components/map/AddressHeader";
 
 const InitAddress = () => {
   const navigation = useNavigation();
@@ -12,7 +13,7 @@ const InitAddress = () => {
 
   // 우편 서비스 화면 표시/숨김 상태를 토글
   const togglePostcode = () => {
-    setShowPostcode(!showPostcode);
+    setShowPostcode((prev)=>!prev);
   };
 
   // 우편 서비스에서 주소를 선택했을 때
@@ -36,7 +37,7 @@ const InitAddress = () => {
     <SafeAreaView style={styles.container}>
       {!showPostcode && (
         <View>
-          <Header left={1} title="주소설정" />
+          <Header left={0} right={0} title="주소설정" />
           <View style={styles.searchOuterContainer}>
             <Pressable onPress={togglePostcode}>
               <View style={styles.searchContainer}>
@@ -85,6 +86,7 @@ const InitAddress = () => {
       {/* 우편 서비스 화면 */}
       {showPostcode && (
         <View>
+          <AddressHeader title='주소설정' onLeftPress={togglePostcode}/>
           <DaumPostcode
             style={styles.postcode}
             onSelected={handleAddressSelected}

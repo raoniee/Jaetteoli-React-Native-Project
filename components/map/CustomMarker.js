@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
         fontFamily:'Pretendard',
         fontSize:14,
         textAlign:'center',
-        color: Color.purple
+        color: Color.purple,
     }
 })
 

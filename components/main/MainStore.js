@@ -17,45 +17,47 @@ const MainStore = ({ item, onPress }) => {
 
   return (
     <Pressable onPress={onPress}>
-      <View style={styles.subscribeItemContainer}>
-        <View style={styles.imgContainer}>
-          <View style={styles.firstImgContiner}>
-            <Image
-              source={require("../orderhistory/dummy/image1.png")}
-              resizeMode="stretch"
-              style={styles.firstImg}
-            />
-          </View>
-          <View style={styles.rightContiner}>
-            <View style={styles.secondImgContiner}>
+      <View style={styles.container}>
+        <View style={styles.subscribeItemContainer}>
+          <View style={styles.imgContainer}>
+            <View style={styles.firstImgContiner}>
               <Image
-                source={require("../orderhistory/dummy/image2.png")}
+                source={require("../orderhistory/dummy/image1.png")}
                 resizeMode="stretch"
-                style={styles.secondImg}
+                style={styles.firstImg}
               />
             </View>
-            <View style={styles.thirdImgContainer}>
-              <Image
-                source={require("../orderhistory/dummy/image4.png")}
-                resizeMode="stretch"
-                style={styles.thirdImg}
-              />
+            <View style={styles.rightContiner}>
+              <View style={styles.secondImgContiner}>
+                <Image
+                  source={require("../orderhistory/dummy/image2.png")}
+                  resizeMode="stretch"
+                  style={styles.secondImg}
+                />
+              </View>
+              <View style={styles.thirdImgContainer}>
+                <Image
+                  source={require("../orderhistory/dummy/image4.png")}
+                  resizeMode="stretch"
+                  style={styles.thirdImg}
+                />
+              </View>
             </View>
           </View>
-        </View>
-        <View style={styles.subscribeBottomContainer}>
-          <View>
-            <View style={styles.menuContainer}>
-              <Text style={styles.menu}>{item.name}</Text>
-              {star}
-              <Text style={styles.rating}>{item.rating}</Text>
+          <View style={styles.subscribeBottomContainer}>
+            <View>
+              <View style={styles.menuContainer}>
+                <Text style={styles.menu}>{item.name}</Text>
+                {star}
+                <Text style={styles.rating}>{item.rating}</Text>
+              </View>
+              <View style={styles.locationContainer}>
+                <Location />
+                <Text>{item.distance}</Text>
+              </View>
             </View>
-            <View style={styles.locationContainer}>
-              <Location />
-              <Text>{item.distance}</Text>
-            </View>
+            <View>{item.like ? <FillHeart /> : <EmptyHeart />}</View>
           </View>
-          <View>{item.like ? <FillHeart /> : <EmptyHeart />}</View>
         </View>
       </View>
     </Pressable>
@@ -63,24 +65,26 @@ const MainStore = ({ item, onPress }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems:'center',
+    marginTop:10
+
+  },
   subscribeItemContainer: {
     position: "absolute",
     top: 50,
-    left: 16,
-    zIndex: 200,
-    // marginHorizontal: 26,
-    marginRight: 50,
-    width: "80%",
-    backgroundColor: Color.black,
-    borderWidth: 1,
-    height: 100,
-    // marginBottom: 20,
+    width: "88%",
+    backgroundColor: Color.white,
+    borderRadius: 30,
   },
   imgContainer: {
     flexDirection: "row",
   },
   firstImgContiner: {
-    width: 244,
+    // width: 244,
+    flex: 4,
     height: 170,
     marginRight: 2,
   },
@@ -91,7 +95,7 @@ const styles = StyleSheet.create({
   },
   rightContiner: {
     flexDirection: "column",
-    flex: 1,
+    flex: 2,
   },
   secondImgContiner: {
     flex: 1,
