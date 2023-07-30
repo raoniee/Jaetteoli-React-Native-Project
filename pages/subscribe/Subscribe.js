@@ -2,6 +2,7 @@ import {
   FlatList,
   Image,
   Platform,
+  Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -17,10 +18,11 @@ import { subscribeData } from "../../components/subscribe/dummy/dummy";
 import Color from "../../assets/colors/Color";
 import Header from "../../components/common/Header";
 import { useEffect, useState } from "react";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 const Subscribe = () => {
   const [initData, setInitData] = useState([]);
+  const navigation = useNavigation()
 
   const isFocused = useIsFocused();
 
@@ -42,6 +44,10 @@ const Subscribe = () => {
     // Here, you can make the API call using axios.
     // For demonstration purposes, let's just log the API call.
     console.log("API 호출: ", itemKey);
+  };
+
+  const moveToDetailStore = () => {
+    navigation.navigate("StoreDetailPage");
   };
 
   return (
@@ -72,49 +78,53 @@ const Subscribe = () => {
               star = <FontAwesome name="star-o" style={styles.star} />;
             }
             return (
-              <View index={index} style={styles.subscribeItemContainer}>
-                <View style={styles.imgContainer}>
-                  <View style={styles.firstImgContiner}>
-                    <Image
-                      source={require("../../components/orderhistory/dummy/image1.png")}
-                      resizeMode="stretch"
-                      style={styles.firstImg}
-                    />
-                  </View>
-                  <View style={styles.rightContiner}>
-                    <View style={styles.secondImgContiner}>
+              <Pressable onPress={moveToDetailStore}>
+                <View index={index} style={styles.subscribeItemContainer}>
+                  <View style={styles.imgContainer}>
+                    <View style={styles.firstImgContiner}>
                       <Image
-                        source={require("../../components/orderhistory/dummy/image2.png")}
+                        source={require("../../components/orderhistory/dummy/image1.png")}
                         resizeMode="stretch"
-                        style={styles.secondImg}
+                        style={styles.firstImg}
                       />
                     </View>
-                    <View style={styles.thirdImgContainer}>
-                      <Image
-                        source={require("../../components/orderhistory/dummy/image4.png")}
-                        resizeMode="stretch"
-                        style={styles.thirdImg}
-                      />
+                    <View style={styles.rightContiner}>
+                      <View style={styles.secondImgContiner}>
+                        <Image
+                          source={require("../../components/orderhistory/dummy/image2.png")}
+                          resizeMode="stretch"
+                          style={styles.secondImg}
+                        />
+                      </View>
+                      <View style={styles.thirdImgContainer}>
+                        <Image
+                          source={require("../../components/orderhistory/dummy/image4.png")}
+                          resizeMode="stretch"
+                          style={styles.thirdImg}
+                        />
+                      </View>
                     </View>
                   </View>
-                </View>
-                <View style={styles.subscribeBottomContainer}>
-                  <View>
-                    <View style={styles.menuContainer}>
-                      <Text style={styles.menu}>{item.name}</Text>
-                      {star}
-                      <Text style={styles.rating}>{item.rating}</Text>
+                  <View style={styles.subscribeBottomContainer}>
+                    <View>
+                      <View style={styles.menuContainer}>
+                        <Text style={styles.menu}>{item.name}</Text>
+                        {star}
+                        <Text style={styles.rating}>{item.rating}</Text>
+                      </View>
+                      <View style={styles.locationContainer}>
+                        <Location />
+                        <Text>{item.distance}</Text>
+                      </View>
                     </View>
-                    <View style={styles.locationContainer}>
-                      <Location />
-                      <Text>{item.distance}</Text>
-                    </View>
+                    <TouchableOpacity
+                      onPress={() => handleHeartClick(item.key)}
+                    >
+                      {item.like ? <FillHeart /> : <EmptyHeart />}
+                    </TouchableOpacity>
                   </View>
-                  <TouchableOpacity onPress={() => handleHeartClick(item.key)}>
-                    {item.like ? <FillHeart /> : <EmptyHeart />}
-                  </TouchableOpacity>
                 </View>
-              </View>
+              </Pressable>
             );
           }}
         />

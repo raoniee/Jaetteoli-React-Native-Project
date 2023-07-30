@@ -58,6 +58,10 @@ const Stores = ({ navigation, route }) => {
     console.log("API 호출: ", itemKey);
   };
 
+  const moveToDetailStore = () => {
+    navigation.navigate('StoreDetailPage')
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -83,6 +87,7 @@ const Stores = ({ navigation, route }) => {
         </View>
       </Pressable>
       {/* 목록 */}
+
       <View style={styles.storeResultContainer}>
         <FlatList
           data={initData}
@@ -98,49 +103,53 @@ const Stores = ({ navigation, route }) => {
               star = <FontAwesome name="star-o" style={styles.star} />;
             }
             return (
-              <View index={index} style={styles.storeItemContainer}>
-                <View style={styles.imgContainer}>
-                  <View style={styles.firstImgContiner}>
-                    <Image
-                      source={require("../../components/orderhistory/dummy/image1.png")}
-                      resizeMode="stretch"
-                      style={styles.firstImg}
-                    />
-                  </View>
-                  <View style={styles.rightContiner}>
-                    <View style={styles.secondImgContiner}>
+              <Pressable onPress={moveToDetailStore}>
+                <View index={index} style={styles.storeItemContainer}>
+                  <View style={styles.imgContainer}>
+                    <View style={styles.firstImgContiner}>
                       <Image
-                        source={require("../../components/orderhistory/dummy/image2.png")}
+                        source={require("../../components/orderhistory/dummy/image1.png")}
                         resizeMode="stretch"
-                        style={styles.secondImg}
+                        style={styles.firstImg}
                       />
                     </View>
-                    <View style={styles.thirdImgContainer}>
-                      <Image
-                        source={require("../../components/orderhistory/dummy/image4.png")}
-                        resizeMode="stretch"
-                        style={styles.thirdImg}
-                      />
+                    <View style={styles.rightContiner}>
+                      <View style={styles.secondImgContiner}>
+                        <Image
+                          source={require("../../components/orderhistory/dummy/image2.png")}
+                          resizeMode="stretch"
+                          style={styles.secondImg}
+                        />
+                      </View>
+                      <View style={styles.thirdImgContainer}>
+                        <Image
+                          source={require("../../components/orderhistory/dummy/image4.png")}
+                          resizeMode="stretch"
+                          style={styles.thirdImg}
+                        />
+                      </View>
                     </View>
                   </View>
-                </View>
-                <View style={styles.resultBottomContainer}>
-                  <View>
-                    <View style={styles.menuContainer}>
-                      <Text style={styles.menu}>{item.name}</Text>
-                      {star}
-                      <Text style={styles.rating}>{item.rating}</Text>
+                  <View style={styles.resultBottomContainer}>
+                    <View>
+                      <View style={styles.menuContainer}>
+                        <Text style={styles.menu}>{item.name}</Text>
+                        {star}
+                        <Text style={styles.rating}>{item.rating}</Text>
+                      </View>
+                      <View style={styles.locationContainer}>
+                        <Location />
+                        <Text>{item.distance}</Text>
+                      </View>
                     </View>
-                    <View style={styles.locationContainer}>
-                      <Location />
-                      <Text>{item.distance}</Text>
-                    </View>
+                    <TouchableOpacity
+                      onPress={() => handleHeartClick(item.key)}
+                    >
+                      {item.like ? <FillHeart /> : <EmptyHeart />}
+                    </TouchableOpacity>
                   </View>
-                  <TouchableOpacity onPress={() => handleHeartClick(item.key)}>
-                    {item.like ? <FillHeart /> : <EmptyHeart />}
-                  </TouchableOpacity>
                 </View>
-              </View>
+              </Pressable>
             );
           }}
         />

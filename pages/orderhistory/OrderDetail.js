@@ -48,6 +48,7 @@ const OrderDetail = () => {
           <View style={styles.storeInnerContainer}>
             <View>
               <Pressable
+                onPress={moveToDetailStore}
                 android_ripple={{ color: Color.lightPurple }}
                 style={({ pressed }) => pressed && styles.pressedItem}
               >
