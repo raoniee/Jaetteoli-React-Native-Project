@@ -16,15 +16,21 @@ import Store from "../../assets/images/Store";
 import ArrowLineRight from "../../assets/images/ArrowLineRight";
 import { formatPriceWithCurrency } from "../../components/common/format/format";
 import Header from "../../components/common/Header";
+import { useNavigation } from "@react-navigation/native";
 
 const OrderDetail = () => {
-  const [detailData, setDetailData] = useState(orderDetailData);
+  const navigation = useNavigation();
+  const [detailData, setDetailData] = useState([]);
   useEffect(() => {
+    console.log("주문 상세 조회 api 호출");
     setDetailData(orderDetailData);
   }, []);
 
+  const moveToDetailStore = () => {
+    navigation.navigate("StoreDetailPage");
+  };
+
   const line = <View style={styles.line}></View>;
-  console.log(detailData);
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -42,6 +48,7 @@ const OrderDetail = () => {
           <View style={styles.storeInnerContainer}>
             <View>
               <Pressable
+                onPress={moveToDetailStore}
                 android_ripple={{ color: Color.lightPurple }}
                 style={({ pressed }) => pressed && styles.pressedItem}
               >
@@ -63,6 +70,7 @@ const OrderDetail = () => {
                 </View>
               </Pressable>
               <Pressable
+                onPress={moveToDetailStore}
                 android_ripple={{ color: Color.lightPurple }}
                 style={({ pressed }) => pressed && styles.pressedItem}
               >
@@ -82,7 +90,6 @@ const OrderDetail = () => {
             scrollEnabled={false}
             showsVerticalScrollIndicator={false}
             renderItem={({ item, index }) => {
-              console;
               return (
                 <View>
                   <Text style={styles.menuCountText}>
@@ -151,8 +158,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Color.white,
   },
-  bottomMargin:{
-    marginBottom:80
+  bottomMargin: {
+    marginBottom: 80,
   },
   storeOuterContainer: {
     marginTop: 15,

@@ -18,6 +18,7 @@ import IDSearch from "../../components/searchaccout/IDSearch";
 import PWSearch from "../../components/searchaccout/PWSearch";
 import GoMembership from "../../components/login/GoMembership";
 import Header from "../../components/common/Header";
+import NewPW from "../../components/searchaccout/NewPW";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HIGHT } = Dimensions.get("window");
 
@@ -68,6 +69,7 @@ export default function SearchAccunt() {
           </TouchableOpacity>
         </View>
         {option ? <IDSearch /> : <PWSearch />}
+        {/* <NewPW /> */}
       </View>
       <GoMembership />
     </SafeAreaView>

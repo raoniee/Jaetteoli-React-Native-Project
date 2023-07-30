@@ -12,12 +12,22 @@ import { orderHistoryData } from "../../components/orderhistory/dummy/dummy";
 import Close from "../../assets/images/Close";
 import Color from "../../assets/colors/Color";
 import ArrowRight from "../../assets/images/ArrowRight";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../../components/common/Header";
+import { useIsFocused } from "@react-navigation/native";
 
 const OrderHistory = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [initData, setInitData] = useState([]);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      console.log("주문 내역 목록 api 호출");
+      setInitData(orderHistoryData);
+    }
+  }, [isFocused]);
 
   const handlePressClose = (item) => {
     setSelectedItem(item);
@@ -30,12 +40,28 @@ const OrderHistory = ({ navigation }) => {
   };
 
   const yesModal = () => {
+    if (selectedItem) {
+      // 선택된 아이템을 initData에서 제거
+      setInitData((prevData) =>
+        prevData.filter((item) => item.key !== selectedItem.key)
+      );
+      //주문 내역 삭제 api 호출
+      console.log("주문 내역 삭제 api 호출");
+    }
     setModalVisible(false);
     setSelectedItem(null);
   };
 
+  const moveToDetailStore = () => {
+    navigation.navigate("StoreDetailPage");
+  };
+
   const moveOrderDetail = () => {
     navigation.navigate("OrderDetail");
+  };
+
+  const moveToWriteReview = () => {
+    navigation.navigate("WriteReview");
   };
 
   return (
@@ -50,7 +76,7 @@ const OrderHistory = ({ navigation }) => {
       <View style={styles.line} />
       <View style={styles.bottomMargin}>
         <FlatList
-          data={orderHistoryData}
+          data={initData}
           scrollEnabled={true}
           showsVerticalScrollIndicator={true}
           renderItem={({ item, index }) => {
@@ -80,6 +106,7 @@ const OrderHistory = ({ navigation }) => {
                   </View>
                   <View style={styles.textContainer}>
                     <Pressable
+                      onPress={moveToDetailStore}
                       style={({ pressed }) => pressed && styles.pressedItem}
                     >
                       <View style={styles.menuTop}>
@@ -103,6 +130,7 @@ const OrderHistory = ({ navigation }) => {
                 {/* 리뷰 */}
                 {item.review && (
                   <Pressable
+                    onPress={moveToWriteReview}
                     android_ripple={{ color: Color.lightPurple }}
                     style={({ pressed }) => pressed && styles.pressedItem}
                   >
@@ -167,8 +195,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Color.lightGray,
   },
-  bottomMargin:{
-    paddingBottom:105
+  bottomMargin: {
+    paddingBottom: 105,
   },
   orderItemContainer: {
     borderBottomWidth: 1,

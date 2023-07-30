@@ -18,7 +18,10 @@ import BeforeSeach from "./pages/search/BeforeSearch";
 import OrderDetail from "./pages/orderhistory/OrderDetail";
 import ShopBasketPage from "./pages/cart/ShopBasketPage";
 import OrderPage from "./pages/cart/OrderPage";
-import MenuDetailPage from "./pages/menuDetail/MenuDetailPage";
+import MenuDetailPage from "./pages/store/MenuDetailPage";
+import OrderCompletePage from "./pages/cart/OrderCompletePage";
+import StoreDetailPage from "./pages/store/StoreDetailPage";
+import StoreMapPage from "./pages/store/StoreMapPage";
 import ModifyMyInfo from "./pages/mypage/ModifyMyInfo";
 import AlramList from "./pages/mypage/AlramList";
 import ManageReview from "./pages/mypage/ManageReview";
@@ -26,8 +29,15 @@ import InitAddress from "./pages/map/InitAddress";
 import MapFind from "./pages/map/MapFind";
 import Stores from "./pages/main/Stores";
 import Main from "./pages/main/Main";
-import WriteReview from './pages/review/WriteReview';
-import TermsOfService from './pages/termsOfService/TermsOfService';
+import WriteReview from "./pages/review/WriteReview";
+import TermsOfService from "./pages/termsOfService/TermsOfService";
+import LoginStart from "./pages/login/LoginStart";
+import IDshow from "./pages/accountsearch/IDshow";
+import SearchAccunt from "./pages/accountsearch/SearchAccount";
+import MembershipInfo from "./pages/membership/MembershipInfo";
+import MembershipAccount from "./pages/membership/MembershipAccount";
+import MembershipEnd from "./pages/membership/MembershipEnd";
+import MembershipAgree from "./pages/membership/MembershipAgree";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -67,6 +77,9 @@ export default function App() {
           <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen name="ShopBasketPage" component={ShopBasketPage} />
           <Stack.Screen name="OrderPage" component={OrderPage} />
+          <Stack.Screen name="OrderCompletePage" component={OrderCompletePage} />
+          <Stack.Screen name="StoreDetailPage" component={StoreDetailPage} />
+          <Stack.Screen name="StoreMapPage" component={StoreMapPage} />
           <Stack.Screen name="MenuDetailPage" component={MenuDetailPage} />
           <Stack.Screen name="ModifyMyInfo" component={ModifyMyInfo} />
           <Stack.Screen name="AlramList" component={AlramList} />
@@ -76,6 +89,7 @@ export default function App() {
           <Stack.Screen name="WriteReview" component={WriteReview} />
           <Stack.Screen name="TermsOfService" component={TermsOfService} />
         </Stack.Navigator>
+        {/* <LoginStart /> */}
       </NavigationContainer>
     </>
   );
