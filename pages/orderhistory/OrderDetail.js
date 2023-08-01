@@ -14,7 +14,7 @@ import Color from "../../assets/colors/Color";
 import Phone from "../../assets/images/Phone";
 import Store from "../../assets/images/Store";
 import ArrowLineRight from "../../assets/images/ArrowLineRight";
-import { formatPriceWithCurrency } from "../../components/common/format/format";
+import { formatPriceWithCurrency } from "../../utils/format";
 import Header from "../../components/common/Header";
 import { useNavigation } from "@react-navigation/native";
 

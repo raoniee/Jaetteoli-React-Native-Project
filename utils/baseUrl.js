@@ -1,0 +1,4 @@
+export const baseUrl = "https://www.insung.shop";
+
+export const jwt =
+"eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWR4Ijo0LCJ1c2VyVHlwZSI6Ik1lcmNoYW5kaXNlciIsImlhdCI6MTY5MDU1OTIxMiwiZXhwIjoxNjkyMDMwNDQxfQ.UOn8Z5bXffyayyxtS_O_1Dj2fQdWbeovCjOBf5z9omI";
