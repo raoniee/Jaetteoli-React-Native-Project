@@ -74,9 +74,9 @@ export default function App() {
       <NavigationContainer>
         {/* NavigationContainer를 추가하여 Navigation 기능을 제공합니다. */}
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen name="InitAddress" component={InitAddress} />
           <Stack.Screen name="MapFind" component={MapFind} />
-          <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen name="ShopBasketPage" component={ShopBasketPage} />
           <Stack.Screen name="OrderPage" component={OrderPage} />
           <Stack.Screen

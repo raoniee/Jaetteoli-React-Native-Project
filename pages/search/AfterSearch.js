@@ -66,6 +66,10 @@ const AfterSearch = ({ navigation, route }) => {
     navigation.navigate("StoreDetailPage");
   };
 
+  const moveToMain = () => {
+    navigation.navigate('Main')
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       {/* 검색창 */}
@@ -158,11 +162,11 @@ const AfterSearch = ({ navigation, route }) => {
             );
           }}
         />
+        <TouchableOpacity style={styles.mapButton} onPress={moveToMain}>
+          <Globe />
+          <Text style={styles.mapButtonText}>지도보기</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.mapButton}>
-        <Globe />
-        <Text style={styles.mapButtonText}>지도보기</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -299,7 +303,7 @@ const styles = StyleSheet.create({
   mapButton: {
     flexDirection: "row",
     position: "absolute",
-    bottom: 111,
+    bottom: 20,
     left: 16,
     backgroundColor: Color.white,
     paddingVertical: 12,
