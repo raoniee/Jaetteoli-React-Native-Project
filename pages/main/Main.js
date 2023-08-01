@@ -22,13 +22,14 @@ import { baseUrl, jwt } from "../../utils/baseUrl";
 
 const Main = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [currentAddress, setCurrentAddress] = useState(""); //내 현재 주소(휴대폰 위치)
   const [currentLocation, setCurrentLocation] = useState({
     //내 현재 경위도(휴대폰 위치)
   });
   const [mapBoundaries, setMapBoundaries] = useState(null); //지도 위아래 경위도 상태
 
-  const [listClicked, setListClicked] = useState(false); //목록보기 상태
+  const [markerClicked, setMarkerClicked] = useState(false); //목록보기 상태
   const mapViewRef = useRef(null);
   const isFocused = useIsFocused();
 
@@ -153,7 +154,7 @@ const Main = () => {
   };
 
   const lookStoreCloseHandler = () => {
-    setListClicked(false);
+    setMarkerClicked(false);
   };
 
   //지도 중심을 내 휴대폰 위치로 움직이는 함수
@@ -170,6 +171,12 @@ const Main = () => {
           latitudeDelta: 0.001,
           longitudeDelta: 0.001,
         });
+        console.log(
+          "업뎃 내 휴대폰 위도 : ",
+          latitude,
+          "내 휴대폰 경도 : ",
+          longitude
+        );
         setCurrentLocation({ latitude, longitude }); //내 휴대폰 현재 경위도 업데이트
         getCurrentAddress(latitude, longitude); //내 휴대폰 현재 주소 업데이트
       }
@@ -180,7 +187,7 @@ const Main = () => {
 
   //목록보기 누를시 호출되는 함수
   const clickedStoreHandler = () => {
-    setListClicked(true);
+    setMarkerClicked(true);
   };
 
   //목록보기 눌렀을때의 함수
@@ -191,7 +198,14 @@ const Main = () => {
   //마커에서 하나 클릭한 가게가 나타났을때 클릭하면 가게 상세화면으로 이동하는 함수
   const moveToDetailStore = () => {
     //가게 상세-메뉴로 이동(가게 id넘겨줘야함)
-    navigation.navigate("StoreDetailPage", { id: "hi" });
+    navigation.navigate("StoreDetailPage", {
+      currentAddress: "울산 남구 대학로33번길 18-4",
+      storeIdx: 2,
+    });
+  };
+
+  const moveToSettingAddress = () => {
+    navigation.navigate("InitAddress");
   };
 
   return (
@@ -199,9 +213,12 @@ const Main = () => {
       <Header left={1} right={1} title="오늘의 떨이" />
       {/* 주소 */}
       <View style={styles.myAddressContainer}>
-        <LocationImg stroke={Color.darkPurple} />
-        <Text style={styles.addressText}>{currentAddress}</Text>
+        <Pressable onPress={moveToSettingAddress}>
+          <LocationImg stroke={Color.darkPurple} />
+          <Text style={styles.addressText}>{currentAddress}</Text>
+        </Pressable>
       </View>
+
       {/** 구글 지도 */}
       {currentLocation.latitude !== undefined &&
         currentLocation.longitude !== undefined && (
@@ -237,7 +254,7 @@ const Main = () => {
         )}
       <View
         style={
-          listClicked ? styles.totalBottomContainer : styles.bottomContainer
+          markerClicked ? styles.totalBottomContainer : styles.bottomContainer
         }
       >
         <Pressable
@@ -273,7 +290,7 @@ const Main = () => {
             <Gps stroke={Color.darkGray} />
           </View>
         </Pressable>
-        {listClicked && (
+        {markerClicked && (
           <MainStore item={subscribeData[0]} onPress={moveToDetailStore} />
         )}
       </View>
