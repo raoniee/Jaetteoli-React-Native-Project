@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import {View, Text, Button, TouchableOpacity, SafeAreaView} from 'react-native';
+import {View, Text, Button, TouchableOpacity, SafeAreaView, StatusBar} from 'react-native';
 import { WithLocalSvg } from 'react-native-svg';
 import WhiteLeftSVG from '../../assets/images/white_left.svg';
 import WhiteBellSVG from '../../assets/images/white_bell.svg';
@@ -46,13 +46,14 @@ const HeaderTitle = styled.Text`
   font-weight: 500;
 `
 
-export default function Header({ color, backgroundColor, title, left = 1, right = 1}) {
+export default function Header({ color, backgroundColor, title, left = 1, right = 1, statusBar = 'black'}) {
     const LeftComponent = left === 0 ? EmptyView : left === 1 ? color === 'white' ? WhiteLeft : DefaultLeft : X;
     const BellComponent = right === 1 ? color === 'white' ? WhiteBell : DefaultBell : EmptyView;
     const BasketComponent = right === 1 ? color === 'white' ? WhiteCart : DefaultCart : EmptyView;
 
     return (
         <View style={{ position: 'relative', backgroundColor: backgroundColor ? backgroundColor : null}}>
+            <StatusBar barStyle={statusBar === 'black' ? "dark-content" : 'light-content' } />
             <HeaderWrapper>
                 <LeftComponent />
                 <HeaderRightWrapper>
