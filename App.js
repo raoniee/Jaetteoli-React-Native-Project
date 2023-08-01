@@ -74,10 +74,15 @@ export default function App() {
       <NavigationContainer>
         {/* NavigationContainer를 추가하여 Navigation 기능을 제공합니다. */}
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="InitAddress" component={InitAddress} />
+          <Stack.Screen name="MapFind" component={MapFind} />
           <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen name="ShopBasketPage" component={ShopBasketPage} />
           <Stack.Screen name="OrderPage" component={OrderPage} />
-          <Stack.Screen name="OrderCompletePage" component={OrderCompletePage} />
+          <Stack.Screen
+            name="OrderCompletePage"
+            component={OrderCompletePage}
+          />
           <Stack.Screen name="StoreDetailPage" component={StoreDetailPage} />
           <Stack.Screen name="StoreMapPage" component={StoreMapPage} />
           <Stack.Screen name="MenuDetailPage" component={MenuDetailPage} />
@@ -85,7 +90,6 @@ export default function App() {
           <Stack.Screen name="AlramList" component={AlramList} />
           <Stack.Screen name="ManageReview" component={ManageReview} />
           <Stack.Screen name="BeforeSearch" component={BeforeSeach} />
-          <Stack.Screen name="MapFind" component={MapFind} />
           <Stack.Screen name="WriteReview" component={WriteReview} />
           <Stack.Screen name="TermsOfService" component={TermsOfService} />
         </Stack.Navigator>
@@ -100,15 +104,19 @@ function MainTabs() {
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: {
-          borderWidth: 1,
+          borderWidth: 2,
           borderBottomWidth: 0,
           borderColor: "#E5E5E5",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
-          backgroundColor: "white", // 배경을 투명하게 설정
-          elevation: 0, // 안드로이드에서 기본 그림자를 제거
+          backgroundColor: Color.white, // 배경을 투명하게 설정
+          elevation: 12, // 그림자 효과 적용 (안드로이드용)
+          shadowColor: Color.black, // 그림자 색상
+          shadowOffset: { width: 0, height: 2 }, // 그림자 위치 (가로, 세로)
+          shadowOpacity: 0.2, // 그림자 투명도
+          shadowRadius: 4, // 그림자의 블러 반경
           position: "absolute",
-          overflow: "hidden",
+          overflow: "visible",
           zIndex: 10,
         },
         tabBarActiveTintColor: Color.darkPurple, // 탭이 활성화되었을 때 글자 색상
@@ -167,9 +175,8 @@ function HomeStack() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="InitAddress" component={InitAddress} />
-      <Stack.Screen name="Stores" component={Stores} />
       <Stack.Screen name="Main" component={Main} />
+      <Stack.Screen name="Stores" component={Stores} />
     </Stack.Navigator>
   );
 }
