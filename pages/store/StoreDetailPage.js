@@ -1,11 +1,11 @@
 import Header from "../../components/common/Header";
-import {Dimensions, SafeAreaView, TouchableOpacity, TouchableWithoutFeedback} from "react-native";
+import { SafeAreaView, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
+import * as Clipboard from 'expo-clipboard';
 import styled from "styled-components/native";
-import Constants from "expo-constants";
 import { Path, Svg, WithLocalSvg} from "react-native-svg";
-import MapView, { Marker } from 'react-native-maps';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import MapLocationSVG from "../../assets/images/map-location.svg";
-import React, {useMemo, useState} from "react";
+import React, { useState} from "react";
 import DownSVG from "../../assets/images/down.svg";
 import WarningSVG from "../../assets/images/warning.svg";
 import ArrowRightSVG from "../../assets/images/arrow_right.svg";
@@ -93,19 +93,21 @@ export default function StoreDetailPage({navigation}) {
                                     </StoreRatingText>
                                 </StoreRatingSection>
                             </StoreNameSection>
-                            <StoreWantedTouch onPress={() => setSubscribe(!subscribe)}>
-                                <Svg width="22" height="23" viewBox="0 0 22 23" fill={subscribe ? '#8377E9' : 'none'}>
-                                    <Path
-                                        d="M11.0134 3.6265C4.89497 -3.59166 -2.89207 5.59509 3.22632 12.8132L11.0134 22L18.8004 12.8132C24.8721 5.65021 17.085 -3.53654 11.0134 3.6265Z"
-                                        stroke="#8377E9"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"/>
-                                </Svg>
-                                <StoreWantedText>
-                                    166
-                                </StoreWantedText>
-                            </StoreWantedTouch>
+                            <TouchableWithoutFeedback onPress={() => setSubscribe(!subscribe)}>
+                                <StoreWantedBox>
+                                    <Svg width="22" height="23" viewBox="0 0 22 23" fill={subscribe ? '#8377E9' : 'none'}>
+                                        <Path
+                                            d="M11.0134 3.6265C4.89497 -3.59166 -2.89207 5.59509 3.22632 12.8132L11.0134 22L18.8004 12.8132C24.8721 5.65021 17.085 -3.53654 11.0134 3.6265Z"
+                                            stroke="#8377E9"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"/>
+                                    </Svg>
+                                    <StoreWantedText>
+                                        166
+                                    </StoreWantedText>
+                                </StoreWantedBox>
+                            </TouchableWithoutFeedback>
                         </StoreInformationSection>
                         <StoreInformationSection2>
                             <StoreInformationTouch>
@@ -169,6 +171,7 @@ export default function StoreDetailPage({navigation}) {
                                     longitudeDelta: 0.001,
                                 }}
                                 legalLabelInsets={{ bottom: -500 }} // 이 부분이 추가된 것입니다.
+                                provider={PROVIDER_GOOGLE}
                             >
                                 <Marker
                                     coordinate={{
@@ -195,7 +198,7 @@ export default function StoreDetailPage({navigation}) {
                                     </StoreAddressText>
                                 </StoreAddressTextBox>
                             </StoreAddressSection>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => Clipboard.setStringAsync('울산광역시 남구 대학로33번길 14 1층')}>
                                 <StoreAddressCopyText>
                                     복사하기
                                 </StoreAddressCopyText>
@@ -356,7 +359,7 @@ const StoreRatingText = styled.Text`
   line-height: 35px; /* 194.444% */
 `
 
-const StoreWantedTouch = styled.TouchableOpacity`
+const StoreWantedBox = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -1669,8 +1672,8 @@ export function CustomMarker() {
 
 const CustomMarkerPoint = styled.View`
   position: relative;
-  width: 0;
-  height: 0;
+  width: 100px;
+  height: 100px;
 `
 
 const CustomMarkerSection = styled.View`
@@ -1680,7 +1683,7 @@ const CustomMarkerSection = styled.View`
   width: 40px;
   position: absolute;
   bottom: 0;
-  left: -20px;
+  left: 30px;
 `
 
 const ModalTitleSection = styled.View`
