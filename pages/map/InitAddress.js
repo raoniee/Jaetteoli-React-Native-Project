@@ -13,7 +13,7 @@ const InitAddress = () => {
 
   // 우편 서비스 화면 표시/숨김 상태를 토글
   const togglePostcode = () => {
-    setShowPostcode((prev)=>!prev);
+    setShowPostcode((prev) => !prev);
   };
 
   // 우편 서비스에서 주소를 선택했을 때
@@ -22,16 +22,19 @@ const InitAddress = () => {
     console.log(data.jibunAddress);
     console.log(data.roadAddress);
     setShowPostcode(false); //다시 돌아올때 상태
-    navigation.navigate("Main", {
-      jibun: data.jibunAddress,
-      currentAddress: data.roadAddress,
+    navigation.navigate("MainTabs", {
+      screen: "Main", // MainTabs 내의 Main 스크린으로 이동
+      params: {
+        jibun: data.jibunAddress,
+        currentAddress: data.roadAddress,
+      },
     });
   };
 
   const moveToSelectMap = () => {
     //api 호출하기
     navigation.navigate("MapFind");
-  }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -86,7 +89,7 @@ const InitAddress = () => {
       {/* 우편 서비스 화면 */}
       {showPostcode && (
         <View>
-          <AddressHeader title='주소설정' onLeftPress={togglePostcode}/>
+          <AddressHeader title="주소설정" onLeftPress={togglePostcode} />
           <DaumPostcode
             style={styles.postcode}
             onSelected={handleAddressSelected}

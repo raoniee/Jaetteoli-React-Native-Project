@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import Header from "../../components/common/Header";
 import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import MapView, { Circle } from "react-native-maps";
@@ -28,6 +35,15 @@ const MapFind = () => {
 
       if (location && location.length > 0) {
         const address = location[0];
+        console.log(address);
+        if (
+          address.city === null ||
+          address.street === null ||
+          address.streetNumber === null
+        ) {
+          Alert.alert("조금만 더 움직여주세요", "hi", "예");
+          return;
+        }
         setCurrentAddress(
           `${address.city} ${address.street} ${address.streetNumber}`
         );
@@ -96,7 +112,10 @@ const MapFind = () => {
   const moveToHome = () => {
     //api호출하기
     //home이동
-    navigation.navigate('Main', { currentAddress: currentAddress })
+    navigation.navigate("MainTabs", {
+      screen: "Main", // MainTabs 내의 Main 스크린으로 이동
+      params: { currentAddress: currentAddress },
+    });
   };
 
   return (
@@ -114,8 +133,8 @@ const MapFind = () => {
         }}
         provider={PROVIDER_GOOGLE}
         onRegionChangeComplete={handleRegionChangeComplete}
-      >
-      </MapView>
+        showsUserLocation
+      ></MapView>
       <View pointerEvents="none" style={styles.addressContainer}>
         <CustomMarker title="" />
       </View>
