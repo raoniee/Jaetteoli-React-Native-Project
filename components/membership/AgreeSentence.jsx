@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -16,11 +16,21 @@ import Check from "../../assets/images/Check";
 import Button from "../common/Button";
 
 export default function AgreeSentence(props) {
+  const [agree, setAllagree] = useState(false);
+
+  const handleAgree = () => {
+    setAllagree((prev) => !prev);
+  };
+
   return (
     <>
       <View style={styles.agreesentence}>
-        <TouchableOpacity>
-          <Check stroke={Color.gray} width={24} height={24} />
+        <TouchableOpacity onPress={handleAgree}>
+          <Check
+            stroke={props.allagree || agree ? Color.darkPurple : Color.gray}
+            width={24}
+            height={24}
+          />
         </TouchableOpacity>
         <TouchableWithoutFeedback>
           <View style={styles.agreemore}>
@@ -28,25 +38,65 @@ export default function AgreeSentence(props) {
             {!props.arrow && <AngleRight />}
           </View>
         </TouchableWithoutFeedback>
-        {props.sns && <AdAgree />}
+        {props.sns && <AdAgree allagree={props.allagree} adagree={agree} />}
       </View>
     </>
   );
 }
-function AdAgree() {
+function AdAgree(props) {
+  const [oneagree, setOneagree] = useState(false);
+  const [twoagree, setTwoagree] = useState(false);
+  const [threeagree, setThreeagree] = useState(false);
+
   return (
     <>
       <View style={styles.adagree}>
-        <TouchableOpacity>
-          <Check stroke={Color.gray} width={24} height={24} />
+        <TouchableOpacity
+          onPress={() => {
+            setOneagree((prev) => !prev);
+          }}
+        >
+          <Check
+            stroke={
+              props.allagree || props.adagree || oneagree
+                ? Color.darkPurple
+                : Color.gray
+            }
+            width={24}
+            height={24}
+          />
         </TouchableOpacity>
         <Text style={styles.adgree_text}>SMS</Text>
-        <TouchableOpacity>
-          <Check stroke={Color.gray} width={24} height={24} />
+        <TouchableOpacity
+          onPress={() => {
+            setTwoagree((prev) => !prev);
+          }}
+        >
+          <Check
+            stroke={
+              props.allagree || props.adagree || twoagree
+                ? Color.darkPurple
+                : Color.gray
+            }
+            width={24}
+            height={24}
+          />
         </TouchableOpacity>
         <Text style={styles.adgree_text}>이메일</Text>
-        <TouchableOpacity>
-          <Check stroke={Color.gray} width={24} height={24} />
+        <TouchableOpacity
+          onPress={() => {
+            setThreeagree((prev) => !prev);
+          }}
+        >
+          <Check
+            stroke={
+              props.allagree || props.adagree || threeagree
+                ? Color.darkPurple
+                : Color.gray
+            }
+            width={24}
+            height={24}
+          />
         </TouchableOpacity>
         <Text style={styles.adgree_text}>전화</Text>
       </View>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -20,6 +20,36 @@ import LoginInput from "../../components/login/LoginInput";
 const { width: SCREEN_WIDTH, height: SCREEN_HIGHT } = Dimensions.get("window");
 
 export default function MembershipInfo() {
+  const [form, setForm] = useState({
+    name: "",
+    birthday: "",
+    phonenum: "",
+  });
+  const [isValid, setIsValid] = useState({
+    name: false,
+    birthday: false,
+    phone: false,
+  });
+
+  const TakeNameResult = (result) => {
+    setForm({ ...form, name: result });
+  };
+  const TakeBirthDayResult = (result) => {
+    setForm({ ...form, birthday: result });
+  };
+  const TakePhoneNumResult = (result) => {
+    setForm({ ...form, phonenum: result });
+  };
+
+  const validateName = () => {};
+  const validateBirthday = () => {
+    const isValidFormat = /^\d{4}\.\d{2}\.\d{2}$/.test(BirthDay);
+    console.log(isValidFormat);
+  };
+  const validatePhoneNum = () => {};
+
+  const handleBTN = async () => {};
+
   return (
     <SafeAreaView style={styles.wrap}>
       <Header title="기본정보" right={0} />
@@ -28,14 +58,19 @@ export default function MembershipInfo() {
           <LoginInput
             label="이름" //
             placeholder="홍길동"
+            takeresult={TakeNameResult}
           />
           <LoginInput
             label="생년월일" //
-            placeholder="숫자 6자"
+            placeholder="YYYY.MM.DD"
+            keyboardType="number-pad"
+            takeresult={TakeBirthDayResult}
           />
           <LoginInput
             label="휴대폰 번호" //
             placeholder="01012345678"
+            keyboardType="number-pad"
+            takeresult={TakePhoneNumResult}
           />
         </View>
         <Button
@@ -44,6 +79,7 @@ export default function MembershipInfo() {
           color={Color.white}
           width={SCREEN_WIDTH - 40}
           height={62}
+          onPress={handleBTN}
         />
       </View>
     </SafeAreaView>
