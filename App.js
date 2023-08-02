@@ -43,7 +43,7 @@ import ModifyUserEmail from './pages/mypage/ModifyUserEmail';
 import ModifyUserPhoneNum from './pages/mypage/ModifyUserPhoneNum';
 import { Provider } from "react-redux";
 import { store } from "./store/store";
-
+import MembershipStart from "./pages/membership/MembershipStart";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -80,7 +80,20 @@ export default function App() {
       <Provider store={store}>
         <NavigationContainer>
           {/* NavigationContainer를 추가하여 Navigation 기능을 제공합니다. */}
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Navigator
+            screenOptions={{ headerShown: false }}
+            initialRouteName="Home"
+          >
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="LoginStart" component={LoginStart} />
+            <Stack.Screen name="MembershipStart" component={MembershipStart} />
+            <Stack.Screen name="MembershipAgree" component={MembershipAgree} />
+            <Stack.Screen name="MembershipInfo" component={MembershipInfo} />
+            <Stack.Screen
+              name="MembershipAccount"
+              component={MembershipAccount}
+            />
+            <Stack.Screen name="MembershipEnd" component={MembershipEnd} />
             <Stack.Screen name="MainTabs" component={MainTabs} />
             <Stack.Screen name="InitAddress" component={InitAddress} />
             <Stack.Screen name="MapFind" component={MapFind} />
@@ -103,7 +116,6 @@ export default function App() {
             <Stack.Screen name="ModifyUserEmail" component={ModifyUserEmail} />
             <Stack.Screen name="ModifyUserPhoneNum" component={ModifyUserPhoneNum} />
           </Stack.Navigator>
-          {/* <LoginStart /> */}
         </NavigationContainer>
       </Provider>
     </>
