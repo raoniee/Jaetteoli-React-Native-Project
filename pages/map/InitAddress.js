@@ -6,10 +6,14 @@ import SearchImg from "../../assets/images/SearchImg";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../../components/common/Header";
 import AddressHeader from "../../components/map/AddressHeader";
+import { baseUrl, jwt } from "../../utils/baseUrl";
+import { useDispatch } from "react-redux";
+import { changeAddress } from "../../store/mapAddress";
 
 const InitAddress = () => {
   const navigation = useNavigation();
   const [showPostcode, setShowPostcode] = useState(false);
+  const dispatch = useDispatch();
 
   // 우편 서비스 화면 표시/숨김 상태를 토글
   const togglePostcode = () => {
@@ -17,17 +21,34 @@ const InitAddress = () => {
   };
 
   // 우편 서비스에서 주소를 선택했을 때
-  const handleAddressSelected = (data) => {
-    console.log(data); // 선택한 주소 데이터를 처리하는 로직을 추가하세요.
-    console.log(data.jibunAddress);
-    console.log(data.roadAddress);
+  const handleAddressSelected = async (selectedAddress) => {
+    // console.log(selectedAddress); // 선택한 주소 데이터를 처리하는 로직을 추가하세요.
+    // console.log(selectedAddress.jibunAddress);
+    // console.log(selectedAddress.roadAddress);
+
+    //도로명 api 호출
+
+    /* const response = await fetch(`${baseUrl}/jat/app/users/address?location=${selectedAddress.roadAddress}`, {
+      method:'GET',
+      headers:{
+        'X-ACCESS-TOKEN' : jwt
+      }
+    })
+
+    const data = await response.json();
+    const result = await data.result; */
+
     setShowPostcode(false); //다시 돌아올때 상태
+    dispatch(
+      changeAddress({
+        locAddress: "울산 남구 무거동 272-1",
+        roadAddress: "다음 주소로 찾기",
+        longitude: 129.262584287123,
+        latitude: 35.5555834682686,
+      })
+    );
     navigation.navigate("MainTabs", {
       screen: "Main", // MainTabs 내의 Main 스크린으로 이동
-      params: {
-        jibun: data.jibunAddress,
-        currentAddress: data.roadAddress,
-      },
     });
   };
 
@@ -40,7 +61,7 @@ const InitAddress = () => {
     <SafeAreaView style={styles.container}>
       {!showPostcode && (
         <View>
-          <Header left={0} right={0} title="주소설정" />
+          <Header left={1} right={0} title="주소설정" />
           <View style={styles.searchOuterContainer}>
             <Pressable onPress={togglePostcode}>
               <View style={styles.searchContainer}>

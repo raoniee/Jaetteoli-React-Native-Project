@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Alert,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -8,53 +7,71 @@ import {
   View,
 } from "react-native";
 import Header from "../../components/common/Header";
-import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
-import MapView, { Circle } from "react-native-maps";
+import { PROVIDER_GOOGLE } from "react-native-maps";
+import MapView from "react-native-maps";
 import CustomMarker from "../../components/map/CustomMarker";
 import * as Location from "expo-location";
 import _ from "lodash"; // lodash 라이브러리 가져오기
 import Color from "../../assets/colors/Color";
 import Gps from "../../assets/images/Gps";
 import { useNavigation } from "@react-navigation/native";
+import { baseUrl } from "../../utils/baseUrl";
+import { useDispatch } from "react-redux";
+import { changeAddress } from "../../store/mapAddress";
+
 
 const MapFind = () => {
   const navigation = useNavigation();
-  const [currentAddress, setCurrentAddress] = useState("");
+  const dispatch = useDispatch()
+
+  //지도 중심 주소
+  const [currentAddress, setCurrentAddress] = useState({
+    locAddress: "",
+    roadAddress: "",
+  });
+
+  //지도 중심 경위도
   const [currentLocation, setCurrentLocation] = useState({
-    latitude: 35.538377,
-    longitude: 129.31136,
   });
   const mapViewRef = useRef(null);
 
+  //내 위치 경위도를 주소로 변환하는 함수
   const getCurrentAddress = async (latitude, longitude) => {
     try {
-      const location = await Location.reverseGeocodeAsync({
-        latitude,
-        longitude,
-      });
+      //도로명 api 호출
 
-      if (location && location.length > 0) {
-        const address = location[0];
-        console.log(address);
-        if (
-          address.city === null ||
-          address.street === null ||
-          address.streetNumber === null
-        ) {
-          Alert.alert("조금만 더 움직여주세요", "hi", "예");
-          return;
-        }
-        setCurrentAddress(
-          `${address.city} ${address.street} ${address.streetNumber}`
-        );
+      /* const response = await fetch(`${baseUrl}/jat/app/users/address?longitude=${longitude.toFixed(12)}&latitude=${latitude.toFixed(12)}`, {
+      method:'GET',
+      headers:{
+        'X-ACCESS-TOKEN' : jwt
       }
+    })
+
+    const data = await response.json();
+    const result = await data.result; */
+
+      // "locAddress": "울산 남구 무거동 272-1",
+      // "roadAddress": "울산광역시 남구 굴화3길 3"
+
+      console.log(
+        `api 호출 ${baseUrl}/jat/app/users/address?longitude=${longitude.toFixed(
+          12
+        )}&latitude=${latitude.toFixed(12)}`
+      );
+      setCurrentAddress({
+        locAddress: "울산 남구 무거동 272-1",
+        roadAddress: "울산광역시 남구 굴화3길 3",
+      });
+      setCurrentLocation({
+        latitude: latitude,
+        longitude: longitude,
+      });
     } catch (error) {
       console.error("현재 주소를 가져오는 중 오류 발생:", error);
     }
   };
 
-  const debouncedGetCurrentAddress = _.debounce(getCurrentAddress, 100);
-
+  //화면 처음 열때
   useEffect(() => {
     (async () => {
       try {
@@ -66,7 +83,7 @@ const MapFind = () => {
 
         const location = await Location.getCurrentPositionAsync({});
         const { latitude, longitude } = location.coords;
-        setCurrentLocation({ latitude, longitude });
+        // setCurrentLocation({ latitude, longitude }); //지도 안불러와지면 이 부분 주석 제거해보기
         getCurrentAddress(latitude, longitude);
       } catch (error) {
         console.error("현재 위치를 가져오는 중 오류 발생:", error);
@@ -74,22 +91,17 @@ const MapFind = () => {
     })();
   }, []);
 
-  const handleRegionChangeComplete = (region) => {
+  //지도가 움직이다가 완전히 멈췄을때
+  const handleRegionChangeComplete = async (region) => {
     const center = {
       latitude: region.latitude,
       longitude: region.longitude,
     };
-    setCurrentLocation(center);
 
-    // 디바운싱 적용: 지도 영역 변경이 멈춘 후 2000ms 이후에 주소 가져오기 함수 실행
-    debouncedGetCurrentAddress(center.latitude, center.longitude);
-  };
-  // 화면 중심에 위치한 마커의 위도, 경도 정보
-  const centerMarkerCoordinate = {
-    latitude: currentLocation.latitude,
-    longitude: currentLocation.longitude,
+    getCurrentAddress(center.latitude, center.longitude);
   };
 
+  //Gps 버튼 클릭했을때 내 휴대폰 위치로 이동
   const moveMyPoint = async () => {
     try {
       const location = await Location.getCurrentPositionAsync({});
@@ -109,12 +121,20 @@ const MapFind = () => {
     }
   };
 
+  //메인화면으로 이동
   const moveToHome = () => {
-    //api호출하기
-    //home이동
+
+    dispatch(
+      changeAddress({
+        locAddress: "울산 남구 무거동 272-1",
+        roadAddress: "지도에서 찾기",
+        longitude: 129.262584287123,
+        latitude: 35.5555834682686,
+      })
+    );
+
     navigation.navigate("MainTabs", {
       screen: "Main", // MainTabs 내의 Main 스크린으로 이동
-      params: { currentAddress: currentAddress },
     });
   };
 
@@ -122,19 +142,22 @@ const MapFind = () => {
     <SafeAreaView style={styles.screen}>
       <Header left={1} right={0} title="지도에서 주소 찾기" />
 
-      <MapView
-        ref={mapViewRef}
-        style={styles.map}
-        initialRegion={{
-          latitude: 35.538377,
-          longitude: 129.31136,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001,
-        }}
-        provider={PROVIDER_GOOGLE}
-        onRegionChangeComplete={handleRegionChangeComplete}
-        showsUserLocation
-      ></MapView>
+      {/** 구글 지도 */}
+      {currentLocation.latitude !== undefined &&
+        currentLocation.longitude !== undefined && (
+          <MapView
+            ref={mapViewRef}
+            style={styles.map}
+            initialRegion={{
+              latitude: currentLocation.latitude || 0,
+              longitude: currentLocation.longitude || 0,
+              latitudeDelta: 0.001,
+              longitudeDelta: 0.001,
+            }}
+            provider={PROVIDER_GOOGLE}
+            onRegionChangeComplete={handleRegionChangeComplete}
+          ></MapView>
+        )}
       <View pointerEvents="none" style={styles.addressContainer}>
         <CustomMarker title="" />
       </View>
@@ -162,7 +185,7 @@ const MapFind = () => {
         ]}
       >
         <View style={styles.modalContent}>
-          <Text style={styles.addressText}>{currentAddress}</Text>
+          <Text style={styles.addressText}>{currentAddress.locAddress}</Text>
           <Pressable
             onPress={moveToHome}
             android_ripple={{ color: Color.lightPurple }}
