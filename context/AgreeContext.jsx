@@ -2,13 +2,26 @@ import { createContext, useState } from "react";
 
 export const AgreeContext = createContext();
 
-export function AgreeProvider({ cheildren }) {
-  const [allagree, setAllagree] = useState(false);
-  const handleAllagree = () => {
+export function AgreeProvider({ children }) {
+  const [allagree, setAllagree] = useState(false); //전체동의
+  const [agreements, setAgreements] = useState({
+    //개별동의 state
+    mandatoryOne: false,
+    mandatoryTwo: false,
+    selectiveOne: false,
+    isSns: false,
+    isEmail: false,
+    isPhone: false,
+  });
+
+  const handleAllagree = (value) => {
+    console.log(value);
     setAllagree((prev) => !prev);
   };
 
-  <AgreeContext.Provider value={{ allagree, handleAllagree }}>
-    {cheildren}
-  </AgreeContext.Provider>;
+  return (
+    <AgreeContext.Provider value={{ allagree, handleAllagree }}>
+      {children}
+    </AgreeContext.Provider>
+  );
 }
