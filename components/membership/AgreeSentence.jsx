@@ -16,11 +16,16 @@ import Check from "../../assets/images/Check";
 import Button from "../common/Button";
 
 export default function AgreeSentence(props) {
-  const [agree, setAllagree] = useState(false);
+  const [agree, setagree] = useState(false);
 
   const handleAgree = () => {
-    setAllagree((prev) => !prev);
+    // if (props.allagree === true) {
+    //   setAllagree(false);
+    // }
+    setagree((prev) => !prev);
   };
+
+  //console.log()
 
   return (
     <>
@@ -32,7 +37,7 @@ export default function AgreeSentence(props) {
             height={24}
           />
         </TouchableOpacity>
-        <TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={props.onPress}>
           <View style={styles.agreemore}>
             <Text style={styles.agreetext}>{props.text}</Text>
             {!props.arrow && <AngleRight />}

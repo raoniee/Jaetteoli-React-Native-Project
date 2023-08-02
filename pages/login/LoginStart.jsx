@@ -11,13 +11,15 @@ import {
   TouchableHighlight,
   Image,
 } from "react-native";
+import { NavigationContainer } from "@react-navigation/native"; // 네비게이션 컨테이너
+import { createNativeStackNavigator } from "@react-navigation/native-stack"; // Stack 네비게이션
 import Button from "../../components/common/Button";
 import Color from "../../assets/colors/Color";
 import logo from "../../assets/images/logo.png";
 import GoMembership from "../../components/login/GoMembership";
 import Check from "../../assets/images/Check";
 
-export default function LoginStart() {
+export default function LoginStart({ navigation }) {
   const [saveId, SetSaveId] = useState(false);
 
   const handleSaveId = () => SetSaveId((prev) => !prev);
@@ -67,7 +69,7 @@ export default function LoginStart() {
           height={62}
         />
       </View>
-      <GoMembership />
+      <GoMembership navigation={navigation} />
     </SafeAreaView>
   );
 }

@@ -16,8 +16,9 @@ import Color from "../../assets/colors/Color";
 import AgreeSentence from "../../components/membership/AgreeSentence";
 import Header from "../../components/common/Header";
 import Check from "../../assets/images/Check";
+import { AgreeProvider } from "../../context/AgreeContext";
 
-export default function MembershipStart() {
+export default function MembershipStart({ navigation }) {
   const [allagree, setAllagree] = useState(false);
 
   const handleAllAgree = () => setAllagree((prev) => !prev);
@@ -46,10 +47,19 @@ export default function MembershipStart() {
             <Text style={styles.agreetitle}>
               서비스 이용을 위해 동의가 필요합니다.
             </Text>
-            <AgreeSentence text="[필수] 이용약관 동의" allagree={allagree} />
+            <AgreeSentence
+              text="[필수] 이용약관 동의"
+              allagree={allagree}
+              onPress={() => {
+                navigation.navigate("MembershipAgree");
+              }}
+            />
             <AgreeSentence
               text="[필수] 개인정보 수집이용 동의"
               allagree={allagree}
+              onPress={() => {
+                navigation.navigate("MembershipAgree");
+              }}
             />
           </View>
           <View style={styles.agreebottom}>
@@ -60,11 +70,17 @@ export default function MembershipStart() {
               text="[선택] 서비스/이벤트 정보 제공을 위한 개인정보 수집 이용 동의"
               allagree={allagree}
               //arrow={true}
+              onPress={() => {
+                navigation.navigate("MembershipAgree");
+              }}
             />
             <AgreeSentence
               text="[선택] 광고성 정보 수신동의"
               sns={true}
               allagree={allagree}
+              onPress={() => {
+                navigation.navigate("MembershipAgree");
+              }}
             />
           </View>
         </View>
@@ -74,6 +90,9 @@ export default function MembershipStart() {
           color={Color.white}
           //margin="0 0 600 0"
           height={62}
+          onPress={() => {
+            navigation.navigate("MembershipInfo");
+          }}
         />
       </View>
     </SafeAreaView>
