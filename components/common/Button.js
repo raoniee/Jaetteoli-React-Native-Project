@@ -7,7 +7,7 @@ const Button = (props) => {
         width: '100%',
         height: props.height,
         borderRadius: 30,
-        backgroundColor: props.backgroundColor,
+        backgroundColor: props.disabled ? '#D7D7D7' : props.backgroundColor,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: marginValues[0],
@@ -25,7 +25,7 @@ const Button = (props) => {
     };
 
     return (
-        <TouchableOpacity style={buttonStyle} onPress={props.onPress}>
+        <TouchableOpacity style={buttonStyle} onPress={props.onPress} disabled={props.disabled}>
             <Text style={buttonTextStyle}>{props.title}</Text>
         </TouchableOpacity>
     );
