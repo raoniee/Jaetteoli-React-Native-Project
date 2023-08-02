@@ -41,13 +41,13 @@ const MyPage = () => {
                 </View>
                 <View style={styles.listWrapper}>
                     <View style={styles.list}>
-                        <TouchableOpacity onPress={() => onPress('TermsOfService')}>
+                        <TouchableOpacity onPress={() => onPress('구독')}>
                             <View style={styles.listItem}>
                                 <Subscribe stroke={Color.darkPurple}></Subscribe>
                                 <MyPageListItem name='구독'></MyPageListItem>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => onPress('')}>
+                        <TouchableOpacity onPress={() => onPress('주문내역')}>
                             <View style={styles.listItem}>
                                 <Order stroke={Color.darkPurple}></Order>
                                 <MyPageListItem name='주문내역'></MyPageListItem>

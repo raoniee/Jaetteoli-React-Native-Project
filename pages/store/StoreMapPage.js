@@ -1,6 +1,6 @@
 import {Dimensions, SafeAreaView} from "react-native";
 import Header from "../../components/common/Header";
-import MapView, {Marker} from "react-native-maps";
+import MapView, {Marker, PROVIDER_GOOGLE} from "react-native-maps";
 import React from "react";
 import {CustomMarker} from "./StoreDetailPage";
 import styled from "styled-components/native";
@@ -34,6 +34,7 @@ export default function StoreMapPage() {
                         longitudeDelta: 0.005,
                     }}
                     legalLabelInsets={{ bottom: -500 }} // 이 부분이 추가된 것입니다.
+                    provider={PROVIDER_GOOGLE}
                 >
                     <Marker
                         coordinate={{

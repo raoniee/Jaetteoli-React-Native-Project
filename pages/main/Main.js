@@ -9,88 +9,178 @@ import * as Location from "expo-location";
 import _ from "lodash"; // lodash 라이브러리 가져오기
 import Color from "../../assets/colors/Color";
 import Gps from "../../assets/images/Gps";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import LocationImg from "../../assets/images/Location";
 import List from "../../assets/images/List";
 import { subscribeData } from "../../components/subscribe/dummy/dummy";
 import MainStore from "../../components/main/MainStore";
+import { baseUrl, jwt } from "../../utils/baseUrl";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { changeAddress } from "../../store/mapAddress";
 
-const Main = ({ route }) => {
+const Main = () => {
   const navigation = useNavigation();
-  const [currentAddress, setCurrentAddress] = useState(
-    route.params.currentAddress
-  );
+  const contextAddress = useSelector((state) => state.mapAddress);
+  const dispatch = useDispatch();
+  //내 현재 주소(휴대폰 위치)
+  const [currentAddress, setCurrentAddress] = useState("");
+  //내 현재 경위도(휴대폰 위치)
   const [currentLocation, setCurrentLocation] = useState({
-    latitude: 35.538377,
-    longitude: 129.31136,
+    longitude: "",
+    latitude: "",
   });
-  const [listClicked, setListClicked] = useState(false);
+  const [mapBoundaries, setMapBoundaries] = useState(null); //지도 위아래 경위도 상태
+  // center 변수 선언
+  const [center, setCenter] = useState({
+    latitude: currentLocation.latitude || 0,
+    longitude: currentLocation.longitude || 0,
+  });
+
+  const [markerClicked, setMarkerClicked] = useState(false); //목록보기 상태
   const mapViewRef = useRef(null);
+  const isFocused = useIsFocused();
+
+  const handleMapReady = async () => {
+    if (mapViewRef.current) {
+      const boundaries = await mapViewRef.current.getMapBoundaries();
+      setMapBoundaries(boundaries);
+    }
+  };
 
   useEffect(() => {
-    //지도 마커 찍기 api호출
-    console.log("지도 마커 찍기 api호출");
-  }, []);
+    // Do something with mapBoundaries, e.g. print the coordinates
+    if (mapBoundaries) {
+      // console.log("");
+      // console.log("------------지도 꼭짓점-------------");
+      // console.log("최소 경도:", mapBoundaries.southWest.longitude);
+      // console.log("최소 위도:", mapBoundaries.southWest.latitude);
+      // console.log("최대 경도:", mapBoundaries.northEast.longitude);
+      // console.log("최대 위도:", mapBoundaries.northEast.latitude);
+    }
+  }, [mapBoundaries]);
 
-  const getCurrentAddress = async (latitude, longitude) => {
+  //내 위치 경위도를 주소로 변환하는 함수
+  const getCurrentAddressApi = async (latitude, longitude) => {
     try {
-      const location = await Location.reverseGeocodeAsync({
-        latitude,
-        longitude,
-      });
+      //도로명 api 호출
 
-      if (location && location.length > 0) {
-        const address = location[0];
-        setCurrentAddress(
-          `${address.city} ${address.street} ${address.streetNumber}`
-        );
+      /* const response = await fetch(`${baseUrl}/jat/app/users/address?longitude=${longitude.toFixed(12)}&latitude=${latitude.toFixed(12)}`, {
+      method:'GET',
+      headers:{
+        'X-ACCESS-TOKEN' : jwt
       }
+    })
+
+    const data = await response.json();
+    const result = await data.result; */
+
+      // "locAddress": "울산 남구 무거동 272-1",
+      // "roadAddress": "울산광역시 남구 굴화3길 3"
+
+      setCurrentAddress("울산광역시 남구 굴화3길 3");
     } catch (error) {
       console.error("현재 주소를 가져오는 중 오류 발생:", error);
     }
   };
 
-  const debouncedGetCurrentAddress = _.debounce(getCurrentAddress, 100);
+  //지도 중심 가게 마커 조회 api
+  const fetchGetMarkerApi = async (latitude, longitude) => {
+    try {
+      // console.log(currentAddress);
+      // console.log(
+      //   `${baseUrl}/jat/app/stores/preview?query=울산 남구 대학로33번길 18-4`
+      // );
+      // const response = await fetch(
+      //   `${baseUrl}/jat/app/stores/preview?query=울산 남구 대학로33번길 18-4`,
+      //   {
+      //     method: "GET",
+      //     headers: {
+      //       "X-ACCESS-TOKEN": jwt,
+      //     },
+      //   }
+      // );
+      // const data = await response.json();
+      // console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
+  //탭네비게이션으로 홈 누를때
+  // contextAddress가 변경될 때 currentLocation 및 currentAddress를 업데이트합니다.
   useEffect(() => {
-    (async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          console.error("위치 권한이 허용되지 않았습니다.");
-          return;
+    if (isFocused) {
+      const fetchCurrentLocationAndAddress = async () => {
+        try {
+          const { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== "granted") {
+            console.error("위치 권한이 허용되지 않았습니다.");
+            return;
+          }
+
+          if (contextAddress.isChanged) {
+            console.log(contextAddress);
+            handleMapReady(); //지도 꼭짓점 경위도 함수 호출
+            setCurrentLocation({
+              latitude: contextAddress.latitude,
+              longitude: contextAddress.longitude,
+            });
+            getCurrentAddressApi(
+              contextAddress.latitude,
+              contextAddress.longitude
+            ); //지도 중심 경위도를 주소로 변환하는 api호출
+            fetchGetMarkerApi(
+              contextAddress.latitude,
+              contextAddress.longitude
+            ); //지도 중심 가게 마커 조회 api 호출
+          } else {
+            // 내 현재 위치 경위도 얻을 수 있는 함수
+            const location = await Location.getCurrentPositionAsync({});
+            const { latitude, longitude } = location.coords;
+
+            handleMapReady(); //지도 꼭짓점 경위도 함수 호출
+            setCurrentLocation({ latitude, longitude });
+            getCurrentAddressApi(latitude, longitude); //지도 중심 경위도를 주소로 변환하는 api호출
+            fetchGetMarkerApi(latitude, longitude); //지도 중심 가게 마커 조회 api 호출
+          }
+        } catch (error) {
+          console.error("현재 위치를 가져오는 중 오류 발생:", error);
         }
+      };
 
-        const location = await Location.getCurrentPositionAsync({});
-        const { latitude, longitude } = location.coords;
-        setCurrentLocation({ latitude, longitude });
-        getCurrentAddress(latitude, longitude);
-      } catch (error) {
-        console.error("현재 위치를 가져오는 중 오류 발생:", error);
-      }
-    })();
-  }, []);
+      fetchCurrentLocationAndAddress();
+    } else {
+      setCurrentLocation({ longitude: "", latitude: "" });
+    }
+  }, [isFocused, contextAddress]);
 
-  const handleRegionChangeComplete = (region) => {
-    const center = {
+  //지도를 움직이고 멈출 떄의 함수
+  const handleRegionChangeComplete = async (region) => {
+    const newCenter = {
       latitude: region.latitude,
       longitude: region.longitude,
     };
 
-    // setCurrentLocation(center);
-    // debouncedGetCurrentAddress(center.latitude, center.longitude);
+    console.log("");
+    console.log("------------지도 중심-------------");
+    console.log(
+      "지도 중심 위도 : ",
+      newCenter.latitude,
+      "지도 중심 경도 : ",
+      newCenter.longitude
+    );
+    setCenter(newCenter); // center 변수 업데이트
+
+    handleMapReady();
+    fetchGetMarkerApi(newCenter.latitude, newCenter.longitude);
   };
 
   const lookStoreCloseHandler = () => {
-    setListClicked(false);
+    setMarkerClicked(false);
   };
 
-  // 화면 중심에 위치한 마커의 위도, 경도 정보 (쓸 필요있으면)
-  const centerMarkerCoordinate = {
-    latitude: currentLocation.latitude,
-    longitude: currentLocation.longitude,
-  };
-
+  //지도 중심을 내 휴대폰 위치로 움직이는 함수
   const moveMyPoint = async () => {
     try {
       const location = await Location.getCurrentPositionAsync({});
@@ -104,63 +194,102 @@ const Main = ({ route }) => {
           latitudeDelta: 0.001,
           longitudeDelta: 0.001,
         });
-        setCurrentLocation({ latitude, longitude }); // Update the state to reflect the new location
-        getCurrentAddress(latitude, longitude); // Update the address based on the new location
+        console.log(
+          "업뎃 내 휴대폰 위도 : ",
+          latitude,
+          "내 휴대폰 경도 : ",
+          longitude
+        );
+        setCurrentLocation({ latitude, longitude }); //내 휴대폰 현재 경위도 업데이트
+        getCurrentAddressApi(latitude, longitude); //내 휴대폰 현재 주소 업데이트
       }
     } catch (error) {
       console.error("현재 위치를 가져오는 중 오류 발생:", error);
     }
   };
 
+  //가게 누를시 호출되는 함수
   const clickedStoreHandler = () => {
-    setListClicked(true);
+    setMarkerClicked(true);
   };
 
+  //목록보기 눌렀을때의 함수
   const moveToStores = () => {
+    console.log(center)
+    dispatch(
+      changeAddress({
+        locAddress: "울산 남구 무거동 272-1",
+        roadAddress: "리스트 호출",
+        longitude: center.longitude,
+        latitude: center.latitude,
+      })
+    );
     navigation.navigate("Stores", { currentAddress: currentAddress });
   };
 
+  //마커에서 하나 클릭한 가게가 나타났을때 클릭하면 가게 상세화면으로 이동하는 함수
   const moveToDetailStore = () => {
     //가게 상세-메뉴로 이동(가게 id넘겨줘야함)
-    navigation.navigate("StoreDetailPage", { id: "hi" });
+    navigation.navigate("StoreDetailPage", {
+      currentAddress: "울산 남구 대학로33번길 18-4",
+      storeIdx: 2,
+    });
+  };
+
+  const moveToSettingAddress = () => {
+    navigation.navigate("InitAddress");
   };
 
   return (
     <SafeAreaView style={styles.screen}>
-      <Header left={1} right={1} title="오늘의 떨이" />
+      <Header left={0} right={1} title="오늘의 떨이" />
       {/* 주소 */}
-      <View style={styles.myAddressContainer}>
-        <LocationImg stroke={Color.darkPurple} />
-        <Text style={styles.addressText}>{currentAddress}</Text>
-      </View>
-      <MapView
-        ref={mapViewRef}
-        style={styles.map}
-        initialRegion={{
-          latitude: 35.538377,
-          longitude: 129.31136,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001,
-        }}
-        provider={PROVIDER_GOOGLE}
-        onRegionChangeComplete={handleRegionChangeComplete}
-        onRegionChange={lookStoreCloseHandler}
-        showsUserLocation
+      <Pressable
+        onPress={moveToSettingAddress}
+        style={styles.myAddressContainer}
       >
-        {markerData.map((item) => (
-          <Marker
-            key={item.key}
-            coordinate={{
-              latitude: item.latitude,
-              longitude: item.longitude,
-            }}
-            onPress={clickedStoreHandler}
-          >
-            <CustomMarker title={item.title} />
-          </Marker>
-        ))}
-      </MapView>
-      <View style={listClicked ? styles.totalBottomContainer : styles.bottomContainer}>
+        <View style={{ flexDirection: "row" }}>
+          <LocationImg stroke={Color.darkPurple} />
+          <Text style={styles.addressText}>{currentAddress}</Text>
+        </View>
+      </Pressable>
+
+      {/** 구글 지도 */}
+      {currentLocation.latitude !== "" && currentLocation.longitude !== "" && (
+        <MapView
+          ref={mapViewRef}
+          style={styles.map}
+          initialRegion={{
+            latitude: currentLocation.latitude || 0,
+            longitude: currentLocation.longitude || 0,
+            latitudeDelta: 0.001,
+            longitudeDelta: 0.001,
+          }}
+          provider={PROVIDER_GOOGLE}
+          onRegionChangeComplete={handleRegionChangeComplete}
+          onRegionChange={lookStoreCloseHandler}
+          showsUserLocation
+        >
+          {/** 가게 마커 */}
+          {markerData.map((item) => (
+            <Marker
+              key={item.key}
+              coordinate={{
+                latitude: item.latitude,
+                longitude: item.longitude,
+              }}
+              onPress={clickedStoreHandler}
+            >
+              <CustomMarker title={item.title} />
+            </Marker>
+          ))}
+        </MapView>
+      )}
+      <View
+        style={
+          markerClicked ? styles.totalBottomContainer : styles.bottomContainer
+        }
+      >
         <Pressable
           onPress={moveToStores}
           android_ripple={{ color: Color.lightPurple }}
@@ -194,7 +323,7 @@ const Main = ({ route }) => {
             <Gps stroke={Color.darkGray} />
           </View>
         </Pressable>
-        {listClicked && (
+        {markerClicked && (
           <MainStore item={subscribeData[0]} onPress={moveToDetailStore} />
         )}
       </View>
@@ -210,20 +339,21 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+    marginTop: -65,
   },
   myAddressContainer: {
-    position: "absolute",
-    top: 120,
+    position: "relative",
+    top: 0,
     flexDirection: "row",
     zIndex: 200,
-    left: 16,
-    right: 16,
     height: 45,
+    marginTop: 20,
+    marginHorizontal: 16,
     paddingVertical: 10,
+    paddingLeft: 26,
     backgroundColor: Color.white,
     borderRadius: 30,
     alignItems: "center",
-    paddingLeft: 26,
     ...Platform.select({
       ios: {
         shadowColor: "#000",
@@ -290,7 +420,7 @@ const styles = StyleSheet.create({
     position: "relative",
     bottom: 120,
   },
-  totalBottomContainer:{
+  totalBottomContainer: {
     position: "relative",
     bottom: 370,
   },

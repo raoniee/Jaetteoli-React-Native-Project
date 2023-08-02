@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     borderBottomColor: Color.lightGray,
   },
   bottomMargin: {
-    paddingBottom: 105,
+    paddingBottom: 95,
   },
   orderItemContainer: {
     borderBottomWidth: 1,

@@ -15,6 +15,7 @@ import CheckSVG from '../../assets/images/check.svg';
 import Ellipse1 from '../../assets/images/Ellipse1.svg';
 import Ellipse0 from '../../assets/images/Ellipse0.svg';
 import CustomModal from "../../components/modal/CustomModal";
+import * as Clipboard from "expo-clipboard";
 
 
 // 안드로이드
@@ -79,7 +80,7 @@ export default function OrderPage({ navigation }) {
                         <ShopAddressText>
                             울산광역시 남구 대학로33번길 14 1층
                         </ShopAddressText>
-                        <ShopAddressCopyTouch>
+                        <ShopAddressCopyTouch onPress={() => Clipboard.setStringAsync('울산광역시 남구 대학로33번길 14 1층')}>
                             <ShopAddressCopyText>
                                 복사
                             </ShopAddressCopyText>

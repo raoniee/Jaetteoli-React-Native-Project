@@ -59,8 +59,8 @@ const Stores = ({ navigation, route }) => {
   };
 
   const moveToDetailStore = () => {
-    navigation.navigate('StoreDetailPage')
-  }
+    navigation.navigate("StoreDetailPage");
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -153,11 +153,11 @@ const Stores = ({ navigation, route }) => {
             );
           }}
         />
+        <TouchableOpacity style={styles.mapButton} onPress={moveToMap}>
+          <Globe />
+          <Text style={styles.mapButtonText}>지도보기</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.mapButton} onPress={moveToMap}>
-        <Globe />
-        <Text style={styles.mapButtonText}>지도보기</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   mapButton: {
     flexDirection: "row",
     position: "absolute",
-    bottom: 111,
+    bottom: 20,
     left: 16,
     backgroundColor: Color.white,
     paddingVertical: 12,
