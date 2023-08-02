@@ -22,13 +22,9 @@ const InitAddress = () => {
 
   // 우편 서비스에서 주소를 선택했을 때
   const handleAddressSelected = async (selectedAddress) => {
-    // console.log(selectedAddress); // 선택한 주소 데이터를 처리하는 로직을 추가하세요.
-    // console.log(selectedAddress.jibunAddress);
-    // console.log(selectedAddress.roadAddress);
-
     //도로명 api 호출
 
-    /* const response = await fetch(`${baseUrl}/jat/app/users/address?location=${selectedAddress.roadAddress}`, {
+    const response = await fetch(`${baseUrl}/jat/app/users/address?location=${selectedAddress.roadAddress}`, {
       method:'GET',
       headers:{
         'X-ACCESS-TOKEN' : jwt
@@ -36,15 +32,13 @@ const InitAddress = () => {
     })
 
     const data = await response.json();
-    const result = await data.result; */
+    const result = await data.result;
 
-    setShowPostcode(false); //다시 돌아올때 상태
+    // setShowPostcode(false); //다시 돌아올때 상태
     dispatch(
       changeAddress({
-        locAddress: "울산 남구 무거동 272-1",
-        roadAddress: "다음 주소로 찾기",
-        longitude: 129.262584287123,
-        latitude: 35.5555834682686,
+        longitude: result.longitude,
+        latitude: result.latitude,
       })
     );
     navigation.navigate("MainTabs", {

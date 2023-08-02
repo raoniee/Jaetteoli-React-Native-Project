@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Header from "../../components/common/Header";
 import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import MapView from "react-native-maps";
@@ -60,27 +60,36 @@ const Main = () => {
     }
   }, [mapBoundaries]);
 
+  const [test, setTest] = useState(null)
+
   //내 위치 경위도를 주소로 변환하는 함수
   const getCurrentAddressApi = async (latitude, longitude) => {
     try {
       //도로명 api 호출
 
-      /* const response = await fetch(`${baseUrl}/jat/app/users/address?longitude=${longitude.toFixed(12)}&latitude=${latitude.toFixed(12)}`, {
-      method:'GET',
-      headers:{
-        'X-ACCESS-TOKEN' : jwt
+      console.log(`경위도 ${latitude} ${longitude}`)
+      console.log(typeof latitude)
+      const response = await fetch(
+        `${baseUrl}/jat/app/users/address?longitude=${parseFloat(longitude).toFixed(
+          12
+        )}&latitude=${parseFloat(latitude).toFixed(12)}`,
+        {
+          method: "GET",
+          headers: {
+            "X-ACCESS-TOKEN": jwt,
+          },
+        }
+      );
+      const data = await response.json();
+      if(data.error){
+        Alert.alert('조금 더 이동시켜주세요.')
+        return;
       }
-    })
+      const result = await data.result;
+      console.log(result);
 
-    const data = await response.json();
-    const result = await data.result; */
-
-      // "locAddress": "울산 남구 무거동 272-1",
-      // "roadAddress": "울산광역시 남구 굴화3길 3"
-
-      setCurrentAddress("울산광역시 남구 굴화3길 3");
+      setCurrentAddress(result.roadAddress);
     } catch (error) {
-      console.error("현재 주소를 가져오는 중 오류 발생:", error);
     }
   };
 
@@ -108,7 +117,6 @@ const Main = () => {
   };
 
   //탭네비게이션으로 홈 누를때
-  // contextAddress가 변경될 때 currentLocation 및 currentAddress를 업데이트합니다.
   useEffect(() => {
     if (isFocused) {
       const fetchCurrentLocationAndAddress = async () => {
@@ -145,7 +153,7 @@ const Main = () => {
             fetchGetMarkerApi(latitude, longitude); //지도 중심 가게 마커 조회 api 호출
           }
         } catch (error) {
-          console.error("현재 위치를 가져오는 중 오류 발생:", error);
+          console.error("1", error);
         }
       };
 
@@ -162,17 +170,10 @@ const Main = () => {
       longitude: region.longitude,
     };
 
-    console.log("");
-    console.log("------------지도 중심-------------");
-    console.log(
-      "지도 중심 위도 : ",
-      newCenter.latitude,
-      "지도 중심 경도 : ",
-      newCenter.longitude
-    );
     setCenter(newCenter); // center 변수 업데이트
 
     handleMapReady();
+    getCurrentAddressApi(parseFloat(newCenter.latitude), parseFloat(newCenter.longitude)); //지도 중심 경위도를 주소로 변환하는 api호출
     fetchGetMarkerApi(newCenter.latitude, newCenter.longitude);
   };
 
@@ -204,7 +205,7 @@ const Main = () => {
         getCurrentAddressApi(latitude, longitude); //내 휴대폰 현재 주소 업데이트
       }
     } catch (error) {
-      console.error("현재 위치를 가져오는 중 오류 발생:", error);
+      console.error("w", error);
     }
   };
 
@@ -215,7 +216,7 @@ const Main = () => {
 
   //목록보기 눌렀을때의 함수
   const moveToStores = () => {
-    console.log(center)
+    console.log(center);
     dispatch(
       changeAddress({
         locAddress: "울산 남구 무거동 272-1",
