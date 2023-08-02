@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -18,6 +18,10 @@ import Header from "../../components/common/Header";
 import Check from "../../assets/images/Check";
 
 export default function MembershipStart() {
+  const [allagree, setAllagree] = useState(false);
+
+  const handleAllAgree = () => setAllagree((prev) => !prev);
+
   return (
     <SafeAreaView style={styles.wrap}>
       <Header title="회원가입" right={0} />
@@ -25,8 +29,14 @@ export default function MembershipStart() {
         <View>
           <Text style={styles.title}>재떨이 고객님 회원가입을 시작합니다.</Text>
           <View style={styles.allagreebox}>
-            <TouchableOpacity>
-              <View style={styles.allagreecheck}>
+            <TouchableOpacity onPress={handleAllAgree}>
+              <View
+                style={{
+                  ...styles.allagreecheck,
+                  backgroundColor: allagree ? Color.purple : Color.white,
+                  borderWidth: allagree ? 0 : 1,
+                }}
+              >
                 <Check stroke={Color.white} width={21} height={21} />
               </View>
             </TouchableOpacity>
@@ -36,8 +46,11 @@ export default function MembershipStart() {
             <Text style={styles.agreetitle}>
               서비스 이용을 위해 동의가 필요합니다.
             </Text>
-            <AgreeSentence text="[필수] 이용약관 동의" />
-            <AgreeSentence text="[필수] 개인정보 수집이용 동의" />
+            <AgreeSentence text="[필수] 이용약관 동의" allagree={allagree} />
+            <AgreeSentence
+              text="[필수] 개인정보 수집이용 동의"
+              allagree={allagree}
+            />
           </View>
           <View style={styles.agreebottom}>
             <Text style={styles.agreetitle}>
@@ -45,9 +58,14 @@ export default function MembershipStart() {
             </Text>
             <AgreeSentence
               text="[선택] 서비스/이벤트 정보 제공을 위한 개인정보 수집 이용 동의"
+              allagree={allagree}
               //arrow={true}
             />
-            <AgreeSentence text="[선택] 광고성 정보 수신동의" sns={true} />
+            <AgreeSentence
+              text="[선택] 광고성 정보 수신동의"
+              sns={true}
+              allagree={allagree}
+            />
           </View>
         </View>
         <Button
@@ -91,11 +109,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginVertical: 13,
     marginLeft: 20,
-    paddingTop: 3.5,
-    paddingLeft: 2,
+    //paddingTop: 3.5,
+    //paddingRight: 3,
     borderWidth: 1,
     borderColor: Color.gray,
-    backgroundColor: Color.purple,
+    //backgroundColor: Color.purple,
   },
   allagreetext: {
     fontFamily: "Pretendard-Regular",

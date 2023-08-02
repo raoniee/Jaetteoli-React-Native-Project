@@ -16,7 +16,12 @@ export default function LoginInput(props) {
         returnKeyType="done"
         onChangeText={(payload) => {
           setText(payload);
-          props.takeText(text);
+        }}
+        onSubmitEditing={() => {
+          if (text === "") {
+            return;
+          }
+          props.takeresult(text);
         }}
         value={text}
       />

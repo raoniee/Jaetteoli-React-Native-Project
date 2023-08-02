@@ -38,6 +38,7 @@ import MembershipInfo from "./pages/membership/MembershipInfo";
 import MembershipAccount from "./pages/membership/MembershipAccount";
 import MembershipEnd from "./pages/membership/MembershipEnd";
 import MembershipAgree from "./pages/membership/MembershipAgree";
+import MembershipStart from "./pages/membership/MembershipStart";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -77,7 +78,10 @@ export default function App() {
           <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen name="ShopBasketPage" component={ShopBasketPage} />
           <Stack.Screen name="OrderPage" component={OrderPage} />
-          <Stack.Screen name="OrderCompletePage" component={OrderCompletePage} />
+          <Stack.Screen
+            name="OrderCompletePage"
+            component={OrderCompletePage}
+          />
           <Stack.Screen name="StoreDetailPage" component={StoreDetailPage} />
           <Stack.Screen name="StoreMapPage" component={StoreMapPage} />
           <Stack.Screen name="MenuDetailPage" component={MenuDetailPage} />
@@ -89,7 +93,6 @@ export default function App() {
           <Stack.Screen name="WriteReview" component={WriteReview} />
           <Stack.Screen name="TermsOfService" component={TermsOfService} />
         </Stack.Navigator>
-        {/* <LoginStart /> */}
       </NavigationContainer>
     </>
   );
