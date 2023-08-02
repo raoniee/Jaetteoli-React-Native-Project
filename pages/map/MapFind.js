@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
+  Alert,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -15,14 +16,13 @@ import _ from "lodash"; // lodash 라이브러리 가져오기
 import Color from "../../assets/colors/Color";
 import Gps from "../../assets/images/Gps";
 import { useNavigation } from "@react-navigation/native";
-import { baseUrl } from "../../utils/baseUrl";
+import { baseUrl, jwt } from "../../utils/baseUrl";
 import { useDispatch } from "react-redux";
 import { changeAddress } from "../../store/mapAddress";
 
-
 const MapFind = () => {
   const navigation = useNavigation();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   //지도 중심 주소
   const [currentAddress, setCurrentAddress] = useState({
@@ -31,8 +31,7 @@ const MapFind = () => {
   });
 
   //지도 중심 경위도
-  const [currentLocation, setCurrentLocation] = useState({
-  });
+  const [currentLocation, setCurrentLocation] = useState({});
   const mapViewRef = useRef(null);
 
   //내 위치 경위도를 주소로 변환하는 함수
@@ -40,27 +39,34 @@ const MapFind = () => {
     try {
       //도로명 api 호출
 
-      /* const response = await fetch(`${baseUrl}/jat/app/users/address?longitude=${longitude.toFixed(12)}&latitude=${latitude.toFixed(12)}`, {
-      method:'GET',
-      headers:{
-        'X-ACCESS-TOKEN' : jwt
-      }
-    })
-
-    const data = await response.json();
-    const result = await data.result; */
-
-      // "locAddress": "울산 남구 무거동 272-1",
-      // "roadAddress": "울산광역시 남구 굴화3길 3"
-
-      console.log(
-        `api 호출 ${baseUrl}/jat/app/users/address?longitude=${longitude.toFixed(
-          12
-        )}&latitude=${latitude.toFixed(12)}`
+      // console.log(latitude, longitude);
+      const response = await fetch(
+        `${baseUrl}/jat/app/users/address?longitude=${parseFloat(
+          longitude
+        ).toFixed(12)}&latitude=${parseFloat(latitude).toFixed(12)}`,
+        {
+          method: "GET",
+          headers: {
+            "X-ACCESS-TOKEN":
+              "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWR4IjoyMywiaWF0IjoxNjc4OTAyOTE2LCJleHAiOjE2ODAzNzQxNDV9.zUuYJ4nfA7LuULYfmFC4CvbB8F3CVpZTMOPnqBc3cGk",
+          },
+        }
       );
+      const data = await response.json();
+      // if (!data.status) {
+      //   Alert.alert('조금 더 움직여주세요.')
+      //   console.log(data);
+      //   return;
+      // }
+      if (data.error) {
+        Alert.alert("조금 더 이동시켜주세요.");
+        return;
+      }
+      const result = await data.result;
+      console.log(result);
       setCurrentAddress({
-        locAddress: "울산 남구 무거동 272-1",
-        roadAddress: "울산광역시 남구 굴화3길 3",
+        locAddress: result.locAddress,
+        roadAddress: result.roadAddress,
       });
       setCurrentLocation({
         latitude: latitude,
@@ -123,13 +129,10 @@ const MapFind = () => {
 
   //메인화면으로 이동
   const moveToHome = () => {
-
     dispatch(
       changeAddress({
-        locAddress: "울산 남구 무거동 272-1",
-        roadAddress: "지도에서 찾기",
-        longitude: 129.262584287123,
-        latitude: 35.5555834682686,
+        longitude: currentLocation.longitude,
+        latitude: currentLocation.latitude,
       })
     );
 
@@ -143,23 +146,26 @@ const MapFind = () => {
       <Header left={1} right={0} title="지도에서 주소 찾기" />
 
       {/** 구글 지도 */}
-      {currentLocation.latitude !== undefined &&
-        currentLocation.longitude !== undefined && (
-          <MapView
-            ref={mapViewRef}
-            style={styles.map}
-            initialRegion={{
-              latitude: currentLocation.latitude || 0,
-              longitude: currentLocation.longitude || 0,
-              latitudeDelta: 0.001,
-              longitudeDelta: 0.001,
-            }}
-            provider={PROVIDER_GOOGLE}
-            onRegionChangeComplete={handleRegionChangeComplete}
-          ></MapView>
-        )}
-      <View pointerEvents="none" style={styles.addressContainer}>
-        <CustomMarker title="" />
+      <View style={styles.mapView}>
+        {currentLocation.latitude !== undefined &&
+          currentLocation.longitude !== undefined && (
+            <MapView
+              ref={mapViewRef}
+              style={styles.map}
+              initialRegion={{
+                latitude: currentLocation.latitude || 0,
+                longitude: currentLocation.longitude || 0,
+                latitudeDelta: 0.001,
+                longitudeDelta: 0.001,
+              }}
+              showsUserLocation
+              provider={PROVIDER_GOOGLE}
+              onRegionChangeComplete={handleRegionChangeComplete}
+            ></MapView>
+          )}
+        <View pointerEvents="none" style={styles.addressContainer}>
+          <CustomMarker title="" />
+        </View>
       </View>
 
       <Pressable
@@ -185,7 +191,12 @@ const MapFind = () => {
         ]}
       >
         <View style={styles.modalContent}>
-          <Text style={styles.addressText}>{currentAddress.locAddress}</Text>
+          <Text style={styles.roadAddressText}>
+            {currentAddress.roadAddress}
+          </Text>
+          <Text style={styles.locAddressText}>
+            [지번] {currentAddress.locAddress}
+          </Text>
           <Pressable
             onPress={moveToHome}
             android_ripple={{ color: Color.lightPurple }}
@@ -207,6 +218,10 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Color.white,
+  },
+  mapView: {
+    flex: 1,
+    marginBottom:180
   },
   map: {
     flex: 1,
@@ -232,19 +247,20 @@ const styles = StyleSheet.create({
   },
   addressContainer: {
     position: "absolute",
-    width: "100%",
-    height: "100%",
-    borderRadius: 8,
-    padding: 16,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "transparent",
+    paddingBottom:40
   },
   modalContainer: {
     position: "absolute",
     width: "100%",
     bottom: 0,
-    height: 220,
+    height: 200,
     backgroundColor: Color.white,
     zIndex: 100,
     borderTopLeftRadius: 30,
@@ -262,12 +278,19 @@ const styles = StyleSheet.create({
   pressedItem: {
     opacity: 0.75,
   },
-  addressText: {
-    marginTop: 50,
+  roadAddressText: {
+    marginTop: 30,
     marginLeft: 40,
-    marginBottom: 35,
+    marginBottom: 10,
     fontFamily: "Pretendard-Medium",
     fontSize: 16,
+  },
+  locAddressText: {
+    marginLeft: 40,
+    marginBottom: 20,
+    fontFamily: "Pretendard-Medium",
+    fontSize: 14,
+    color: Color.gray,
   },
   settingContainer: {
     marginHorizontal: 20,
