@@ -38,6 +38,9 @@ import MembershipInfo from "./pages/membership/MembershipInfo";
 import MembershipAccount from "./pages/membership/MembershipAccount";
 import MembershipEnd from "./pages/membership/MembershipEnd";
 import MembershipAgree from "./pages/membership/MembershipAgree";
+import ModifyUserId from './pages/mypage/ModifyUserId';
+import ModifyUserEmail from './pages/mypage/ModifyUserEmail';
+import ModifyUserPhoneNum from './pages/mypage/ModifyUserPhoneNum';
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import MembershipStart from "./pages/membership/MembershipStart";
@@ -109,6 +112,9 @@ export default function App() {
             <Stack.Screen name="BeforeSearch" component={BeforeSeach} />
             <Stack.Screen name="WriteReview" component={WriteReview} />
             <Stack.Screen name="TermsOfService" component={TermsOfService} />
+            <Stack.Screen name="ModifyUserId" component={ModifyUserId} />
+            <Stack.Screen name="ModifyUserEmail" component={ModifyUserEmail} />
+            <Stack.Screen name="ModifyUserPhoneNum" component={ModifyUserPhoneNum} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>
