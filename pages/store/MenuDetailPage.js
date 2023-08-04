@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
-import {View, Text, Button, TouchableOpacity, SafeAreaView, Dimensions, ScrollView} from 'react-native';
+import {View, Text, Button, TouchableOpacity, SafeAreaView, Dimensions, ScrollView, Alert} from 'react-native';
 import Constants from 'expo-constants';
 import { WithLocalSvg } from 'react-native-svg';
 import DownSVG from '../../assets/images/down.svg';
@@ -9,6 +9,9 @@ import MinusSVG from '../../assets/images/minus.svg';
 import PlusSVG from '../../assets/images/plus.svg';
 import WarningSVG from '../../assets/images/warning.svg';
 import Header from '../../components/common/Header';
+import { useDispatch } from "react-redux";
+import { basketAddAction } from "../../store/basketAdd";
+import {baseUrl, jwt} from "../../utils/baseUrl";
 
 // 안드로이드
 //const statusBarHeight = Constants.statusBarHeight;
@@ -20,12 +23,93 @@ const windowHeight = Dimensions.get('window').height
 
 const totalHeight = windowHeight;
 
-export default function MenuDetailPage({ navigation }) {
+export default function MenuDetailPage({ navigation, storeIdx, menuIdx }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [discountRate, setDiscountRate] = useState(50)
     const [originalPrice, setOriginalPrice] = useState(40000);
     const [discountPrice, setDiscountPrice] = useState(20000);
+    const dispatch = useDispatch();
+
+
+    const checkSameStore = () => {
+        const apiUrl = baseUrl+"/jat/app/basket/same-store";
+
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                storeIdx: 2
+            })
+        };
+
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                const ssc = data.sameStoreCheck
+                if (data.code === 1000){
+                    if (ssc){
+                        Alert.alert(
+                            "장바구니에 추가 하시겠습니까?",
+                            "다른 가게의 메뉴입니다.\n 기존의 장바구니가 지워집니다.",
+                            [
+                                {
+                                    text: "네",
+                                    onPress: () => addBasket(ssc, storeIdx)
+                                },
+                                {
+                                    text: "아니오",
+                                    onPress: () => navigation.pop()
+                                }
+                            ],
+                            { cancelable: false}
+                        )
+                    }
+                    else
+                        addBasket(ssc)
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            })
+    }
+
+    const addBasket = (sameStoreCheck) => {
+        const apiUrl = baseUrl+"/jat/app/basket";
+
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                storeIdx: 2,
+                todaymenuIdx: 1,
+                count: 2,
+                sameStoreCheck: 0
+            })
+        };
+        return;
+
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                if (data.code === 1000){
+                    dispatch(basketAddAction({add: true}))
+                    navigation.pop();
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            })
+    }
+
 
     return (
         <SafeAreaView>
@@ -117,7 +201,7 @@ export default function MenuDetailPage({ navigation }) {
                         </MenuQuantityWrapper>
                     </View>
                     <MenuOrderWrapper>
-                        <MenuOrderButton>
+                        <MenuOrderButton onPress={() => checkSameStore()}>
                             <MenuOrderText>
                                 {(discountPrice * quantity).toLocaleString()}원 담기
                             </MenuOrderText>
