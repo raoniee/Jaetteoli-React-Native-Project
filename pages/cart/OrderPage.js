@@ -97,17 +97,17 @@ export default function OrderPage({ navigation }) {
                             픽업 예정 시간
                         </CommonText>
                     </CommonTextSection>
-                    <PickupTimeSection>
-                        <PickupTimeText>
-                            {date.toLocaleTimeString().slice(0,-3)}
-                        </PickupTimeText>
-                        <TouchableOpacity onPress={() => setVisibleModal(true)}>
-                            <WithLocalSvg
-                                width={24}
-                                height={22.75}
-                                asset={RightSVG} />
-                        </TouchableOpacity>
-                    </PickupTimeSection>
+                    <TouchableOpacity onPress={() => setVisibleModal(true)}>
+                        <PickupTimeSection>
+                            <PickupTimeText>
+                                {date.toLocaleTimeString().slice(0,-3)}
+                            </PickupTimeText>
+                                <WithLocalSvg
+                                    width={24}
+                                    height={22.75}
+                                    asset={RightSVG} />
+                        </PickupTimeSection>
+                    </TouchableOpacity>
                 </OrderWrapper>
                 <OrderWrapper gap={15}>
                     <CommonTextSection>
