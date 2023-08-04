@@ -1,18 +1,20 @@
 import Header from "../../components/common/Header";
-import { SafeAreaView, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
+import {Animated, SafeAreaView, TouchableOpacity, TouchableWithoutFeedback} from "react-native";
 import * as Clipboard from 'expo-clipboard';
 import styled from "styled-components/native";
 import { Path, Svg, WithLocalSvg} from "react-native-svg";
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import MapLocationSVG from "../../assets/images/map-location.svg";
-import React, { useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import DownSVG from "../../assets/images/down.svg";
 import WarningSVG from "../../assets/images/warning.svg";
 import ArrowRightSVG from "../../assets/images/arrow_right.svg";
 import SortBySVG from "../../assets/images/sort_by.svg";
 import CheckSVG from "../../assets/images/check.svg";
 import CustomModal from "../../components/modal/CustomModal";
-import {useNavigation} from "@react-navigation/native";
+import {useFocusEffect, useNavigation, useRoute} from "@react-navigation/native";
+import { basketAddAction } from "../../store/basketAdd";
+import {useDispatch, useSelector} from "react-redux";
 
 export default function StoreDetailPage({navigation}) {
     const [ selected, setSelected ] = useState(1);
@@ -20,6 +22,34 @@ export default function StoreDetailPage({navigation}) {
     const [ modalVisible, setModalVisible ] = useState(false);
     const [ sortBy, setSortBy ] = useState(1);
     const [ sortByTouch, setSortByTouch ] = useState(1);
+    const dispatch = useDispatch()
+    const basketAdd = useSelector(({basketAdd}) => basketAdd.add)
+    const fadeAnim = useRef(new Animated.Value(1)).current;
+
+    useFocusEffect(
+        useCallback(() => {
+            if (basketAdd === true) {
+                console.log(fadeAnim)
+                setTimeout(() => {
+                    Animated.timing(fadeAnim, {
+                        toValue: 0,
+                        duration: 1000,
+                        useNativeDriver: false, // false로 설정
+                    }).start(() => {
+                        dispatch(basketAddAction({ add: false }))
+                        Animated.timing(fadeAnim, {
+                            toValue: 1,
+                            duration: 0,
+                            useNativeDriver: false
+                        }).start()
+                    });
+                }, 1000);
+            }
+        }, [basketAdd, fadeAnim, dispatch])
+    );
+
+
+
 
     const CheckComponent = () => (
         <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -293,6 +323,15 @@ export default function StoreDetailPage({navigation}) {
                     </TouchableWithoutFeedback>
                 </ModalSection>
             </CustomModal>
+
+            {basketAdd &&
+                <BasketAddView style={{opacity: fadeAnim}}>
+                        <BasketAddText>
+                            장바구니에 메뉴를 추가했습니다.
+                        </BasketAddText>
+                </BasketAddView>
+            }
+
         </SafeAreaView>
     )
 }
@@ -1736,4 +1775,30 @@ const ModalText = styled.Text`
   font-style: normal;
   font-weight: ${({selected}) => selected ? 500 : 400};
   line-height: 20px; /* 125% */
+`
+
+
+const BasketAddView = Animated.createAnimatedComponent(styled.View`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -23.5px;
+  margin-left: -126.5px;
+  display: flex;
+  height: 47px;
+  width: 253px;
+  padding: 0 30px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.40);
+`)
+
+const BasketAddText = styled.Text`
+  color: #FFF;
+  font-family: 'Pretendard-Regular';
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; /* 133.333% */
 `
