@@ -18,7 +18,7 @@ import Header from "../../components/common/Header";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HIGHT } = Dimensions.get("window");
 
-export default function MembershipAgree() {
+export default function MembershipAgree4() {
   return (
     <SafeAreaView style={styles.wrap}>
       <Header title="이용약관 동의" right={0} />

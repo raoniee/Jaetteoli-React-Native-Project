@@ -1,35 +1,44 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Color from "../../assets/colors/Color";
 import { StyleSheet, Text, TextInput } from "react-native";
+import { MembershipContext } from "../../context/MembershipContext";
 
-export default function LoginInput(props) {
+export default function LoginInput({
+  label,
+  sublabel,
+  subtitle,
+  placeholder,
+  keyboardType,
+  //InfoType,
+  subinput,
+  subplaceholder,
+}) {
+  //const { takeRusult, userInfo } = useContext(MembershipContext);
   const [text, setText] = useState("");
 
   return (
     <>
-      <Text style={styles.label}>{props.label}</Text>
-      {props.sublabel && <Text style={styles.sub_label}>{props.subtitle}</Text>}
+      <Text style={styles.label}>{label}</Text>
+      {sublabel && <Text style={styles.sub_label}>{subtitle}</Text>}
       <TextInput
         style={styles.input}
-        placeholder={props.placeholder}
-        keyboardType={props.keyboardType}
+        placeholder={placeholder}
+        keyboardType={keyboardType}
         returnKeyType="done"
-        onChangeText={(payload) => {
-          setText(payload);
-        }}
-        onSubmitEditing={() => {
-          if (text === "") {
-            return;
-          }
-          props.takeresult(text);
-        }}
-        value={text}
+        //onChangeText={(text) => takeRusult({ InfoType, text })}
+        // onSubmitEditing={() => {
+        //   if (text === "") {
+        //     return;
+        //   }
+        //   takeRusult(InfoType, text);
+        // }}
+        //value={text}
       />
-      {props.subinput && (
+      {subinput && (
         <TextInput
           style={styles.input}
-          placeholder={props.subplaceholder}
-          keyboardType={props.keyboardType}
+          placeholder={subplaceholder}
+          keyboardType={keyboardType}
           returnKeyType="done"
           // onChangeText={(payload) => {
           //   setText(payload);

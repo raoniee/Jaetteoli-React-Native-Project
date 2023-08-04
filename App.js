@@ -37,13 +37,17 @@ import SearchAccunt from "./pages/accountsearch/SearchAccount";
 import MembershipInfo from "./pages/membership/MembershipInfo";
 import MembershipAccount from "./pages/membership/MembershipAccount";
 import MembershipEnd from "./pages/membership/MembershipEnd";
-import MembershipAgree from "./pages/membership/MembershipAgree";
-import ModifyUserId from './pages/mypage/ModifyUserId';
-import ModifyUserEmail from './pages/mypage/ModifyUserEmail';
-import ModifyUserPhoneNum from './pages/mypage/ModifyUserPhoneNum';
+import MembershipAgree from "./pages/membership/MembershipAgree1";
+import ModifyUserId from "./pages/mypage/ModifyUserId";
+import ModifyUserEmail from "./pages/mypage/ModifyUserEmail";
+import ModifyUserPhoneNum from "./pages/mypage/ModifyUserPhoneNum";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import MembershipStart from "./pages/membership/MembershipStart";
+import MembershipAgree1 from "./pages/membership/MembershipAgree1";
+import MembershipAgree2 from "./pages/membership/MembershipAgree2";
+import MembershipAgree3 from "./pages/membership/MembershipAgree3";
+import MembershipAgree4 from "./pages/membership/MembershipAgree4";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -87,13 +91,29 @@ export default function App() {
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="LoginStart" component={LoginStart} />
             <Stack.Screen name="MembershipStart" component={MembershipStart} />
-            <Stack.Screen name="MembershipAgree" component={MembershipAgree} />
+            <Stack.Screen
+              name="MembershipAgree1"
+              component={MembershipAgree1}
+            />
+            <Stack.Screen
+              name="MembershipAgree2"
+              component={MembershipAgree2}
+            />
+            <Stack.Screen
+              name="MembershipAgree3"
+              component={MembershipAgree3}
+            />
+            <Stack.Screen
+              name="MembershipAgree4"
+              component={MembershipAgree4}
+            />
             <Stack.Screen name="MembershipInfo" component={MembershipInfo} />
             <Stack.Screen
               name="MembershipAccount"
               component={MembershipAccount}
             />
             <Stack.Screen name="MembershipEnd" component={MembershipEnd} />
+            <Stack.Screen name="SearchAccunt" component={SearchAccunt} />
             <Stack.Screen name="MainTabs" component={MainTabs} />
             <Stack.Screen name="InitAddress" component={InitAddress} />
             <Stack.Screen name="MapFind" component={MapFind} />
@@ -114,7 +134,10 @@ export default function App() {
             <Stack.Screen name="TermsOfService" component={TermsOfService} />
             <Stack.Screen name="ModifyUserId" component={ModifyUserId} />
             <Stack.Screen name="ModifyUserEmail" component={ModifyUserEmail} />
-            <Stack.Screen name="ModifyUserPhoneNum" component={ModifyUserPhoneNum} />
+            <Stack.Screen
+              name="ModifyUserPhoneNum"
+              component={ModifyUserPhoneNum}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

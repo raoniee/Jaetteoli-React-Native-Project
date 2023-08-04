@@ -56,9 +56,11 @@ export default function LoginStart({ navigation }) {
             <Text style={styles.idsave_text}>아이디 저장</Text>
           </View>
           <View>
-            <TouchableWithoutFeedback>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SearchAccunt")}
+            >
               <Text style={styles.searchgo}>아이디_비밀번호 찾기</Text>
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
           </View>
         </View>
         <Button
