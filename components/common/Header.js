@@ -9,6 +9,8 @@ import DefaultBellSVG from '../../assets/images/default_bell.svg';
 import DefaultCartSVG from '../../assets/images/default_cart.svg';
 import XSVG from '../../assets/images/x.svg';
 import { useNavigation } from '@react-navigation/native';
+import {useEffect, useState} from "react";
+import {baseUrl, jwt} from "../../utils/baseUrl";
 
 const HeaderWrapper = styled.View`
   position: relative;
@@ -49,6 +51,31 @@ export default function Header({ color, backgroundColor, title, left = 1, right 
     const LeftComponent = left === 0 ? EmptyView : left === 1 ? color === 'white' ? WhiteLeft : DefaultLeft : X;
     const BellComponent = right === 1 ? color === 'white' ? WhiteBell : DefaultBell : EmptyView;
     const BasketComponent = right === 1 ? color === 'white' ? WhiteCart : DefaultCart : EmptyView;
+    const [ nums, setNums ] = useState(0);
+
+    useEffect(() => {
+        const apiUrl = baseUrl+"/jat/app/basket/count";
+
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+            },
+        };
+
+        return;
+
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                if (data.code === 1000)
+                    setNums(data.result.basketCount);
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            })
+    }, [])
 
     return (
         <View style={{ position: 'relative', backgroundColor: backgroundColor ? backgroundColor : null}}>
@@ -57,7 +84,7 @@ export default function Header({ color, backgroundColor, title, left = 1, right 
                 <LeftComponent />
                 <HeaderRightWrapper>
                     <BellComponent />
-                    <BasketComponent />
+                    <BasketComponent nums={nums}/>
                 </HeaderRightWrapper>
             </HeaderWrapper>
             <HeaderTitleWrapper>
@@ -116,7 +143,7 @@ const WhiteBell = () => {
         )
 }
 
-const DefaultCart = () => {
+const DefaultCart = ({nums}) => {
     const navigation = useNavigation();
     return (
         <TouchableOpacity onPress={() => navigation.navigate('ShopBasketPage')}>
@@ -124,11 +151,16 @@ const DefaultCart = () => {
                 width={24}
                 height={24}
                 asset={DefaultCartSVG}/>
+            <BasketQuantityBox>
+                <BasketQuantityText>
+                    {nums}
+                </BasketQuantityText>
+            </BasketQuantityBox>
         </TouchableOpacity>
     )
 }
 
-const WhiteCart = () => {
+const WhiteCart = ({nums}) => {
     const navigation = useNavigation();
     return (
         <TouchableOpacity onPress={() => navigation.navigate('ShopBasketPage')}>
@@ -136,6 +168,11 @@ const WhiteCart = () => {
                 width={24}
                 height={24}
                 asset={WhiteCartSVG}/>
+            <BasketQuantityBox>
+                <BasketQuantityText>
+                    {nums}
+                </BasketQuantityText>
+            </BasketQuantityBox>
         </TouchableOpacity>
     )
 }
@@ -156,4 +193,27 @@ const X = () => {
 const EmptyView = styled.View`
   width: 24px;
   height: 24px;
+`
+
+const BasketQuantityBox = styled.View`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 12px;
+  bottom: 14px;
+  width: 17px;
+  height: 17px;
+  background: #8377E9;
+  border-radius: 17px;
+`
+
+const BasketQuantityText = styled.Text`
+  color: #FFF;
+  text-align: center;
+  font-family: 'Pretendard-Medium';
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 `
