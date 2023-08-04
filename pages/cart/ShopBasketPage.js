@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {
     View,
@@ -18,6 +18,8 @@ import MinusSVG from "../../assets/images/minus.svg";
 import PlusSVG from "../../assets/images/plus.svg";
 import CancelSVG from "../../assets/images/cancel.svg";
 import Header from "../../components/common/Header";
+import {baseUrl, jwt} from "../../utils/baseUrl";
+import {basketAddAction} from "../../store/basketAdd";
 
 // 안드로이드
 //const statusBarHeight = Constants.statusBarHeight;
@@ -31,6 +33,36 @@ const windowHeight = Dimensions.get('window').height
 const totalHeight = windowHeight - statusBarHeight;
 
 export default function ShopBasketPage({ navigation }) {
+
+
+    useEffect(() => {
+        getBasketList();
+    }, [])
+
+    const getBasketList = () => {
+        const apiUrl = baseUrl+"/jat/app/basket";
+
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+            },
+        };
+
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                if (data.code === 1000){
+                    console.log(data)
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            })
+    }
+
+
     return (
         <SafeAreaView style={{backgroundColor: 'white'}}>
             <Header
