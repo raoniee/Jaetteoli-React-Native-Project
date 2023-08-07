@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import Color from "../../assets/colors/Color";
 import { StyleSheet, Text, TextInput } from "react-native";
 import { MembershipContext } from "../../context/MembershipContext";
+import { validateName } from "../../utils/useful-function";
 
 export default function LoginInput({
   label,
@@ -9,12 +10,15 @@ export default function LoginInput({
   subtitle,
   placeholder,
   keyboardType,
-  //InfoType,
+  InfoType,
   subinput,
   subplaceholder,
+  alertresult,
+  alerttext,
+  vaildTest,
 }) {
-  //const { takeRusult, userInfo } = useContext(MembershipContext);
-  const [text, setText] = useState("");
+  const { takeRusult, userInfo } = useContext(MembershipContext);
+  //const [text, setText] = useState("");
 
   return (
     <>
@@ -25,7 +29,8 @@ export default function LoginInput({
         placeholder={placeholder}
         keyboardType={keyboardType}
         returnKeyType="done"
-        //onChangeText={(text) => takeRusult({ InfoType, text })}
+        onBlur={vaildTest}
+        onChangeText={(text) => takeRusult({ InfoType, text })}
         // onSubmitEditing={() => {
         //   if (text === "") {
         //     return;
@@ -34,6 +39,7 @@ export default function LoginInput({
         // }}
         //value={text}
       />
+      {!alertresult && <Text style={styles.inputalert}>{alerttext}</Text>}
       {subinput && (
         <TextInput
           style={styles.input}
@@ -70,6 +76,11 @@ const styles = StyleSheet.create({
     backgroundColor: Color.brightGray,
     height: 62,
     borderRadius: 30,
+    paddingLeft: 20,
+    marginBottom: 10,
+  },
+  inputalert: {
+    color: Color.red,
     paddingLeft: 20,
     marginBottom: 20,
   },

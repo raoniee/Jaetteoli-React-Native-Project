@@ -14,17 +14,17 @@ export function MembershipProvider({ children }) {
     isEmail: false,
     isPhone: false,
   });
-  const [getnumber, setGetnumber] = useState(false);
-  const [validcheck, setValidCheck] = useState(false);
   const [userInfo, setUserInfo] = useState({
-    agreements: [],
     name: "",
     birthday: "",
     phone: "",
     userid: "",
     userpw: "",
     useremail: "",
+    certificationNum: "",
   });
+
+  //console.log(userInfo);
 
   const [twoState, setTwoState] = useState(
     agreements.isSns && agreements.isEmail && agreements.isPhone
@@ -100,26 +100,17 @@ export function MembershipProvider({ children }) {
     }
   };
 
-  // const takeRusult = (InfoType, result) => {
-  //   setUserInfo((prev) => ({
-  //     ...prev,
-  //     [InfoType]: result,
-  //   }));
-  // };
+  const takeCertificationNum = (result) => {
+    setUserInfo((prev) => ({
+      ...prev,
+      certificationNum: result,
+    }));
+  };
 
   function takeRusult(event) {
     const { InfoType, text } = event;
 
     let processedData = text;
-
-    // // 조건에 따른 value 변환
-    // if (type === "text") {
-    //   processedData = value.toUpperCase();
-    // } else if (type === "number") {
-    //   processedData = value * 2;
-    // }
-    // console.log(InfoType);
-    // console.log(processedData);
 
     // 데이터 저장
     setUserInfo((prev) => ({
@@ -127,22 +118,6 @@ export function MembershipProvider({ children }) {
       [InfoType]: processedData,
     }));
   }
-
-  const handlePhoneBTN = () => {
-    if (!getnumber) {
-      if (
-        userInfo.name.trim() === "" &&
-        userInfo.birthday.trim() === "" &&
-        userInfo.phone.trim() === ""
-      ) {
-        setValidCheck(false);
-        alert("빈칸 확인해주세요");
-        return;
-      } else {
-        setValidCheck(true);
-      }
-    }
-  };
 
   return (
     <MembershipContext.Provider
@@ -156,9 +131,8 @@ export function MembershipProvider({ children }) {
         handleAllagree,
         twoAllChangeHandler,
         takeRusult,
-        getnumber,
-        setGetnumber,
-        handlePhoneBTN,
+        userInfo,
+        takeCertificationNum,
       }}
     >
       {children}

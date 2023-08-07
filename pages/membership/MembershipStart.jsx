@@ -74,15 +74,19 @@ function SingleAgreesContent({ navigation }) {
         <AgreeSentence
           text="[필수] 이용약관 동의"
           onPress={() => {
-            navigation.navigate("MembershipAgree1");
+            navigation.navigate("MembershipAgreeDesc", {
+              title: "m1",
+              type: "mandatoryOne",
+            });
           }}
           param="mandatoryOne"
-          //checked={agreements.mandatoryOne}
         />
         <AgreeSentence
           text="[필수] 개인정보 수집이용 동의"
           onPress={() => {
-            navigation.navigate("MembershipAgree2");
+            navigation.navigate("MembershipAgreeDesc", {
+              title: "m2",
+            });
           }}
           param="mandatoryTwo"
         />
@@ -94,7 +98,9 @@ function SingleAgreesContent({ navigation }) {
         <AgreeSentence
           text="[선택] 서비스/이벤트 정보 제공을 위한 개인정보 수집 이용 동의"
           onPress={() => {
-            navigation.navigate("MembershipAgree3");
+            navigation.navigate("MembershipAgreeDesc", {
+              title: "s1",
+            });
           }}
           param="selectiveOne"
         />
@@ -102,7 +108,9 @@ function SingleAgreesContent({ navigation }) {
           text="[선택] 광고성 정보 수신동의"
           sns={true}
           onPress={() => {
-            navigation.navigate("MembershipAgree4");
+            navigation.navigate("MembershipAgreeDesc", {
+              title: "s2",
+            });
           }}
           param="selectiveTwo"
         />

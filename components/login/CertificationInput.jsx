@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Color from "../../assets/colors/Color";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import { MembershipContext } from "../../context/MembershipContext";
 
-export default function CertificationInput() {
+export default function CertificationInput(InfoType) {
+  const { takeCertificationNum } = useContext(MembershipContext);
   const [remainingTime, setRemainingTime] = useState(180); // 초기 제한 시간을 3분(180초)으로 설정
 
   useEffect(() => {
@@ -31,6 +33,10 @@ export default function CertificationInput() {
           placeholder="인증번호 입력"
           keyboardType="number-pad"
           returnKeyType="done"
+          // onBlur={() => {
+          //   console.log(InfoType);
+          // }}
+          onChangeText={(text) => takeCertificationNum(text)}
         />
         <Text style={styles.timer}>
           {Math.floor(remainingTime / 60)}:{remainingTime % 60}
