@@ -15,8 +15,23 @@ import CustomModal from "../../components/modal/CustomModal";
 import {useFocusEffect, useNavigation, useRoute} from "@react-navigation/native";
 import { basketAddAction } from "../../store/basketAdd";
 import {useDispatch, useSelector} from "react-redux";
+import {baseUrl, jwt} from "../../utils/baseUrl";
 
 export default function StoreDetailPage({navigation}) {
+    const [ storeState, setStoreState ] = useState({
+        storeIdx: null,
+        storeName: null,
+        storePhone: null,
+        x: null,
+        y: null,
+        storeAddress: null,
+        distance: null,
+        duration: null,
+        starAvg: null,
+        subscribeCount: null,
+        detailIngredientInfo: null,
+        subscribeCheck: null
+    });
     const [ selected, setSelected ] = useState(1);
     const [ subscribe, setSubscribe ] = useState(false);
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -24,7 +39,10 @@ export default function StoreDetailPage({navigation}) {
     const [ sortByTouch, setSortByTouch ] = useState(1);
     const dispatch = useDispatch()
     const basketAdd = useSelector(({basketAdd}) => basketAdd.add)
+    const userLocation = useSelector(({mapAddress}) => mapAddress)
     const fadeAnim = useRef(new Animated.Value(1)).current;
+    const route = useRoute();
+    const { storeIdx } = route.params;
 
     useFocusEffect(
         useCallback(() => {
@@ -34,19 +52,72 @@ export default function StoreDetailPage({navigation}) {
                     Animated.timing(fadeAnim, {
                         toValue: 0,
                         duration: 1000,
-                        useNativeDriver: false, // false로 설정
+                        useNativeDriver: true, // false로 설정
                     }).start(() => {
                         dispatch(basketAddAction({ add: false }))
                         Animated.timing(fadeAnim, {
                             toValue: 1,
                             duration: 0,
-                            useNativeDriver: false
+                            useNativeDriver: true
                         }).start()
                     });
                 }, 1000);
             }
         }, [basketAdd, fadeAnim, dispatch])
     );
+
+    useEffect(() => {
+        getStoreState()
+    }, [])
+
+    const getStoreState = () => {
+        const apiUrl = baseUrl+`/jat/app/stores/info?storeIdx=${storeIdx}&longitude=${userLocation.longitude ? userLocation.longitude : 0}&latitude=${userLocation.latitude ? userLocation.latitude : 0}`;
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+            },
+        };
+
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 1000){
+                    console.log(data.result)
+                    setStoreState(data.result)
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            })
+    }
+
+    const postSubscribe = (check) => {
+        const apiUrl = baseUrl+`/jat/app/subscription`;
+        console.log(apiUrl, storeIdx, check)
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                storeIdx: storeIdx,
+                yn: check
+            })
+        };
+
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 1000){
+                    console.log(data.result)
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            })
+    }
 
 
 
@@ -75,11 +146,12 @@ export default function StoreDetailPage({navigation}) {
                         <StoreInformationSection>
                             <StoreNameSection>
                                 <StoreNameText>
-                                    울산미주구리
+                                    {storeState.storeName}
                                 </StoreNameText>
                                 <StoreRatingSection>
                                     <EmptyView>
-                                        <EmptyView>
+
+                                        <EmptyView percentage={storeState.starAvg * 10}>
                                             <Svg width="22" height="23" viewBox="0 0 22 23" fill="none">
                                                 <Path d="M20.0968 9.32291C20.0168 9.07281 19.8679 8.85035 19.6671 8.68107C19.4664 8.51179 19.222 8.40256 18.962 8.36591L14.3319 7.69308L12.2611 3.49749C12.1451 3.26201 11.9654 3.06371 11.7425 2.92505C11.5196 2.78638 11.2623 2.71289 10.9998 2.71289C10.7373 2.71289 10.48 2.78638 10.2571 2.92505C10.0342 3.06371 9.8545 3.26201 9.73846 3.49749L7.66771 7.69308L3.03763 8.36591C2.77764 8.40353 2.53337 8.51317 2.33248 8.68244C2.13158 8.8517 1.98208 9.07382 1.9009 9.32366C1.81972 9.5735 1.8101 9.84107 1.87313 10.0961C1.93616 10.3511 2.06932 10.5834 2.25754 10.7667L5.60888 14.0327L4.81779 18.6445C4.7729 18.9032 4.80145 19.1693 4.9002 19.4127C4.99895 19.656 5.16394 19.8667 5.37644 20.021C5.58894 20.1753 5.84043 20.2669 6.10237 20.2854C6.36431 20.3039 6.62619 20.2486 6.85829 20.1258L10.9998 17.9469L15.1413 20.124C15.3735 20.2461 15.6353 20.3009 15.897 20.282C16.1588 20.2631 16.41 20.1714 16.6223 20.0172C16.8346 19.8629 16.9995 19.6524 17.0984 19.4093C17.1973 19.1663 17.2262 18.9004 17.1818 18.6417L16.3907 14.0309L19.742 10.7667C19.9312 10.5839 20.0648 10.3514 20.1276 10.0959C20.1903 9.8405 20.1797 9.57254 20.0968 9.32291Z"
                                                       fill="#F6C844"/>
@@ -87,7 +159,7 @@ export default function StoreDetailPage({navigation}) {
                                         </EmptyView>
                                     </EmptyView>
                                     <EmptyView>
-                                        <EmptyView>
+                                        <EmptyView percentage={storeState.starAvg > 1 ? (storeState.starAvg - 1) * 10 : 0}>
                                             <Svg width="22" height="23" viewBox="0 0 22 23" fill="none">
                                                 <Path d="M20.0968 9.32291C20.0168 9.07281 19.8679 8.85035 19.6671 8.68107C19.4664 8.51179 19.222 8.40256 18.962 8.36591L14.3319 7.69308L12.2611 3.49749C12.1451 3.26201 11.9654 3.06371 11.7425 2.92505C11.5196 2.78638 11.2623 2.71289 10.9998 2.71289C10.7373 2.71289 10.48 2.78638 10.2571 2.92505C10.0342 3.06371 9.8545 3.26201 9.73846 3.49749L7.66771 7.69308L3.03763 8.36591C2.77764 8.40353 2.53337 8.51317 2.33248 8.68244C2.13158 8.8517 1.98208 9.07382 1.9009 9.32366C1.81972 9.5735 1.8101 9.84107 1.87313 10.0961C1.93616 10.3511 2.06932 10.5834 2.25754 10.7667L5.60888 14.0327L4.81779 18.6445C4.7729 18.9032 4.80145 19.1693 4.9002 19.4127C4.99895 19.656 5.16394 19.8667 5.37644 20.021C5.58894 20.1753 5.84043 20.2669 6.10237 20.2854C6.36431 20.3039 6.62619 20.2486 6.85829 20.1258L10.9998 17.9469L15.1413 20.124C15.3735 20.2461 15.6353 20.3009 15.897 20.282C16.1588 20.2631 16.41 20.1714 16.6223 20.0172C16.8346 19.8629 16.9995 19.6524 17.0984 19.4093C17.1973 19.1663 17.2262 18.9004 17.1818 18.6417L16.3907 14.0309L19.742 10.7667C19.9312 10.5839 20.0648 10.3514 20.1276 10.0959C20.1903 9.8405 20.1797 9.57254 20.0968 9.32291Z"
                                                       fill="#F6C844"/>
@@ -95,7 +167,7 @@ export default function StoreDetailPage({navigation}) {
                                         </EmptyView>
                                     </EmptyView>
                                     <EmptyView>
-                                        <EmptyView>
+                                        <EmptyView percentage={storeState.starAvg > 2 ? (storeState.starAvg - 2) * 10 : 0}>
                                             <Svg width="22" height="23" viewBox="0 0 22 23" fill="none">
                                                 <Path d="M20.0968 9.32291C20.0168 9.07281 19.8679 8.85035 19.6671 8.68107C19.4664 8.51179 19.222 8.40256 18.962 8.36591L14.3319 7.69308L12.2611 3.49749C12.1451 3.26201 11.9654 3.06371 11.7425 2.92505C11.5196 2.78638 11.2623 2.71289 10.9998 2.71289C10.7373 2.71289 10.48 2.78638 10.2571 2.92505C10.0342 3.06371 9.8545 3.26201 9.73846 3.49749L7.66771 7.69308L3.03763 8.36591C2.77764 8.40353 2.53337 8.51317 2.33248 8.68244C2.13158 8.8517 1.98208 9.07382 1.9009 9.32366C1.81972 9.5735 1.8101 9.84107 1.87313 10.0961C1.93616 10.3511 2.06932 10.5834 2.25754 10.7667L5.60888 14.0327L4.81779 18.6445C4.7729 18.9032 4.80145 19.1693 4.9002 19.4127C4.99895 19.656 5.16394 19.8667 5.37644 20.021C5.58894 20.1753 5.84043 20.2669 6.10237 20.2854C6.36431 20.3039 6.62619 20.2486 6.85829 20.1258L10.9998 17.9469L15.1413 20.124C15.3735 20.2461 15.6353 20.3009 15.897 20.282C16.1588 20.2631 16.41 20.1714 16.6223 20.0172C16.8346 19.8629 16.9995 19.6524 17.0984 19.4093C17.1973 19.1663 17.2262 18.9004 17.1818 18.6417L16.3907 14.0309L19.742 10.7667C19.9312 10.5839 20.0648 10.3514 20.1276 10.0959C20.1903 9.8405 20.1797 9.57254 20.0968 9.32291Z"
                                                       fill="#F6C844"/>
@@ -103,7 +175,7 @@ export default function StoreDetailPage({navigation}) {
                                         </EmptyView>
                                     </EmptyView>
                                     <EmptyView>
-                                        <EmptyView>
+                                        <EmptyView percentage={storeState.starAvg > 3 ? (storeState.starAvg - 3) * 10 : 0}>
                                             <Svg width="22" height="23" viewBox="0 0 22 23" fill="none">
                                                 <Path d="M20.0968 9.32291C20.0168 9.07281 19.8679 8.85035 19.6671 8.68107C19.4664 8.51179 19.222 8.40256 18.962 8.36591L14.3319 7.69308L12.2611 3.49749C12.1451 3.26201 11.9654 3.06371 11.7425 2.92505C11.5196 2.78638 11.2623 2.71289 10.9998 2.71289C10.7373 2.71289 10.48 2.78638 10.2571 2.92505C10.0342 3.06371 9.8545 3.26201 9.73846 3.49749L7.66771 7.69308L3.03763 8.36591C2.77764 8.40353 2.53337 8.51317 2.33248 8.68244C2.13158 8.8517 1.98208 9.07382 1.9009 9.32366C1.81972 9.5735 1.8101 9.84107 1.87313 10.0961C1.93616 10.3511 2.06932 10.5834 2.25754 10.7667L5.60888 14.0327L4.81779 18.6445C4.7729 18.9032 4.80145 19.1693 4.9002 19.4127C4.99895 19.656 5.16394 19.8667 5.37644 20.021C5.58894 20.1753 5.84043 20.2669 6.10237 20.2854C6.36431 20.3039 6.62619 20.2486 6.85829 20.1258L10.9998 17.9469L15.1413 20.124C15.3735 20.2461 15.6353 20.3009 15.897 20.282C16.1588 20.2631 16.41 20.1714 16.6223 20.0172C16.8346 19.8629 16.9995 19.6524 17.0984 19.4093C17.1973 19.1663 17.2262 18.9004 17.1818 18.6417L16.3907 14.0309L19.742 10.7667C19.9312 10.5839 20.0648 10.3514 20.1276 10.0959C20.1903 9.8405 20.1797 9.57254 20.0968 9.32291Z"
                                                       fill="#F6C844"/>
@@ -111,7 +183,7 @@ export default function StoreDetailPage({navigation}) {
                                         </EmptyView>
                                     </EmptyView>
                                     <EmptyView>
-                                        <EmptyView rate={5}>
+                                        <EmptyView percentage={storeState.starAvg > 4 ? (storeState.starAvg - 4) * 10 : 0}>
                                             <Svg width="20" height="23" viewBox="0 0 22 23" fill="none">
                                                 <Path d="M20.0968 9.32291C20.0168 9.07281 19.8679 8.85035 19.6671 8.68107C19.4664 8.51179 19.222 8.40256 18.962 8.36591L14.3319 7.69308L12.2611 3.49749C12.1451 3.26201 11.9654 3.06371 11.7425 2.92505C11.5196 2.78638 11.2623 2.71289 10.9998 2.71289C10.7373 2.71289 10.48 2.78638 10.2571 2.92505C10.0342 3.06371 9.8545 3.26201 9.73846 3.49749L7.66771 7.69308L3.03763 8.36591C2.77764 8.40353 2.53337 8.51317 2.33248 8.68244C2.13158 8.8517 1.98208 9.07382 1.9009 9.32366C1.81972 9.5735 1.8101 9.84107 1.87313 10.0961C1.93616 10.3511 2.06932 10.5834 2.25754 10.7667L5.60888 14.0327L4.81779 18.6445C4.7729 18.9032 4.80145 19.1693 4.9002 19.4127C4.99895 19.656 5.16394 19.8667 5.37644 20.021C5.58894 20.1753 5.84043 20.2669 6.10237 20.2854C6.36431 20.3039 6.62619 20.2486 6.85829 20.1258L10.9998 17.9469L15.1413 20.124C15.3735 20.2461 15.6353 20.3009 15.897 20.282C16.1588 20.2631 16.41 20.1714 16.6223 20.0172C16.8346 19.8629 16.9995 19.6524 17.0984 19.4093C17.1973 19.1663 17.2262 18.9004 17.1818 18.6417L16.3907 14.0309L19.742 10.7667C19.9312 10.5839 20.0648 10.3514 20.1276 10.0959C20.1903 9.8405 20.1797 9.57254 20.0968 9.32291Z"
                                                       fill="#F6C844"/>
@@ -119,13 +191,26 @@ export default function StoreDetailPage({navigation}) {
                                         </EmptyView>
                                     </EmptyView>
                                     <StoreRatingText>
-                                        5.0
+                                        {storeState.starAvg}
                                     </StoreRatingText>
                                 </StoreRatingSection>
                             </StoreNameSection>
-                            <TouchableWithoutFeedback onPress={() => setSubscribe(!subscribe)}>
+                            <TouchableWithoutFeedback onPress={() => {
+                                const temp = { ...storeState };
+                                if (temp.subscribeCheck){
+                                    temp.subscribeCheck = !temp.subscribeCheck;
+                                    temp.subscribeCount--;
+                                    postSubscribe(0)
+                                }
+                                else{
+                                    temp.subscribeCheck = !temp.subscribeCheck;
+                                    temp.subscribeCount++;
+                                    postSubscribe(1)
+                                }
+                                setStoreState(temp);
+                            }}>
                                 <StoreWantedBox>
-                                    <Svg width="22" height="23" viewBox="0 0 22 23" fill={subscribe ? '#8377E9' : 'none'}>
+                                    <Svg width="22" height="23" viewBox="0 0 22 23" fill={storeState.subscribeCheck ? '#8377E9' : 'none'}>
                                         <Path
                                             d="M11.0134 3.6265C4.89497 -3.59166 -2.89207 5.59509 3.22632 12.8132L11.0134 22L18.8004 12.8132C24.8721 5.65021 17.085 -3.53654 11.0134 3.6265Z"
                                             stroke="#8377E9"
@@ -134,7 +219,7 @@ export default function StoreDetailPage({navigation}) {
                                             strokeLinejoin="round"/>
                                     </Svg>
                                     <StoreWantedText>
-                                        166
+                                        {storeState.subscribeCount}
                                     </StoreWantedText>
                                 </StoreWantedBox>
                             </TouchableWithoutFeedback>
@@ -170,7 +255,7 @@ export default function StoreDetailPage({navigation}) {
                                     원산지 보기
                                 </StoreInformationTouchText>
                             </StoreInformationTouch>
-                            <StoreInformationTouch onPress={() => navigation.navigate('StoreMapPage')}>
+                            <StoreInformationTouch onPress={() => navigation.navigate('StoreMapPage', {latitude: storeState.y, longitude: storeState.x})}>
                                 <StoreInformationTouchSVGBox>
                                     <Svg width="25" height="24" viewBox="0 0 25 24" fill="none">
                                         <Path
@@ -188,30 +273,33 @@ export default function StoreDetailPage({navigation}) {
                             </StoreInformationTouch>
                         </StoreInformationSection2>
                         <StoreMap>
-                            <MapView
-                                style={{
-                                    flex: 1, // MapView가 부모 컨테이너에 맞게 확장됩니다.
-                                    borderRadius: 19, // 부모 컨테이너의 borderRadius와 일치시킵니다.
-                                    overflow: 'hidden', // borderRadius를 적용할 때 오버플로우를 숨깁니다.
-                                }}
-                                initialRegion={{
-                                    latitude: 35.5421,
-                                    longitude: 129.2593,
-                                    latitudeDelta: 0.001,
-                                    longitudeDelta: 0.001,
-                                }}
-                                legalLabelInsets={{ bottom: -500 }} // 이 부분이 추가된 것입니다.
-                                provider={PROVIDER_GOOGLE}
-                            >
-                                <Marker
-                                    coordinate={{
-                                        latitude: 35.5421,
-                                        longitude: 129.2593,
+                            {storeState.x &&
+                                <MapView
+                                    style={{
+                                        flex: 1, // MapView가 부모 컨테이너에 맞게 확장됩니다.
+                                        borderRadius: 19, // 부모 컨테이너의 borderRadius와 일치시킵니다.
+                                        overflow: 'hidden', // borderRadius를 적용할 때 오버플로우를 숨깁니다.
                                     }}
+                                    initialRegion={{
+                                        latitude: storeState.y,
+                                        longitude: storeState.x,
+                                        latitudeDelta: 0.001,
+                                        longitudeDelta: 0.001,
+                                    }}
+                                    legalLabelInsets={{ bottom: -500 }} // 이 부분이 추가된 것입니다.
+                                    provider={PROVIDER_GOOGLE}
+                                >
+                                    <Marker
+                                        coordinate={{
+                                            latitude: storeState.y,
+                                            longitude: storeState.x
+                                        }}
                                     >
-                                    <CustomMarker />
-                                </Marker>
-                            </MapView>
+                                        <CustomMarker />
+                                    </Marker>
+                                </MapView>
+                            }
+
                         </StoreMap>
                         <StoreAddressWrapper>
                             <StoreAddressSection>
@@ -221,14 +309,15 @@ export default function StoreDetailPage({navigation}) {
                                     asset={MapLocationSVG} />
                                 <StoreAddressTextBox>
                                     <StoreAddressText>
-                                        울산광역시 남구 대학로33번길 14 1층
+                                        {storeState.storeAddress}
                                     </StoreAddressText>
                                     <StoreAddressText>
-                                        (현재 주소로부터 약 36m, 도보 5분)
+                                        {userLocation.longitude && userLocation.latitude && `(현재 주소로부터 약 ${storeState.distance}m, 도보 ${storeState.duration}분)`}
+                                        {!userLocation.longitude && !userLocation.latitude && `(위치에 문제가 발생했습니다)`}
                                     </StoreAddressText>
                                 </StoreAddressTextBox>
                             </StoreAddressSection>
-                            <TouchableOpacity onPress={() => Clipboard.setStringAsync('울산광역시 남구 대학로33번길 14 1층')}>
+                            <TouchableOpacity onPress={() => Clipboard.setStringAsync(storeState.storeAddress)}>
                                 <StoreAddressCopyText>
                                     복사하기
                                 </StoreAddressCopyText>
@@ -254,9 +343,9 @@ export default function StoreDetailPage({navigation}) {
                                 {selected === 3 && <Line />}
                             </MenuBox>
                         </NavigationBar>
-                        {selected === 1 && <MenuComponent />}
-                        {selected === 2 && <InfoComponent />}
-                        {selected === 3 && <ReviewComponent sortBy={sortBy} modalVisible={setModalVisible}/>}
+                        {selected === 1 && <MenuComponent storeIdx={storeIdx}/>}
+                        {selected === 2 && <InfoComponent storeIdx={storeIdx}/>}
+                        {selected === 3 && <ReviewComponent sortBy={sortBy} modalVisible={setModalVisible} storeIdx={storeIdx}/>}
                     </StoreDetailWrapper>
                 )}/>
 
@@ -383,7 +472,7 @@ display: flex;
 `
 
 const EmptyView = styled.View`
-  width: ${({rate}) => rate ? 22/10*rate : 22}px;
+  width: ${({percentage}) => typeof percentage === 'number' ? 22/10*percentage : 22}px;
   height: 22px;
   overflow: hidden;
 `
@@ -552,11 +641,41 @@ const Line = styled.View`
 
 // 여기는 메뉴 버튼
 
-function MenuComponent() {
+function MenuComponent({storeIdx}) {
+    const [ menuState, setMenuState ] = useState({
+        storeIdx: null,
+        mainMenuList: [],
+        sideMenuList: []
+    });
     const [ isExpanded, setIsExpanded ] = useState(false);
-    const [ isMainExpanded, setIsMainExpanded ] = useState(true)
-    const [ isSideExpanded, setIsSideExpanded ] = useState(true)
-    const navigation = useNavigation()
+    const [ isMainExpanded, setIsMainExpanded ] = useState(true);
+    const [ isSideExpanded, setIsSideExpanded ] = useState(true);
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        getMenuState()
+    }, [])
+
+    const getMenuState = () => {
+        const apiUrl = baseUrl+`/jat/app/stores/info/details?storeIdx=${storeIdx}&type=menu`;
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+            },
+        };
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 1000){
+                    console.log(data.result)
+                    setMenuState(data.result)
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            })
+    }
 
     return (
         <>
@@ -593,102 +712,62 @@ function MenuComponent() {
                 </MenuTitleBox>
             </MenuTitleSection>
             {isMainExpanded &&
-                <>
-                    <TouchableWithoutFeedback onPress={() => navigation.navigate('MenuDetailPage')}>
-                        <MenuWrapper>
-                            <MenuSection>
-                                <MenuInfoWrapper>
-                                    <MenuInfoSection>
-                                        <MenuInfoBox>
-                                            <MenuInfoText1>
-                                                도다리
-                                            </MenuInfoText1>
-                                            <MenuInfoText2>
-                                                상추, 깻잎, 마늘, 고추, 된장 포함
-                                            </MenuInfoText2>
-                                        </MenuInfoBox>
-                                        <MenuQuantityBox>
-                                            <WithLocalSvg
-                                                width={13.5}
-                                                height={13.5}
-                                                asset={WarningSVG} />
-                                            <MenuQuantityText>
-                                                재고 3개
-                                            </MenuQuantityText>
-                                        </MenuQuantityBox>
-                                    </MenuInfoSection>
-                                    <MenuInfoImg
-                                        resizeMode="cover"
-                                        source={{uri: "https://s3-alpha-sig.figma.com/img/dc3f/fab0/770d06d808e97bcc6bba2bed883bf55b?Expires=1691366400&Signature=jj0WemQiRINpwE~sArwik3nGMq9~aui8gwfowCfoJhyvRC5IzaGzCSCVNw04Onb1C2Rqb-J2wNgMsSCcOWyMhOgFjs5c0e6tK2EaDiAZkP4yowcisYjci2UK7VudXYhNzUoMepJ32oh6-TKK9-U~zLWk41bec14hyfph~TGcWvcTijoLYh5Mu3-cBxDM00nkqNaCGbBEZkBtVm-l85Zi~e8xQbtxY6aatxhoSSTJQmV8iZf0w0GPYVPLCt6SgJqmVbSxeg1l1P6DbT1qE9h~Dbo-wrBE1WjUNqmIkA8po1dY9PBzIg2oW745z8idsAEZUKWbqk5-UTA0it2OTuAbhA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"}}/>
-                                </MenuInfoWrapper>
-                                <MenuPriceSection>
-                                    <OriginalPriceSection>
-                                        <OriginalPriceText>
-                                            {"40000".toLocaleString()}원
-                                        </OriginalPriceText>
-                                        <DiscountRateText>
-                                            {50} %
-                                        </DiscountRateText>
-                                    </OriginalPriceSection>
-                                    <WithLocalSvg
-                                        width={24}
-                                        height={22.75}
-                                        asset={ArrowRightSVG} />
-                                    <DiscountPriceText>
-                                        {"20000".toLocaleString()}원
-                                    </DiscountPriceText>
-                                </MenuPriceSection>
-                            </MenuSection>
-                        </MenuWrapper>
-                    </TouchableWithoutFeedback>
-
-                    <MenuWrapper>
-                        <MenuSection>
-                        <MenuInfoWrapper>
-                            <MenuInfoSection>
-                                <MenuInfoBox>
-                                    <MenuInfoText1>
-                                        도다리
-                                    </MenuInfoText1>
-                                    <MenuInfoText2>
-                                        상추, 깻잎, 마늘, 고추, 된장 포함
-                                    </MenuInfoText2>
-                                </MenuInfoBox>
-                                <MenuQuantityBox>
-                                    <WithLocalSvg
-                                        width={13.5}
-                                        height={13.5}
-                                        asset={WarningSVG} />
-                                    <MenuQuantityText>
-                                        재고 3개
-                                    </MenuQuantityText>
-                                </MenuQuantityBox>
-                            </MenuInfoSection>
-                            <MenuInfoImg
-                                resizeMode="cover"
-                                source={{uri: "https://s3-alpha-sig.figma.com/img/dc3f/fab0/770d06d808e97bcc6bba2bed883bf55b?Expires=1691366400&Signature=jj0WemQiRINpwE~sArwik3nGMq9~aui8gwfowCfoJhyvRC5IzaGzCSCVNw04Onb1C2Rqb-J2wNgMsSCcOWyMhOgFjs5c0e6tK2EaDiAZkP4yowcisYjci2UK7VudXYhNzUoMepJ32oh6-TKK9-U~zLWk41bec14hyfph~TGcWvcTijoLYh5Mu3-cBxDM00nkqNaCGbBEZkBtVm-l85Zi~e8xQbtxY6aatxhoSSTJQmV8iZf0w0GPYVPLCt6SgJqmVbSxeg1l1P6DbT1qE9h~Dbo-wrBE1WjUNqmIkA8po1dY9PBzIg2oW745z8idsAEZUKWbqk5-UTA0it2OTuAbhA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"}}/>
-                        </MenuInfoWrapper>
-                        <MenuPriceSection>
-                            <OriginalPriceSection>
-                                <OriginalPriceText>
-                                    {"40000".toLocaleString()}원
-                                </OriginalPriceText>
-                                <DiscountRateText>
-                                    {50} %
-                                </DiscountRateText>
-                            </OriginalPriceSection>
-                            <WithLocalSvg
-                                width={24}
-                                height={22.75}
-                                asset={ArrowRightSVG} />
-                            <DiscountPriceText>
-                                {"20000".toLocaleString()}원
-                            </DiscountPriceText>
-                        </MenuPriceSection>
-                    </MenuSection>
-                    </MenuWrapper>
-                </>
+                menuState.mainMenuList.map((item, index) => (
+                        <TouchableWithoutFeedback
+                            key={item.todaymenuIdx}
+                            onPress={() => navigation.navigate('MenuDetailPage', {
+                            storeIdx: storeIdx,
+                            menuIdx: item.todaymenuIdx
+                        })}>
+                            <MenuWrapper>
+                                <MenuSection>
+                                    <MenuInfoWrapper>
+                                        <MenuInfoSection>
+                                            <MenuInfoBox>
+                                                <MenuInfoText1>
+                                                    {item.menuName}
+                                                </MenuInfoText1>
+                                                <MenuInfoText2>
+                                                    {item.composition}
+                                                </MenuInfoText2>
+                                            </MenuInfoBox>
+                                            <MenuQuantityBox>
+                                                <WithLocalSvg
+                                                    width={13.5}
+                                                    height={13.5}
+                                                    asset={WarningSVG}/>
+                                                <MenuQuantityText>
+                                                    재고 {item.remain}개
+                                                </MenuQuantityText>
+                                            </MenuQuantityBox>
+                                        </MenuInfoSection>
+                                        <MenuInfoImg
+                                            resizeMode="cover"
+                                            source={{uri: item.menuUrl}}/>
+                                    </MenuInfoWrapper>
+                                    <MenuPriceSection>
+                                        <OriginalPriceSection>
+                                            <OriginalPriceText>
+                                                {item.originPrice.toLocaleString()}원
+                                            </OriginalPriceText>
+                                            <DiscountPercentageText>
+                                                {item.discount} %
+                                            </DiscountPercentageText>
+                                        </OriginalPriceSection>
+                                        <WithLocalSvg
+                                            width={24}
+                                            height={22.75}
+                                            asset={ArrowRightSVG}/>
+                                        <DiscountPriceText>
+                                            {item.todayPrice.toLocaleString()}원
+                                        </DiscountPriceText>
+                                    </MenuPriceSection>
+                                </MenuSection>
+                            </MenuWrapper>
+                        </TouchableWithoutFeedback>
+                    ))
             }
+
             <MenuTitleSection>
                 <MenuTitleBox>
                     <MenuTitleText>
@@ -704,17 +783,17 @@ function MenuComponent() {
                 </MenuTitleBox>
             </MenuTitleSection>
             {isSideExpanded &&
-                <>
-                    <MenuWrapper>
+                menuState.sideMenuList.map((item, index) => (
+                    <MenuWrapper key={item.todaymenuIdx}>
                         <MenuSection>
                             <MenuInfoWrapper>
                                 <MenuInfoSection>
                                     <MenuInfoBox>
                                         <MenuInfoText1>
-                                            도다리
+                                            {item.menuName}
                                         </MenuInfoText1>
                                         <MenuInfoText2>
-                                            상추, 깻잎, 마늘, 고추, 된장 포함
+                                            {item.composition}
                                         </MenuInfoText2>
                                     </MenuInfoBox>
                                     <MenuQuantityBox>
@@ -723,34 +802,34 @@ function MenuComponent() {
                                             height={13.5}
                                             asset={WarningSVG} />
                                         <MenuQuantityText>
-                                            재고 3개
+                                            재고 {item.remain}개
                                         </MenuQuantityText>
                                     </MenuQuantityBox>
                                 </MenuInfoSection>
                                 <MenuInfoImg
                                     resizeMode="cover"
-                                    source={{uri: "https://s3-alpha-sig.figma.com/img/dc3f/fab0/770d06d808e97bcc6bba2bed883bf55b?Expires=1691366400&Signature=jj0WemQiRINpwE~sArwik3nGMq9~aui8gwfowCfoJhyvRC5IzaGzCSCVNw04Onb1C2Rqb-J2wNgMsSCcOWyMhOgFjs5c0e6tK2EaDiAZkP4yowcisYjci2UK7VudXYhNzUoMepJ32oh6-TKK9-U~zLWk41bec14hyfph~TGcWvcTijoLYh5Mu3-cBxDM00nkqNaCGbBEZkBtVm-l85Zi~e8xQbtxY6aatxhoSSTJQmV8iZf0w0GPYVPLCt6SgJqmVbSxeg1l1P6DbT1qE9h~Dbo-wrBE1WjUNqmIkA8po1dY9PBzIg2oW745z8idsAEZUKWbqk5-UTA0it2OTuAbhA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"}}/>
+                                    source={{uri: item.menuUrl}}/>
                             </MenuInfoWrapper>
                             <MenuPriceSection>
                                 <OriginalPriceSection>
                                     <OriginalPriceText>
-                                        {"40000".toLocaleString()}원
+                                        {item.originPrice.toLocaleString()}원
                                     </OriginalPriceText>
-                                    <DiscountRateText>
-                                        {50} %
-                                    </DiscountRateText>
+                                    <DiscountPercentageText>
+                                        {item.discount} %
+                                    </DiscountPercentageText>
                                 </OriginalPriceSection>
                                 <WithLocalSvg
                                     width={24}
                                     height={22.75}
                                     asset={ArrowRightSVG} />
                                 <DiscountPriceText>
-                                    {"20000".toLocaleString()}원
+                                    {item.todayPrice.toLocaleString()}원
                                 </DiscountPriceText>
                             </MenuPriceSection>
                         </MenuSection>
                     </MenuWrapper>
-                </>
+                ))
             }
         </>
 
@@ -925,7 +1004,7 @@ const OriginalPriceText = styled.Text`
   text-decoration-line: line-through;
 `
 
-const DiscountRateText = styled.Text`
+const DiscountPercentageText = styled.Text`
   color: #F00;
   font-family: "Pretendard-Medium";
   font-size: 14px;
@@ -943,7 +1022,63 @@ const DiscountPriceText = styled.Text`
 
 // 여기는 가게 정보
 
-function InfoComponent() {
+function InfoComponent({storeIdx}) {
+    const [ infoState, setInfoState ] = useState({
+        storeIdx: 0,
+        detailStoreInfo: {
+            storeName: '',
+            storeOpen: '',
+            storeClose: '',
+            breakday: '',
+        },
+        detailStatisticsInfo: {
+            orderCount: 0,
+            reviewCount: 0
+        },
+        detailSellerInfo: {
+            sellerName: '',
+            storeName: '',
+            storeAddress: '',
+            businessRegiNum: '',
+        },
+        detailIngredientInfo: ''
+    });
+
+    useEffect(() => {
+        getInfoState()
+    }, [])
+
+    const getInfoState = () => {
+        const apiUrl = baseUrl+`/jat/app/stores/info/details?storeIdx=${storeIdx}&type=info`;
+
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+            },
+        };
+
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 1000){
+                    console.log(data.result)
+                    setInfoState(data.result)
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            })
+    }
+
+    const convertToKoreanTimeFormat = (timeString) => {
+        const [hour, minute] = timeString.split(':').map(Number)
+        const meridiem = hour <= 12 ? '오전' : '오후';
+        const convertHour = hour <= 12 ? hour : hour - 12;
+        return `${meridiem} ${convertHour}:${minute < 10 ? '0' + minute : minute}`
+
+    }
+
     return (
         <>
             <InfoWrapper isFirst={true}>
@@ -956,7 +1091,7 @@ function InfoComponent() {
                             상호명
                         </InfoText1>
                         <InfoText2>
-                            식당이랑분식이랑
+                            {infoState.detailStoreInfo.storeName}
                         </InfoText2>
                     </InfoBox>
                     <InfoBox>
@@ -964,7 +1099,7 @@ function InfoComponent() {
                             운영시간
                         </InfoText1>
                         <InfoText2>
-                            오전 11:30 ~ 오후 11:30
+                            {`${convertToKoreanTimeFormat(infoState.detailStoreInfo.storeOpen)} ~ ${convertToKoreanTimeFormat(infoState.detailStoreInfo.storeClose)}`}
                         </InfoText2>
                     </InfoBox>
                     <InfoBox>
@@ -972,7 +1107,7 @@ function InfoComponent() {
                             휴무일
                         </InfoText1>
                         <InfoText2>
-                            연중무휴
+                            {infoState.detailStoreInfo.breakday}
                         </InfoText2>
                     </InfoBox>
                     <InfoBox>
@@ -980,7 +1115,7 @@ function InfoComponent() {
                             전화번호
                         </InfoText1>
                         <InfoText2>
-                            050-1234-5678
+                            {infoState.detailStoreInfo.storePhone}
                         </InfoText2>
                     </InfoBox>
                 </InfoSection>
@@ -996,7 +1131,7 @@ function InfoComponent() {
                             최근 주문수
                         </InfoText1>
                         <InfoText2>
-                            200
+                            {infoState.detailStatisticsInfo.orderCount}
                         </InfoText2>
                     </InfoBox>
                     <InfoBox>
@@ -1004,7 +1139,7 @@ function InfoComponent() {
                             전체 리뷰수
                         </InfoText1>
                         <InfoText2>
-                            40
+                            {infoState.detailStatisticsInfo.reviewCount}
                         </InfoText2>
                     </InfoBox>
                     <InfoBox>
@@ -1012,7 +1147,7 @@ function InfoComponent() {
                             구독
                         </InfoText1>
                         <InfoText2>
-                            45
+                            {infoState.detailStatisticsInfo.subscribeCount}
                         </InfoText2>
                     </InfoBox>
                 </InfoSection>
@@ -1028,7 +1163,7 @@ function InfoComponent() {
                             대표자명
                         </InfoText1>
                         <InfoText2>
-                            김땡땡
+                            {infoState.detailSellerInfo.sellerName}
                         </InfoText2>
                     </InfoBox>
                     <InfoBox>
@@ -1036,7 +1171,7 @@ function InfoComponent() {
                             상호명
                         </InfoText1>
                         <InfoText2>
-                            식당이랑분식이랑
+                            {infoState.detailSellerInfo.storeName}
                         </InfoText2>
                     </InfoBox>
                     <InfoBox>
@@ -1044,7 +1179,7 @@ function InfoComponent() {
                             사업자주소
                         </InfoText1>
                         <InfoText2>
-                            {'울산광역시 남구 무거동 578-5 1층\n위 주소는 사업자등록증에 표기된 정보입니다'}
+                            {`${infoState.detailSellerInfo.storeAddress}\n위 주소는 사업자등록증에 표기된 정보입니다`}
                         </InfoText2>
                     </InfoBox>
                     <InfoBox>
@@ -1052,7 +1187,7 @@ function InfoComponent() {
                             사업자등록 번호
                         </InfoText1>
                         <InfoText2>
-                            306-22-12345
+                            {infoState.detailSellerInfo.businessRegiNum}
                         </InfoText2>
                     </InfoBox>
                 </InfoSection>
@@ -1063,7 +1198,7 @@ function InfoComponent() {
                     원산지 표기
                 </InfoTitleText>
                 <InfoText3>
-                    가오리(칠레산)횟감(국내산)동태(러시아산)오징어(국내산) 쌀(국내산
+                    {infoState.detailIngredientInfo}
                 </InfoText3>
             </InfoWrapper>
             <Border2 />
@@ -1150,8 +1285,60 @@ const Border2 = styled.View`
 
 // 여기서부터 리뷰 페이지
 
-function ReviewComponent({sortBy, modalVisible}) {
+function ReviewComponent({sortBy, modalVisible, storeIdx}) {
+    const [ reviewState, setReviewState ] = useState({
+        storeIdx: 0,
+        starAverage: 0,
+        reviewsTotal: 0,
+        commentTotal: 0,
+        starCountRatios: [
+            {
+                starRatio: 0
+            },
+            {
+                starRatio: 0
+            },
+            {
+                starRatio: 0
+            },
+            {
+                starRatio: 0
+            },
+            {
+                starRatio: 0
+            }
+        ],
+        reviewItems: []
+    });
     const [ onlyImage, setOnlyImage ] = useState(false);
+
+    useEffect(() => {
+        getReviewState()
+    }, [])
+
+    const getReviewState = () => {
+        const apiUrl = baseUrl+`/jat/app/stores/info/details?storeIdx=${storeIdx}&type=review`;
+
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+            },
+        };
+
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 1000){
+                    console.log(data.result)
+                    setReviewState(data.result)
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            })
+    }
+
     const StarImage = () => (
         <Svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <Path
@@ -1159,36 +1346,136 @@ function ReviewComponent({sortBy, modalVisible}) {
                 fill="#F6C844"/>
         </Svg>
     )
+
+    const ReviewSectionComponent = () => {
+        const review = [...reviewState.reviewItems];
+
+        if (sortBy === 1)
+            review.sort((review1, review2) => review2.reviewIdx - review1.reviewIdx)
+        else if (sortBy === 2)
+            review.sort((review1, review2) => review2.star - review1.star)
+        else if (sortBy === 3)
+            review.sort((review1, review2) => review1.star - review2.star)
+
+        return (
+            review.map((item, index) => (
+                <>
+                    <ReviewSection>
+                        <ReviewBox>
+                            <UserSection>
+                                <UserImage
+                                    resizeMode="cover"
+                                    source={{url: 'https://s3-alpha-sig.figma.com/img/0b1c/cdaa/a30575a764567a374d6535d068a76cd5?Expires=1691366400&Signature=RU25a1vejlMhrknJLUTmimzavWhsKzj8-jQteqYwsHlLQjSxNEyV9l3l6jZJUirWJV1Mtqq2FTRmdcpmH3grOGOwdR2rS~UQ9BmKRlkckmXbDNa7RlBqrnaLZSJdYYP7LPzZqQHFy9cgDFGQW1sqdFY4kAMfLVMuNClkO968Pr64aiP3G2nci4NHqxByHm8zxmblhVqfZnzXePzKF9TXPjKMihu3wGDCIKYmAtlPwiT60M5Ub1NGXpXT5MYGqI9F7kAwsNJMYg60wsccwnCyn7CoZ3PhJMCDDX11YVAZpBTXTW3KgJKbudfAAv~h1p9jMuq5oDCzwSq9pkqTjrt9oQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}}/>
+                                <UserBox>
+                                    <UserNameText>
+                                        {item.customerName}
+                                    </UserNameText>
+                                    <UserStarRatingSection>
+                                        <StarRatingBox>
+                                            <EmptyStar>
+                                                <EmptyStar percentage={item.star * 10}>
+                                                    <StarImage />
+                                                </EmptyStar>
+                                            </EmptyStar>
+                                            <EmptyStar>
+                                                <EmptyStar percentage={item.star > 1 ? (item.star - 1) * 10 : 0}>
+                                                    <StarImage />
+                                                </EmptyStar>
+                                            </EmptyStar>
+                                            <EmptyStar>
+                                                <EmptyStar percentage={item.star > 2 ? (item.star - 2) * 10 : 0}>
+                                                    <StarImage />
+                                                </EmptyStar>
+                                            </EmptyStar>
+                                            <EmptyStar>
+                                                <EmptyStar percentage={item.star > 3 ? (item.star - 3) * 10 : 0}>
+                                                    <StarImage />
+                                                </EmptyStar>
+                                            </EmptyStar>
+                                            <EmptyStar>
+                                                <EmptyStar percentage={item.star > 4 ? (item.star - 4) * 10 : 0}>
+                                                    <StarImage />
+                                                </EmptyStar>
+                                            </EmptyStar>
+                                        </StarRatingBox>
+                                        <UserReviewDate>
+                                            1개월전
+                                        </UserReviewDate>
+                                    </UserStarRatingSection>
+                                </UserBox>
+                            </UserSection>
+                            <UserReviewImage
+                                resizeMode="cover"
+                                source={{url: item.review_url ? item.review_url : 'https://s3-alpha-sig.figma.com/img/7341/8ea2/3bbf414ed422cb5dbf95da9f41e37f02?Expires=1691366400&Signature=kAzhepBWevR7Hqktl6XgoON~DSk05ZfWbpeFv7wSVXioiNQ6Mndc-SAwNu9xk3G~kGAVlLnmlYXq6iRs7vjb21aCW2RGZ3KsOEwq2KxgVtYkVzSRirWwTTHne3sD4sowvTwI2K~mzlIKJGRNwgAupCGVEHaPI82jVtnKRK1VrkP9FhyvD1l~i2nend6QfeCW2ZIQfZFWtY7vsHK0RDIEmqt~nBkc1RddnyNXAu-8nfmB~VSO4sRiOlufisDo3BzV6ivoGImE9HVh2OFv44BdD3M6aw7Z87OJVOdDpcKAZjh7vxy9pnTos0zwsYMUGlpd3SGtpW3K9KbXlY0UbAKE1w__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}}/>
+                            <UserReviewText>
+                                {item.contents}
+                            </UserReviewText>
+                        </ReviewBox>
+                        <ReviewReportTouch>
+                            <ReviewReportText>
+                                신고하기
+                            </ReviewReportText>
+                        </ReviewReportTouch>
+                        <ReviewMenuSection>
+                            {item.orderTodayMenu.map((item2, index) => (
+                                <ReviewMenuBox key={index}>
+                                    <ReviewMenuText>
+                                        {item2}
+                                    </ReviewMenuText>
+                                </ReviewMenuBox>
+                            ))}
+                        </ReviewMenuSection>
+                    </ReviewSection>
+                    <ReplySection>
+                        <UserSection>
+                            <UserImage
+                                resizeMode="cover"
+                                source={{url: 'https://s3-alpha-sig.figma.com/img/0b1c/cdaa/a30575a764567a374d6535d068a76cd5?Expires=1691366400&Signature=RU25a1vejlMhrknJLUTmimzavWhsKzj8-jQteqYwsHlLQjSxNEyV9l3l6jZJUirWJV1Mtqq2FTRmdcpmH3grOGOwdR2rS~UQ9BmKRlkckmXbDNa7RlBqrnaLZSJdYYP7LPzZqQHFy9cgDFGQW1sqdFY4kAMfLVMuNClkO968Pr64aiP3G2nci4NHqxByHm8zxmblhVqfZnzXePzKF9TXPjKMihu3wGDCIKYmAtlPwiT60M5Ub1NGXpXT5MYGqI9F7kAwsNJMYg60wsccwnCyn7CoZ3PhJMCDDX11YVAZpBTXTW3KgJKbudfAAv~h1p9jMuq5oDCzwSq9pkqTjrt9oQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}}/>
+                            <UserBox>
+                                <UserNameText>
+                                    사장님
+                                </UserNameText>
+                            </UserBox>
+                        </UserSection>
+                        <UserReviewText>
+                            {item.comment}
+                        </UserReviewText>
+                    </ReplySection>
+                </>
+            ))
+        )
+    }
+
     return (
         <>
             <StarRatingWrapper>
                 <StarRatingSection>
                     <StarRatingText>
-                        5.0
+                        {reviewState.starAverage}
                     </StarRatingText>
                     <StarRatingBox>
                         <EmptyStar>
-                            <EmptyStar>
+                            <EmptyStar percentage={reviewState.starAverage * 10}>
                                 <StarImage />
                             </EmptyStar>
                         </EmptyStar>
                         <EmptyStar>
-                            <EmptyStar>
+                            <EmptyStar percentage={reviewState.starAverage > 1 ? (reviewState.starAverage - 1) * 10 : 0}>
                                 <StarImage />
                             </EmptyStar>
                         </EmptyStar>
                         <EmptyStar>
-                            <EmptyStar>
+                            <EmptyStar percentage={reviewState.starAverage > 2 ? (reviewState.starAverage - 2) * 10 : 0}>
                                 <StarImage />
                             </EmptyStar>
                         </EmptyStar>
                         <EmptyStar>
-                            <EmptyStar>
+                            <EmptyStar percentage={reviewState.starAverage > 3 ? (reviewState.starAverage - 3) * 10 : 0}>
                                 <StarImage />
                             </EmptyStar>
                         </EmptyStar>
                         <EmptyStar>
-                            <EmptyStar rate={5}>
+                            <EmptyStar percentage={reviewState.starAverage > 4 ? (reviewState.starAverage - 4) * 10 : 0}>
                                 <StarImage />
                             </EmptyStar>
                         </EmptyStar>
@@ -1214,37 +1501,37 @@ function ReviewComponent({sortBy, modalVisible}) {
                     </StarRatingDistributionBox1>
                     <StarRatingDistributionBox2>
                         <StarRatingDistributionBar>
-                            <StarRatingDistributionBarFill rate={82} />
+                            <StarRatingDistributionBarFill percentage={reviewState.starCountRatios[0].starRatio} />
                         </StarRatingDistributionBar>
                         <StarRatingDistributionBar>
-                            <StarRatingDistributionBarFill rate={18} />
+                            <StarRatingDistributionBarFill percentage={reviewState.starCountRatios[1].starRatio} />
                         </StarRatingDistributionBar>
                         <StarRatingDistributionBar>
-
+                            <StarRatingDistributionBarFill percentage={reviewState.starCountRatios[2].starRatio} />
                         </StarRatingDistributionBar>
                         <StarRatingDistributionBar>
-
+                            <StarRatingDistributionBarFill percentage={reviewState.starCountRatios[3].starRatio} />
                         </StarRatingDistributionBar>
                         <StarRatingDistributionBar>
-
+                            <StarRatingDistributionBarFill percentage={reviewState.starCountRatios[4].starRatio} />
                         </StarRatingDistributionBar>
                     </StarRatingDistributionBox2>
                     <StarRatingDistributionBox3>
                         <StarRatingDistributionBox1 style={{width: 100}}>
                             <StarRatingDistributionText>
-                                82%
+                                {reviewState.starCountRatios[0].starRatio}%
                             </StarRatingDistributionText>
                             <StarRatingDistributionText>
-                                18%
+                                {reviewState.starCountRatios[1].starRatio}%
                             </StarRatingDistributionText>
                             <StarRatingDistributionText>
-                                0%
+                                {reviewState.starCountRatios[2].starRatio}%
                             </StarRatingDistributionText>
                             <StarRatingDistributionText>
-                                0%
+                                {reviewState.starCountRatios[3].starRatio}%
                             </StarRatingDistributionText>
                             <StarRatingDistributionText>
-                                0%
+                                {reviewState.starCountRatios[4].starRatio}%
                             </StarRatingDistributionText>
                         </StarRatingDistributionBox1>
                     </StarRatingDistributionBox3>
@@ -1253,10 +1540,10 @@ function ReviewComponent({sortBy, modalVisible}) {
             <ReviewInfoWrapper>
                 <ReviewInfoSection>
                     <ReviewInfoRecentCountText>
-                        최근 리뷰 16개
+                        {`전체 리뷰 ${reviewState.reviewsTotal}개`}
                     </ReviewInfoRecentCountText>
                     <ReviewInfoReplyCountText>
-                        사장님 댓글 3개
+                        {`사장님 댓글 ${reviewState.commentTotal}개`}
                     </ReviewInfoReplyCountText>
                 </ReviewInfoSection>
                 <ReviewInfoSection2>
@@ -1284,90 +1571,7 @@ function ReviewComponent({sortBy, modalVisible}) {
                 </ReviewInfoSection2>
             </ReviewInfoWrapper>
             <ReviewWrapper>
-                <ReviewSection>
-                    <ReviewBox>
-                        <UserSection>
-                            <UserImage
-                                resizeMode="cover"
-                                source={{url: 'https://s3-alpha-sig.figma.com/img/0b1c/cdaa/a30575a764567a374d6535d068a76cd5?Expires=1691366400&Signature=RU25a1vejlMhrknJLUTmimzavWhsKzj8-jQteqYwsHlLQjSxNEyV9l3l6jZJUirWJV1Mtqq2FTRmdcpmH3grOGOwdR2rS~UQ9BmKRlkckmXbDNa7RlBqrnaLZSJdYYP7LPzZqQHFy9cgDFGQW1sqdFY4kAMfLVMuNClkO968Pr64aiP3G2nci4NHqxByHm8zxmblhVqfZnzXePzKF9TXPjKMihu3wGDCIKYmAtlPwiT60M5Ub1NGXpXT5MYGqI9F7kAwsNJMYg60wsccwnCyn7CoZ3PhJMCDDX11YVAZpBTXTW3KgJKbudfAAv~h1p9jMuq5oDCzwSq9pkqTjrt9oQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}}/>
-                            <UserBox>
-                                <UserNameText>
-                                    김땡땡
-                                </UserNameText>
-                                <UserStarRatingSection>
-                                    <StarRatingBox>
-                                        <EmptyStar>
-                                            <EmptyStar>
-                                                <StarImage />
-                                            </EmptyStar>
-                                        </EmptyStar>
-                                        <EmptyStar>
-                                            <EmptyStar>
-                                                <StarImage />
-                                            </EmptyStar>
-                                        </EmptyStar>
-                                        <EmptyStar>
-                                            <EmptyStar>
-                                                <StarImage />
-                                            </EmptyStar>
-                                        </EmptyStar>
-                                        <EmptyStar>
-                                            <EmptyStar>
-                                                <StarImage />
-                                            </EmptyStar>
-                                        </EmptyStar>
-                                        <EmptyStar>
-                                            <EmptyStar rate={5}>
-                                                <StarImage />
-                                            </EmptyStar>
-                                        </EmptyStar>
-                                    </StarRatingBox>
-                                    <UserReviewDate>
-                                        1개월전
-                                    </UserReviewDate>
-                                </UserStarRatingSection>
-                            </UserBox>
-                        </UserSection>
-                        <UserReviewImage
-                            resizeMode="cover"
-                            source={{url: 'https://s3-alpha-sig.figma.com/img/7341/8ea2/3bbf414ed422cb5dbf95da9f41e37f02?Expires=1691366400&Signature=kAzhepBWevR7Hqktl6XgoON~DSk05ZfWbpeFv7wSVXioiNQ6Mndc-SAwNu9xk3G~kGAVlLnmlYXq6iRs7vjb21aCW2RGZ3KsOEwq2KxgVtYkVzSRirWwTTHne3sD4sowvTwI2K~mzlIKJGRNwgAupCGVEHaPI82jVtnKRK1VrkP9FhyvD1l~i2nend6QfeCW2ZIQfZFWtY7vsHK0RDIEmqt~nBkc1RddnyNXAu-8nfmB~VSO4sRiOlufisDo3BzV6ivoGImE9HVh2OFv44BdD3M6aw7Z87OJVOdDpcKAZjh7vxy9pnTos0zwsYMUGlpd3SGtpW3K9KbXlY0UbAKE1w__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}}/>
-                        <UserReviewText>
-                            맛없어요!
-                        </UserReviewText>
-                    </ReviewBox>
-                    <ReviewReportTouch>
-                        <ReviewReportText>
-                            신고하기
-                        </ReviewReportText>
-                    </ReviewReportTouch>
-                    <ReviewMenuSection>
-                        <ReviewMenuBox>
-                            <ReviewMenuText>
-                                미주구리회
-                            </ReviewMenuText>
-                        </ReviewMenuBox>
-                        <ReviewMenuBox>
-                            <ReviewMenuText>
-                                알탕
-                            </ReviewMenuText>
-                        </ReviewMenuBox>
-                    </ReviewMenuSection>
-                </ReviewSection>
-                <ReplySection>
-                    <UserSection>
-                        <UserImage
-                            resizeMode="cover"
-                            source={{url: 'https://s3-alpha-sig.figma.com/img/0b1c/cdaa/a30575a764567a374d6535d068a76cd5?Expires=1691366400&Signature=RU25a1vejlMhrknJLUTmimzavWhsKzj8-jQteqYwsHlLQjSxNEyV9l3l6jZJUirWJV1Mtqq2FTRmdcpmH3grOGOwdR2rS~UQ9BmKRlkckmXbDNa7RlBqrnaLZSJdYYP7LPzZqQHFy9cgDFGQW1sqdFY4kAMfLVMuNClkO968Pr64aiP3G2nci4NHqxByHm8zxmblhVqfZnzXePzKF9TXPjKMihu3wGDCIKYmAtlPwiT60M5Ub1NGXpXT5MYGqI9F7kAwsNJMYg60wsccwnCyn7CoZ3PhJMCDDX11YVAZpBTXTW3KgJKbudfAAv~h1p9jMuq5oDCzwSq9pkqTjrt9oQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}}/>
-                        <UserBox>
-                            <UserNameText>
-                                사장님
-                            </UserNameText>
-                        </UserBox>
-                    </UserSection>
-                    <UserReviewText>
-                        김떙떙님, 소중한 리뷰 써주셔서 감사합니다!
-                    </UserReviewText>
-                </ReplySection>
+                <ReviewSectionComponent />
             </ReviewWrapper>
         </>
     )
@@ -1406,7 +1610,7 @@ const StarRatingBox = styled.View`
 `
 
 const EmptyStar = styled.View`
-  width: ${({rate}) => rate ? 14/10*rate : 14}px;
+  width: ${({percentage}) => typeof percentage === 'number' ? 14/10*percentage : 14}px;
   height: 14px;
   overflow: hidden;
 `
@@ -1451,7 +1655,7 @@ const StarRatingDistributionBar = styled.View`
 `
 
 const StarRatingDistributionBarFill = styled.View`
-  width: ${({rate}) => 184/100*rate}px;
+  width: ${({percentage}) => 184/100*percentage}px;
   height: 12px;
   background: #F6C844;
   border-radius: 5px 0px 5px 5px;
