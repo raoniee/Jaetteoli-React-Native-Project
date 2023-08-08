@@ -60,15 +60,12 @@ const Main = () => {
     }
   }, [mapBoundaries]);
 
-  const [test, setTest] = useState(null)
-
   //내 위치 경위도를 주소로 변환하는 함수
   const getCurrentAddressApi = async (latitude, longitude) => {
     try {
       //도로명 api 호출
 
-      console.log(`경위도 ${latitude} ${longitude}`)
-      console.log(typeof latitude)
+      // console.log(`경위도 ${latitude} ${longitude}`)
       const response = await fetch(
         `${baseUrl}/jat/app/users/address?longitude=${parseFloat(longitude).toFixed(
           12
@@ -86,7 +83,7 @@ const Main = () => {
         return;
       }
       const result = await data.result;
-      console.log(result);
+      // console.log(result);
 
       setCurrentAddress(result.roadAddress);
     } catch (error) {
@@ -175,6 +172,12 @@ const Main = () => {
     handleMapReady();
     getCurrentAddressApi(parseFloat(newCenter.latitude), parseFloat(newCenter.longitude)); //지도 중심 경위도를 주소로 변환하는 api호출
     fetchGetMarkerApi(newCenter.latitude, newCenter.longitude);
+    dispatch(
+      changeAddress({
+        longitude: newCenter.longitude,
+        latitude: newCenter.latitude,
+      })
+    );
   };
 
   const lookStoreCloseHandler = () => {
@@ -217,14 +220,12 @@ const Main = () => {
   //목록보기 눌렀을때의 함수
   const moveToStores = () => {
     console.log(center);
-    dispatch(
-      changeAddress({
-        locAddress: "울산 남구 무거동 272-1",
-        roadAddress: "리스트 호출",
-        longitude: center.longitude,
-        latitude: center.latitude,
-      })
-    );
+    // dispatch(
+    //   changeAddress({
+    //     longitude: center.longitude,
+    //     latitude: center.latitude,
+    //   })
+    // );
     navigation.navigate("Stores", { currentAddress: currentAddress });
   };
 
