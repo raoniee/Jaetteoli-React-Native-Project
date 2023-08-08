@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import Color from "../../assets/colors/Color";
 import { StyleSheet, Text, TextInput } from "react-native";
 import { MembershipContext } from "../../context/MembershipContext";
+import { validateName } from "../../utils/useful-function";
 
 export default function LoginInput({
   label,
@@ -9,12 +10,16 @@ export default function LoginInput({
   subtitle,
   placeholder,
   keyboardType,
-  //InfoType,
+  InfoType,
   subinput,
   subplaceholder,
+  alertresult,
+  alerttext,
+  vaildTest,
 }) {
-  //const { takeRusult, userInfo } = useContext(MembershipContext);
+  const { takeRusult, userInfo } = useContext(MembershipContext);
   const [text, setText] = useState("");
+  const [same, setSame] = useState(true);
 
   return (
     <>
@@ -25,27 +30,29 @@ export default function LoginInput({
         placeholder={placeholder}
         keyboardType={keyboardType}
         returnKeyType="done"
-        //onChangeText={(text) => takeRusult({ InfoType, text })}
-        // onSubmitEditing={() => {
-        //   if (text === "") {
-        //     return;
-        //   }
-        //   takeRusult(InfoType, text);
-        // }}
-        //value={text}
+        onBlur={vaildTest}
+        onChangeText={(text) => takeRusult({ InfoType, text })}
       />
+      {!alertresult && <Text style={styles.inputalert}>{alerttext}</Text>}
       {subinput && (
         <TextInput
           style={styles.input}
           placeholder={subplaceholder}
           keyboardType={keyboardType}
           returnKeyType="done"
-          // onChangeText={(payload) => {
-          //   setText(payload);
-          //   props.takeText(text);
-          // }}
-          // value={text}
+          onBlur={() => {
+            if (userInfo.userpw !== text) {
+              return setSame(false);
+            } else {
+              return setSame(true);
+            }
+          }}
+          onChangeText={(text) => setText(text)}
+          value={text}
         />
+      )}
+      {!same && subinput && (
+        <Text style={styles.inputalert}>비밀번호가 일치하지 않습니다.</Text>
       )}
     </>
   );
@@ -70,6 +77,11 @@ const styles = StyleSheet.create({
     backgroundColor: Color.brightGray,
     height: 62,
     borderRadius: 30,
+    paddingLeft: 20,
+    marginBottom: 10,
+  },
+  inputalert: {
+    color: Color.red,
     paddingLeft: 20,
     marginBottom: 20,
   },
