@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Color from "../../assets/colors/Color";
 import {
   StyleSheet,
@@ -13,12 +13,14 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import ArrowDown from "../../assets/images/ArrowDown";
+//import ArrowDown from "../../assets/images/ArrowDown";
 import DropDownPicker from "react-native-dropdown-picker";
+import { MembershipContext } from "../../context/MembershipContext";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HIGHT } = Dimensions.get("window");
 
 export default function EmailInput(props) {
+  const { takeRusult, userInfo, setUserInfo } = useContext(MembershipContext);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
@@ -29,7 +31,42 @@ export default function EmailInput(props) {
     { label: "hanmail.net", value: "4" },
     { label: "nate.net", value: "5" },
   ]);
-  //const [text, setText] = useState("");
+  const [fronttext, setFrontText] = useState("");
+  const [backtext, setBackText] = useState("");
+  const [fullEmail, setFullEmail] = useState("");
+
+  useEffect(() => {
+    switch (value) {
+      case "0": {
+        setBackText(backtext);
+        break;
+      }
+      case "1": {
+        setBackText("naver.com");
+        break;
+      }
+      case "2": {
+        setBackText("gmail.com");
+        break;
+      }
+      case "3": {
+        setBackText("daum.net");
+        break;
+      }
+      case "4": {
+        setBackText("hanmail.net");
+        break;
+      }
+      case "5": {
+        setBackText("nate.net");
+        break;
+      }
+    }
+    setUserInfo((prev) => ({
+      ...prev,
+      useremail: fronttext + "@" + backtext,
+    }));
+  }, [value, fronttext, backtext]);
 
   return (
     <>
@@ -39,13 +76,57 @@ export default function EmailInput(props) {
           style={styles.halfinput}
           placeholder="이메일 앞자리"
           returnKeyType="done"
+          onChangeText={(text) => setFrontText(text)}
+          value={fronttext}
         />
         <Text style={styles.at}>@</Text>
-        <TextInput
-          style={styles.halfinput}
-          placeholder=""
-          returnKeyType="done"
-        />
+        {value === null && (
+          <TextInput style={styles.halfinput} placeholder="" readOnly="true" />
+        )}
+        {value === "0" && (
+          <TextInput
+            style={styles.halfinput}
+            placeholder="직접 입력"
+            returnKeyType="done"
+            onChangeText={(text) => setBackText(text)}
+            //value={backtext}
+          />
+        )}
+        {value === "1" && (
+          <TextInput
+            style={styles.halfinput}
+            placeholder="naver.com"
+            readOnly="true"
+          />
+        )}
+        {value === "2" && (
+          <TextInput
+            style={styles.halfinput}
+            placeholder="gmail.com"
+            readOnly="true"
+          />
+        )}
+        {value === "3" && (
+          <TextInput
+            style={styles.halfinput}
+            placeholder="daum.net"
+            readOnly="true"
+          />
+        )}
+        {value === "4" && (
+          <TextInput
+            style={styles.halfinput}
+            placeholder="hanmail.net"
+            readOnly="true"
+          />
+        )}
+        {value === "5" && (
+          <TextInput
+            style={styles.halfinput}
+            placeholder="nate.net"
+            readOnly="true"
+          />
+        )}
       </View>
       <TouchableOpacity>
         <View>

@@ -100,9 +100,6 @@ export default function AgreeSentence(props) {
   );
 }
 function AdAgree(props) {
-  // const [oneagree, setOneagree] = useState(false);
-  // const [twoagree, setTwoagree] = useState(false);
-  // const [threeagree, setThreeagree] = useState(false);
   const { agreements, stateHandler } = useContext(MembershipContext);
 
   return (

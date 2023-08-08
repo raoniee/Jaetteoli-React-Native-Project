@@ -37,17 +37,14 @@ import SearchAccunt from "./pages/accountsearch/SearchAccount";
 import MembershipInfo from "./pages/membership/MembershipInfo";
 import MembershipAccount from "./pages/membership/MembershipAccount";
 import MembershipEnd from "./pages/membership/MembershipEnd";
-import MembershipAgree from "./pages/membership/MembershipAgree1";
 import ModifyUserId from "./pages/mypage/ModifyUserId";
 import ModifyUserEmail from "./pages/mypage/ModifyUserEmail";
 import ModifyUserPhoneNum from "./pages/mypage/ModifyUserPhoneNum";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import MembershipStart from "./pages/membership/MembershipStart";
-import MembershipAgree1 from "./pages/membership/MembershipAgree1";
-import MembershipAgree2 from "./pages/membership/MembershipAgree2";
-import MembershipAgree3 from "./pages/membership/MembershipAgree3";
-import MembershipAgree4 from "./pages/membership/MembershipAgree4";
+import MembershipAgreeDesc from "./pages/membership/MembershipAgreeDesc";
+import { MembershipProvider } from "./context/MembershipContext";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -82,64 +79,63 @@ export default function App() {
     <>
       {/* <StatusBar style="auto" /> */}
       <Provider store={store}>
-        <NavigationContainer>
-          {/* NavigationContainer를 추가하여 Navigation 기능을 제공합니다. */}
-          <Stack.Navigator
-            screenOptions={{ headerShown: false }}
-            initialRouteName="Home"
-          >
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="LoginStart" component={LoginStart} />
-            <Stack.Screen name="MembershipStart" component={MembershipStart} />
-            <Stack.Screen
-              name="MembershipAgree1"
-              component={MembershipAgree1}
-            />
-            <Stack.Screen
-              name="MembershipAgree2"
-              component={MembershipAgree2}
-            />
-            <Stack.Screen
-              name="MembershipAgree3"
-              component={MembershipAgree3}
-            />
-            <Stack.Screen
-              name="MembershipAgree4"
-              component={MembershipAgree4}
-            />
-            <Stack.Screen name="MembershipInfo" component={MembershipInfo} />
-            <Stack.Screen
-              name="MembershipAccount"
-              component={MembershipAccount}
-            />
-            <Stack.Screen name="MembershipEnd" component={MembershipEnd} />
-            <Stack.Screen name="SearchAccunt" component={SearchAccunt} />
-            <Stack.Screen name="MainTabs" component={MainTabs} />
-            <Stack.Screen name="InitAddress" component={InitAddress} />
-            <Stack.Screen name="MapFind" component={MapFind} />
-            <Stack.Screen name="ShopBasketPage" component={ShopBasketPage} />
-            <Stack.Screen name="OrderPage" component={OrderPage} />
-            <Stack.Screen
-              name="OrderCompletePage"
-              component={OrderCompletePage}
-            />
-            <Stack.Screen name="StoreDetailPage" component={StoreDetailPage} />
-            <Stack.Screen name="StoreMapPage" component={StoreMapPage} />
-            <Stack.Screen name="MenuDetailPage" component={MenuDetailPage} />
-            <Stack.Screen name="ModifyMyInfo" component={ModifyMyInfo} />
-            <Stack.Screen name="AlramList" component={AlramList} />
-            <Stack.Screen name="ManageReview" component={ManageReview} />
-            <Stack.Screen name="BeforeSearch" component={BeforeSeach} />
-            <Stack.Screen name="WriteReview" component={WriteReview} />
-            <Stack.Screen name="TermsOfService" component={TermsOfService} />
-            <Stack.Screen name="ModifyUserId" component={ModifyUserId} />
-            <Stack.Screen name="ModifyUserEmail" component={ModifyUserEmail} />
-            <Stack.Screen
-              name="ModifyUserPhoneNum"
-              component={ModifyUserPhoneNum}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
+        <MembershipProvider>
+          <NavigationContainer>
+            {/* NavigationContainer를 추가하여 Navigation 기능을 제공합니다. */}
+            <Stack.Navigator
+              screenOptions={{ headerShown: false }}
+              initialRouteName="Home"
+            >
+              <Stack.Screen name="Home" component={Home} />
+              <Stack.Screen name="LoginStart" component={LoginStart} />
+              <Stack.Screen
+                name="MembershipStart"
+                component={MembershipStart}
+              />
+              <Stack.Screen name="MembershipInfo" component={MembershipInfo} />
+              <Stack.Screen
+                name="MembershipAccount"
+                component={MembershipAccount}
+              />
+              <Stack.Screen
+                name="MembershipAgreeDesc"
+                component={MembershipAgreeDesc}
+              />
+              <Stack.Screen name="MembershipEnd" component={MembershipEnd} />
+              <Stack.Screen name="SearchAccunt" component={SearchAccunt} />
+              <Stack.Screen name="MainTabs" component={MainTabs} />
+              <Stack.Screen name="InitAddress" component={InitAddress} />
+              <Stack.Screen name="MapFind" component={MapFind} />
+              <Stack.Screen name="ShopBasketPage" component={ShopBasketPage} />
+              <Stack.Screen name="OrderPage" component={OrderPage} />
+              <Stack.Screen
+                name="OrderCompletePage"
+                component={OrderCompletePage}
+              />
+              <Stack.Screen
+                name="StoreDetailPage"
+                component={StoreDetailPage}
+              />
+              <Stack.Screen name="StoreMapPage" component={StoreMapPage} />
+              <Stack.Screen name="MenuDetailPage" component={MenuDetailPage} />
+              <Stack.Screen name="ModifyMyInfo" component={ModifyMyInfo} />
+              <Stack.Screen name="AlramList" component={AlramList} />
+              <Stack.Screen name="ManageReview" component={ManageReview} />
+              <Stack.Screen name="BeforeSearch" component={BeforeSeach} />
+              <Stack.Screen name="WriteReview" component={WriteReview} />
+              <Stack.Screen name="TermsOfService" component={TermsOfService} />
+              <Stack.Screen name="ModifyUserId" component={ModifyUserId} />
+              <Stack.Screen
+                name="ModifyUserEmail"
+                component={ModifyUserEmail}
+              />
+              <Stack.Screen
+                name="ModifyUserPhoneNum"
+                component={ModifyUserPhoneNum}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </MembershipProvider>
       </Provider>
     </>
   );
