@@ -15,6 +15,8 @@ import ArrowRight from "../../assets/images/ArrowRight";
 import { useEffect, useState } from "react";
 import Header from "../../components/common/Header";
 import { useIsFocused } from "@react-navigation/native";
+import { baseUrl, jwt } from "../../utils/baseUrl";
+import { formatPriceWithCurrency } from "../../utils/format";
 
 const OrderHistory = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -25,7 +27,28 @@ const OrderHistory = ({ navigation }) => {
   useEffect(() => {
     if (isFocused) {
       console.log("주문 내역 목록 api 호출");
-      setInitData(orderHistoryData);
+      const fetchOrderHistory = async () => {
+        try {
+          const response = await fetch(`${baseUrl}/jat/app/orders`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "X-ACCESS-TOKEN": jwt,
+            },
+          });
+          const data = await response.json();
+          if (!data.isSuccess) {
+            console.log(data.message);
+            return;
+          }
+          console.log(data.result);
+          setInitData(data.result);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      fetchOrderHistory();
+      // setInitData(orderHistoryData);
     }
   }, [isFocused]);
 
@@ -52,8 +75,8 @@ const OrderHistory = ({ navigation }) => {
     setSelectedItem(null);
   };
 
-  const moveToDetailStore = () => {
-    navigation.navigate("StoreDetailPage");
+  const moveToDetailStore = (storeIdx) => {
+    navigation.navigate("StoreDetailPage", {storeIdx: storeIdx});
   };
 
   const moveOrderDetail = () => {
@@ -80,12 +103,57 @@ const OrderHistory = ({ navigation }) => {
           scrollEnabled={true}
           showsVerticalScrollIndicator={true}
           renderItem={({ item, index }) => {
+            let weekDay = "";
+            switch (item.weekDay) {
+              case 0:
+                weekDay = "(일)";
+                break;
+              case 1:
+                weekDay = "(월)";
+                break;
+              case 2:
+                weekDay = "(화)";
+                break;
+              case 3:
+                weekDay = "(수)";
+                break;
+              case 4:
+                weekDay = "(목)";
+                break;
+              case 5:
+                weekDay = "(금)";
+                break;
+              case 6:
+                weekDay = "(토)";
+                break;
+            }
+            // API 날짜 문자열을 "."으로 분리하여 배열
+            const apiDateArray = item.orderDate.split(".");
+
+            // 배열의 요소를 숫자로 변환하여 Date 객체로 사용
+            const apiYear = parseInt(apiDateArray[0]);
+            const apiMonth = parseInt(apiDateArray[1]) - 1; // JavaScript에서 월은 0부터 시작
+            const apiDay = parseInt(apiDateArray[2]);
+            const apiDate = new Date(apiYear, apiMonth, apiDay);
+
+            // 오늘 날짜를 생성
+            const today = new Date();
+            // 두 날짜 간의 차이
+            const timeDifference = today - apiDate;
+            const daysDifference = Math.floor(
+              timeDifference / (1000 * 60 * 60 * 24)
+            );
+
+            const isReview =
+              daysDifference >= 0 && daysDifference <= 5 ? true : false;
             return (
-              <View index={index} style={styles.orderItemContainer}>
+              <View index={item.orderIdx} style={styles.orderItemContainer}>
                 {/* 날짜 */}
                 <View style={styles.dateOuterContainer}>
                   <View style={styles.dateInnerContainer}>
-                    <Text style={styles.date}>{item.date}</Text>
+                    <Text style={styles.date}>
+                      {item.orderDate} {weekDay}
+                    </Text>
                   </View>
                   <Pressable
                     onPress={() => handlePressClose(item)} // Close 아이콘 누를 때 모달 열기
@@ -106,16 +174,19 @@ const OrderHistory = ({ navigation }) => {
                   </View>
                   <View style={styles.textContainer}>
                     <Pressable
-                      onPress={moveToDetailStore}
+                      onPress={() => moveToDetailStore(item.storeIdx)}
                       style={({ pressed }) => pressed && styles.pressedItem}
                     >
                       <View style={styles.menuTop}>
-                        <Text style={styles.title}>{item.name}</Text>
+                        <Text style={styles.title}>{item.storeName}</Text>
                         <ArrowRight stroke="#2F2F38" />
                       </View>
                     </Pressable>
                     <View style={styles.describeContainer}>
-                      <Text style={styles.describe}>{item.describe}</Text>
+                      <Text style={styles.describe}>
+                        {item.menuName} {formatPriceWithCurrency(item.price)} 외
+                        {item.orderItemCount}개
+                      </Text>
                       <Pressable
                         style={({ pressed }) => pressed && styles.pressedItem}
                         onPress={moveOrderDetail}
@@ -128,14 +199,14 @@ const OrderHistory = ({ navigation }) => {
                   </View>
                 </View>
                 {/* 리뷰 */}
-                {item.review && (
+                {isReview && (
                   <Pressable
                     onPress={moveToWriteReview}
                     android_ripple={{ color: Color.lightPurple }}
                     style={({ pressed }) => pressed && styles.pressedItem}
                   >
                     <View style={styles.reviewContainer}>
-                      <Text>리뷰쓰기 ({item.review}일 남음)</Text>
+                      <Text>리뷰쓰기 ({daysDifference}일 남음)</Text>
                     </View>
                   </Pressable>
                 )}
