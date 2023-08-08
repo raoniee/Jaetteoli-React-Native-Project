@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Image, SafeAreaView, TouchableOpacity, ActionSheetIOS, Linking } from 'react-native';
+import { StyleSheet, View, Text, Image, SafeAreaView, TouchableOpacity, ActionSheetIOS, Linking, Pressable } from 'react-native';
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Color from '../../assets/colors/Color';
@@ -16,17 +16,17 @@ const ModifyMyInfo = () => {
     const navigation = useNavigation();
 
     const onPressModifyUserId = () => {
-        navigation.navigate('ModifyUserId', {userId: userId});
+        navigation.navigate('ModifyUserId', { userId: userId });
     }
 
     const onPressModifyUserEmail = () => {
-        navigation.navigate('ModifyUserEmail', {userEmail: userEmail});
+        navigation.navigate('ModifyUserEmail', { userEmail: userEmail });
     }
 
     const onPressModifyUserPhoneNum = () => {
-        navigation.navigate('ModifyUserPhoneNum', {userPhoneNum: userPhoneNum});
+        navigation.navigate('ModifyUserPhoneNum', { userPhoneNum: userPhoneNum });
     }
-  
+
 
     // 사용자 정보 데이터
     const [userId, setUserId] = useState('김땡땡');
@@ -78,6 +78,7 @@ const ModifyMyInfo = () => {
 
         if (!result.canceled) {
             setUserProfile(result.assets[0].uri)
+            console.log(result.assets[0].uri)
         }
     };
 
@@ -127,7 +128,7 @@ const ModifyMyInfo = () => {
                     openMediaLibrary();
                 } else if (buttonIndex === 1) {
                     takePhoto();
-                } 
+                }
             }
         );
     };
@@ -148,6 +149,12 @@ const ModifyMyInfo = () => {
 
     const closeModal = () => {
         setModalVisible(false);
+    };
+
+    const [logoutModalVisible, setLogoutModalVisible] = useState(false);
+
+    const closeLogoutModal = () => {
+        setLogoutModalVisible(false);
     };
 
     return (
@@ -186,6 +193,11 @@ const ModifyMyInfo = () => {
                             </View>
                         </View>
                     </View>
+                    <View style={styles.logoutNsecession}>
+                        <TouchableOpacity onPress={() => { setLogoutModalVisible(true) }}><Text style={styles.text}>로그아웃</Text></TouchableOpacity>
+                        <Text style={styles.text}>|</Text>
+                        <TouchableOpacity><Text style={styles.text}>회원탈퇴</Text></TouchableOpacity>
+                    </View>
                 </View>
                 <Modal
                     isVisible={modalVisible}
@@ -201,7 +213,38 @@ const ModifyMyInfo = () => {
                         </TouchableOpacity>
                         <Text style={styles.modalTitle}>{modalText.title}</Text>
                         <Text style={styles.modalContents}>{modalText.contents}</Text>
-                        <Button title='설정하러 가기' backgroundColor={Color.darkPurple} color={Color.white} height={62} onPress={openAppSettings} margin='0 0 50 0'/>
+                        <Button title='설정하러 가기' backgroundColor={Color.darkPurple} color={Color.white} height={62} onPress={openAppSettings} margin='0 0 50 0' />
+                    </View>
+                </Modal>
+                <Modal
+                    isVisible={logoutModalVisible}
+                    onBackdropPress={closeLogoutModal}
+                    style={{
+                        justifyContent: 'flex-end',
+                        margin: 0,
+                    }}
+                >
+                    <View style={styles.logoutModalContainer}>
+                        <Text style={styles.logoutText}>로그아웃하시겠습니까?</Text>
+                        <View style={styles.btnContainer}>
+                            <Pressable
+                                onPress={closeLogoutModal}
+                                android_ripple={{ color: Color.lightPurple }}
+                                style={({ pressed }) => pressed && styles.pressedItem}
+                            >
+                                <View style={[styles.modalButton, { backgroundColor: Color.brightGray }]}>
+                                    <Text style={styles.modalButtonText}>아니오</Text>
+                                </View>
+                            </Pressable>
+                            <Pressable
+                                android_ripple={{ color: Color.lightPurple }}
+                                style={({ pressed }) => pressed && styles.pressedItem}
+                            >
+                                <View style={styles.modalButton}>
+                                    <Text style={styles.modalButtonText}>예</Text>
+                                </View>
+                            </Pressable>
+                        </View>
                     </View>
                 </Modal>
             </View>
@@ -210,10 +253,11 @@ const ModifyMyInfo = () => {
 }
 
 const styles = StyleSheet.create({
-    constainer: {
+    container: {
         flex: 1,
         width: '100%',
         height: '100%',
+        backgroundColor: Color.white,
     },
     contents: {
         paddingLeft: 20,
@@ -223,7 +267,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         alignItems: 'center',
-        marginTop: 55,
+        paddingTop: 55,
     },
     profile: {
         width: 110,
@@ -322,7 +366,55 @@ const styles = StyleSheet.create({
         lineHeight: 20,
         color: Color.darkGray,
         marginBottom: 50,
-    }
+    },
+    logoutNsecession: {
+        flexDirection: 'row',
+        width: 107,
+        height: 35,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: 60,
+    },
+    text: {
+        fontFamily: 'Pretendard-Regular',
+        fontSize: 13,
+        color: Color.gray,
+    },
+    logoutModalContainer: {
+        height: 313,
+        width: '100%',
+        backgroundColor: Color.white,
+        alignItems: 'center',
+        borderTopLeftRadius: 25,
+        borderTopRightRadius: 25,
+    },
+    logoutText: {
+        marginTop: 116,
+        fontFamily: 'Pretendard-Medium',
+        fontSize: 18,
+    },
+    btnContainer: {
+        flexDirection: "row",
+        width: '100%',
+        justifyContent: "space-between",
+        paddingLeft: 50,
+        paddingRight: 50,
+        marginTop: 48,
+    },
+    modalButton: {
+        alignItems: 'center',
+        backgroundColor: Color.lightPurple,
+        borderRadius: 30,
+        width: 93,
+        height: 33,
+        justifyContent: 'center',
+    },
+    modalButtonText: {
+        color: Color.black,
+        fontSize: 14,
+        fontFamily: "Pretendard-Regular",
+    },
 });
 
 export default ModifyMyInfo;
