@@ -784,51 +784,58 @@ function MenuComponent({storeIdx}) {
             </MenuTitleSection>
             {isSideExpanded &&
                 menuState.sideMenuList.map((item, index) => (
-                    <MenuWrapper key={item.todaymenuIdx}>
-                        <MenuSection>
-                            <MenuInfoWrapper>
-                                <MenuInfoSection>
-                                    <MenuInfoBox>
-                                        <MenuInfoText1>
-                                            {item.menuName}
-                                        </MenuInfoText1>
-                                        <MenuInfoText2>
-                                            {item.composition}
-                                        </MenuInfoText2>
-                                    </MenuInfoBox>
-                                    <MenuQuantityBox>
-                                        <WithLocalSvg
-                                            width={13.5}
-                                            height={13.5}
-                                            asset={WarningSVG} />
-                                        <MenuQuantityText>
-                                            재고 {item.remain}개
-                                        </MenuQuantityText>
-                                    </MenuQuantityBox>
-                                </MenuInfoSection>
-                                <MenuInfoImg
-                                    resizeMode="cover"
-                                    source={{uri: item.menuUrl}}/>
-                            </MenuInfoWrapper>
-                            <MenuPriceSection>
-                                <OriginalPriceSection>
-                                    <OriginalPriceText>
-                                        {item.originPrice.toLocaleString()}원
-                                    </OriginalPriceText>
-                                    <DiscountPercentageText>
-                                        {item.discount} %
-                                    </DiscountPercentageText>
-                                </OriginalPriceSection>
-                                <WithLocalSvg
-                                    width={24}
-                                    height={22.75}
-                                    asset={ArrowRightSVG} />
-                                <DiscountPriceText>
-                                    {item.todayPrice.toLocaleString()}원
-                                </DiscountPriceText>
-                            </MenuPriceSection>
-                        </MenuSection>
-                    </MenuWrapper>
+                    <TouchableWithoutFeedback
+                        key={item.todaymenuIdx}
+                        onPress={() => navigation.navigate('MenuDetailPage', {
+                            storeIdx: storeIdx,
+                            menuIdx: item.todaymenuIdx
+                        })}>
+                        <MenuWrapper key={item.todaymenuIdx}>
+                            <MenuSection>
+                                <MenuInfoWrapper>
+                                    <MenuInfoSection>
+                                        <MenuInfoBox>
+                                            <MenuInfoText1>
+                                                {item.menuName}
+                                            </MenuInfoText1>
+                                            <MenuInfoText2>
+                                                {item.composition}
+                                            </MenuInfoText2>
+                                        </MenuInfoBox>
+                                        <MenuQuantityBox>
+                                            <WithLocalSvg
+                                                width={13.5}
+                                                height={13.5}
+                                                asset={WarningSVG} />
+                                            <MenuQuantityText>
+                                                재고 {item.remain}개
+                                            </MenuQuantityText>
+                                        </MenuQuantityBox>
+                                    </MenuInfoSection>
+                                    <MenuInfoImg
+                                        resizeMode="cover"
+                                        source={{uri: item.menuUrl}}/>
+                                </MenuInfoWrapper>
+                                <MenuPriceSection>
+                                    <OriginalPriceSection>
+                                        <OriginalPriceText>
+                                            {item.originPrice.toLocaleString()}원
+                                        </OriginalPriceText>
+                                        <DiscountPercentageText>
+                                            {item.discount} %
+                                        </DiscountPercentageText>
+                                    </OriginalPriceSection>
+                                    <WithLocalSvg
+                                        width={24}
+                                        height={22.75}
+                                        asset={ArrowRightSVG} />
+                                    <DiscountPriceText>
+                                        {item.todayPrice.toLocaleString()}원
+                                    </DiscountPriceText>
+                                </MenuPriceSection>
+                            </MenuSection>
+                        </MenuWrapper>
+                    </TouchableWithoutFeedback>
                 ))
             }
         </>
