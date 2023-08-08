@@ -428,7 +428,7 @@ export default function StoreDetailPage({navigation}) {
 const Container = styled.FlatList`
   display: flex;
   flex-direction: column;
-  background: #FFF;
+  height: 100%;
 `
 
 const StoreDetailWrapper = styled.View`
@@ -1354,7 +1354,7 @@ function ReviewComponent({sortBy, modalVisible, storeIdx}) {
         </Svg>
     )
 
-    const ReviewSectionComponent = () => {
+    const ReviewComponent = () => {
         const review = [...reviewState.reviewItems];
 
         if (sortBy === 1)
@@ -1365,91 +1365,193 @@ function ReviewComponent({sortBy, modalVisible, storeIdx}) {
             review.sort((review1, review2) => review1.star - review2.star)
 
         return (
-            review.map((item, index) => (
-                <>
-                    <ReviewSection>
-                        <ReviewBox>
-                            <UserSection>
-                                <UserImage
-                                    resizeMode="cover"
-                                    source={{url: 'https://s3-alpha-sig.figma.com/img/0b1c/cdaa/a30575a764567a374d6535d068a76cd5?Expires=1691366400&Signature=RU25a1vejlMhrknJLUTmimzavWhsKzj8-jQteqYwsHlLQjSxNEyV9l3l6jZJUirWJV1Mtqq2FTRmdcpmH3grOGOwdR2rS~UQ9BmKRlkckmXbDNa7RlBqrnaLZSJdYYP7LPzZqQHFy9cgDFGQW1sqdFY4kAMfLVMuNClkO968Pr64aiP3G2nci4NHqxByHm8zxmblhVqfZnzXePzKF9TXPjKMihu3wGDCIKYmAtlPwiT60M5Ub1NGXpXT5MYGqI9F7kAwsNJMYg60wsccwnCyn7CoZ3PhJMCDDX11YVAZpBTXTW3KgJKbudfAAv~h1p9jMuq5oDCzwSq9pkqTjrt9oQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}}/>
-                                <UserBox>
-                                    <UserNameText>
-                                        {item.customerName}
-                                    </UserNameText>
-                                    <UserStarRatingSection>
-                                        <StarRatingBox>
-                                            <EmptyStar>
-                                                <EmptyStar percentage={item.star * 10}>
-                                                    <StarImage />
-                                                </EmptyStar>
-                                            </EmptyStar>
-                                            <EmptyStar>
-                                                <EmptyStar percentage={item.star > 1 ? (item.star - 1) * 10 : 0}>
-                                                    <StarImage />
-                                                </EmptyStar>
-                                            </EmptyStar>
-                                            <EmptyStar>
-                                                <EmptyStar percentage={item.star > 2 ? (item.star - 2) * 10 : 0}>
-                                                    <StarImage />
-                                                </EmptyStar>
-                                            </EmptyStar>
-                                            <EmptyStar>
-                                                <EmptyStar percentage={item.star > 3 ? (item.star - 3) * 10 : 0}>
-                                                    <StarImage />
-                                                </EmptyStar>
-                                            </EmptyStar>
-                                            <EmptyStar>
-                                                <EmptyStar percentage={item.star > 4 ? (item.star - 4) * 10 : 0}>
-                                                    <StarImage />
-                                                </EmptyStar>
-                                            </EmptyStar>
-                                        </StarRatingBox>
-                                        <UserReviewDate>
-                                            1개월전
-                                        </UserReviewDate>
-                                    </UserStarRatingSection>
-                                </UserBox>
-                            </UserSection>
-                            <UserReviewImage
-                                resizeMode="cover"
-                                source={{url: item.review_url ? item.review_url : 'https://s3-alpha-sig.figma.com/img/7341/8ea2/3bbf414ed422cb5dbf95da9f41e37f02?Expires=1691366400&Signature=kAzhepBWevR7Hqktl6XgoON~DSk05ZfWbpeFv7wSVXioiNQ6Mndc-SAwNu9xk3G~kGAVlLnmlYXq6iRs7vjb21aCW2RGZ3KsOEwq2KxgVtYkVzSRirWwTTHne3sD4sowvTwI2K~mzlIKJGRNwgAupCGVEHaPI82jVtnKRK1VrkP9FhyvD1l~i2nend6QfeCW2ZIQfZFWtY7vsHK0RDIEmqt~nBkc1RddnyNXAu-8nfmB~VSO4sRiOlufisDo3BzV6ivoGImE9HVh2OFv44BdD3M6aw7Z87OJVOdDpcKAZjh7vxy9pnTos0zwsYMUGlpd3SGtpW3K9KbXlY0UbAKE1w__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}}/>
-                            <UserReviewText>
-                                {item.contents}
-                            </UserReviewText>
-                        </ReviewBox>
-                        <ReviewReportTouch>
-                            <ReviewReportText>
-                                신고하기
-                            </ReviewReportText>
-                        </ReviewReportTouch>
-                        <ReviewMenuSection>
-                            {item.orderTodayMenu.map((item2, index) => (
-                                <ReviewMenuBox key={index}>
-                                    <ReviewMenuText>
-                                        {item2}
-                                    </ReviewMenuText>
-                                </ReviewMenuBox>
-                            ))}
-                        </ReviewMenuSection>
-                    </ReviewSection>
-                    <ReplySection>
-                        <UserSection>
-                            <UserImage
-                                resizeMode="cover"
-                                source={{url: 'https://s3-alpha-sig.figma.com/img/0b1c/cdaa/a30575a764567a374d6535d068a76cd5?Expires=1691366400&Signature=RU25a1vejlMhrknJLUTmimzavWhsKzj8-jQteqYwsHlLQjSxNEyV9l3l6jZJUirWJV1Mtqq2FTRmdcpmH3grOGOwdR2rS~UQ9BmKRlkckmXbDNa7RlBqrnaLZSJdYYP7LPzZqQHFy9cgDFGQW1sqdFY4kAMfLVMuNClkO968Pr64aiP3G2nci4NHqxByHm8zxmblhVqfZnzXePzKF9TXPjKMihu3wGDCIKYmAtlPwiT60M5Ub1NGXpXT5MYGqI9F7kAwsNJMYg60wsccwnCyn7CoZ3PhJMCDDX11YVAZpBTXTW3KgJKbudfAAv~h1p9jMuq5oDCzwSq9pkqTjrt9oQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}}/>
-                            <UserBox>
-                                <UserNameText>
-                                    사장님
-                                </UserNameText>
-                            </UserBox>
-                        </UserSection>
-                        <UserReviewText>
-                            {item.comment}
-                        </UserReviewText>
-                    </ReplySection>
-                </>
-            ))
+            review.map((item, index) => {
+                console.log(item)
+                if (onlyImage){
+                    if (item.review_url)
+                        return (
+                            <ReviewWrapper keys={item.reviewIdx}>
+                                <ReviewSection>
+                                    <ReviewBox>
+                                        <UserSection>
+                                            <UserImage
+                                                resizeMode="cover"
+                                                source={{url: 'https://s3-alpha-sig.figma.com/img/0b1c/cdaa/a30575a764567a374d6535d068a76cd5?Expires=1691366400&Signature=RU25a1vejlMhrknJLUTmimzavWhsKzj8-jQteqYwsHlLQjSxNEyV9l3l6jZJUirWJV1Mtqq2FTRmdcpmH3grOGOwdR2rS~UQ9BmKRlkckmXbDNa7RlBqrnaLZSJdYYP7LPzZqQHFy9cgDFGQW1sqdFY4kAMfLVMuNClkO968Pr64aiP3G2nci4NHqxByHm8zxmblhVqfZnzXePzKF9TXPjKMihu3wGDCIKYmAtlPwiT60M5Ub1NGXpXT5MYGqI9F7kAwsNJMYg60wsccwnCyn7CoZ3PhJMCDDX11YVAZpBTXTW3KgJKbudfAAv~h1p9jMuq5oDCzwSq9pkqTjrt9oQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}}/>
+                                            <UserBox>
+                                                <UserNameText>
+                                                    {item.customerName}
+                                                </UserNameText>
+                                                <UserStarRatingSection>
+                                                    <StarRatingBox>
+                                                        <EmptyStar>
+                                                            <EmptyStar percentage={item.star * 10}>
+                                                                <StarImage />
+                                                            </EmptyStar>
+                                                        </EmptyStar>
+                                                        <EmptyStar>
+                                                            <EmptyStar percentage={item.star > 1 ? (item.star - 1) * 10 : 0}>
+                                                                <StarImage />
+                                                            </EmptyStar>
+                                                        </EmptyStar>
+                                                        <EmptyStar>
+                                                            <EmptyStar percentage={item.star > 2 ? (item.star - 2) * 10 : 0}>
+                                                                <StarImage />
+                                                            </EmptyStar>
+                                                        </EmptyStar>
+                                                        <EmptyStar>
+                                                            <EmptyStar percentage={item.star > 3 ? (item.star - 3) * 10 : 0}>
+                                                                <StarImage />
+                                                            </EmptyStar>
+                                                        </EmptyStar>
+                                                        <EmptyStar>
+                                                            <EmptyStar percentage={item.star > 4 ? (item.star - 4) * 10 : 0}>
+                                                                <StarImage />
+                                                            </EmptyStar>
+                                                        </EmptyStar>
+                                                    </StarRatingBox>
+                                                    <UserReviewDate>
+                                                        1개월전
+                                                    </UserReviewDate>
+                                                </UserStarRatingSection>
+                                            </UserBox>
+                                        </UserSection>
+                                        {item.review_url &&
+                                            <UserReviewImage
+                                                resizeMode="cover"
+                                                source={{url: item.review_url}}/>
+
+                                        }<UserReviewText>
+                                        {item.contents}
+                                    </UserReviewText>
+                                    </ReviewBox>
+                                    <ReviewReportTouch>
+                                        <ReviewReportText>
+                                            신고하기
+                                        </ReviewReportText>
+                                    </ReviewReportTouch>
+                                    <ReviewMenuSection>
+                                        {item.orderTodayMenu.map((item2, index) => (
+                                            <ReviewMenuBox key={index}>
+                                                <ReviewMenuText>
+                                                    {item2}
+                                                </ReviewMenuText>
+                                            </ReviewMenuBox>
+                                        ))}
+                                    </ReviewMenuSection>
+                                </ReviewSection>
+                                {item.comment !== "" &&
+                                    <ReplySection>
+                                        <UserSection>
+                                            <UserImage
+                                                resizeMode="cover"
+                                                source={{url: 'https://s3-alpha-sig.figma.com/img/0b1c/cdaa/a30575a764567a374d6535d068a76cd5?Expires=1691366400&Signature=RU25a1vejlMhrknJLUTmimzavWhsKzj8-jQteqYwsHlLQjSxNEyV9l3l6jZJUirWJV1Mtqq2FTRmdcpmH3grOGOwdR2rS~UQ9BmKRlkckmXbDNa7RlBqrnaLZSJdYYP7LPzZqQHFy9cgDFGQW1sqdFY4kAMfLVMuNClkO968Pr64aiP3G2nci4NHqxByHm8zxmblhVqfZnzXePzKF9TXPjKMihu3wGDCIKYmAtlPwiT60M5Ub1NGXpXT5MYGqI9F7kAwsNJMYg60wsccwnCyn7CoZ3PhJMCDDX11YVAZpBTXTW3KgJKbudfAAv~h1p9jMuq5oDCzwSq9pkqTjrt9oQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}}/>
+                                            <UserBox>
+                                                <UserNameText>
+                                                    사장님
+                                                </UserNameText>
+                                            </UserBox>
+                                        </UserSection>
+                                        <UserReviewText>
+                                            {item.comment}
+                                        </UserReviewText>
+                                    </ReplySection>
+                                }
+                            </ReviewWrapper>
+                        )
+                    else
+                        return
+                }
+                else
+                    return (
+                        <ReviewWrapper keys={item.reviewIdx}>
+                            <ReviewSection>
+                                <ReviewBox>
+                                    <UserSection>
+                                        <UserImage
+                                            resizeMode="cover"
+                                            source={{url: 'https://s3-alpha-sig.figma.com/img/0b1c/cdaa/a30575a764567a374d6535d068a76cd5?Expires=1691366400&Signature=RU25a1vejlMhrknJLUTmimzavWhsKzj8-jQteqYwsHlLQjSxNEyV9l3l6jZJUirWJV1Mtqq2FTRmdcpmH3grOGOwdR2rS~UQ9BmKRlkckmXbDNa7RlBqrnaLZSJdYYP7LPzZqQHFy9cgDFGQW1sqdFY4kAMfLVMuNClkO968Pr64aiP3G2nci4NHqxByHm8zxmblhVqfZnzXePzKF9TXPjKMihu3wGDCIKYmAtlPwiT60M5Ub1NGXpXT5MYGqI9F7kAwsNJMYg60wsccwnCyn7CoZ3PhJMCDDX11YVAZpBTXTW3KgJKbudfAAv~h1p9jMuq5oDCzwSq9pkqTjrt9oQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}}/>
+                                        <UserBox>
+                                            <UserNameText>
+                                                {item.customerName}
+                                            </UserNameText>
+                                            <UserStarRatingSection>
+                                                <StarRatingBox>
+                                                    <EmptyStar>
+                                                        <EmptyStar percentage={item.star * 10}>
+                                                            <StarImage />
+                                                        </EmptyStar>
+                                                    </EmptyStar>
+                                                    <EmptyStar>
+                                                        <EmptyStar percentage={item.star > 1 ? (item.star - 1) * 10 : 0}>
+                                                            <StarImage />
+                                                        </EmptyStar>
+                                                    </EmptyStar>
+                                                    <EmptyStar>
+                                                        <EmptyStar percentage={item.star > 2 ? (item.star - 2) * 10 : 0}>
+                                                            <StarImage />
+                                                        </EmptyStar>
+                                                    </EmptyStar>
+                                                    <EmptyStar>
+                                                        <EmptyStar percentage={item.star > 3 ? (item.star - 3) * 10 : 0}>
+                                                            <StarImage />
+                                                        </EmptyStar>
+                                                    </EmptyStar>
+                                                    <EmptyStar>
+                                                        <EmptyStar percentage={item.star > 4 ? (item.star - 4) * 10 : 0}>
+                                                            <StarImage />
+                                                        </EmptyStar>
+                                                    </EmptyStar>
+                                                </StarRatingBox>
+                                                <UserReviewDate>
+                                                    1개월전
+                                                </UserReviewDate>
+                                            </UserStarRatingSection>
+                                        </UserBox>
+                                    </UserSection>
+                                    {item.review_url &&
+                                        <UserReviewImage
+                                            resizeMode="cover"
+                                            source={{url: item.review_url}}/>
+
+                                    }<UserReviewText>
+                                    {item.contents}
+                                </UserReviewText>
+                                </ReviewBox>
+                                <ReviewReportTouch>
+                                    <ReviewReportText>
+                                        신고하기
+                                    </ReviewReportText>
+                                </ReviewReportTouch>
+                                <ReviewMenuSection>
+                                    {item.orderTodayMenu.map((item2, index) => (
+                                        <ReviewMenuBox key={index}>
+                                            <ReviewMenuText>
+                                                {item2}
+                                            </ReviewMenuText>
+                                        </ReviewMenuBox>
+                                    ))}
+                                </ReviewMenuSection>
+                            </ReviewSection>
+                            {item.comment !== "" &&
+                                <ReplySection>
+                                    <UserSection>
+                                        <UserImage
+                                            resizeMode="cover"
+                                            source={{url: 'https://s3-alpha-sig.figma.com/img/0b1c/cdaa/a30575a764567a374d6535d068a76cd5?Expires=1691366400&Signature=RU25a1vejlMhrknJLUTmimzavWhsKzj8-jQteqYwsHlLQjSxNEyV9l3l6jZJUirWJV1Mtqq2FTRmdcpmH3grOGOwdR2rS~UQ9BmKRlkckmXbDNa7RlBqrnaLZSJdYYP7LPzZqQHFy9cgDFGQW1sqdFY4kAMfLVMuNClkO968Pr64aiP3G2nci4NHqxByHm8zxmblhVqfZnzXePzKF9TXPjKMihu3wGDCIKYmAtlPwiT60M5Ub1NGXpXT5MYGqI9F7kAwsNJMYg60wsccwnCyn7CoZ3PhJMCDDX11YVAZpBTXTW3KgJKbudfAAv~h1p9jMuq5oDCzwSq9pkqTjrt9oQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}}/>
+                                        <UserBox>
+                                            <UserNameText>
+                                                사장님
+                                            </UserNameText>
+                                        </UserBox>
+                                    </UserSection>
+                                    <UserReviewText>
+                                        {item.comment}
+                                    </UserReviewText>
+                                </ReplySection>
+                            }
+                        </ReviewWrapper>
+                    )
+            })
         )
     }
 
@@ -1577,9 +1679,7 @@ function ReviewComponent({sortBy, modalVisible, storeIdx}) {
                     </ReviewInfoTouch>
                 </ReviewInfoSection2>
             </ReviewInfoWrapper>
-            <ReviewWrapper>
-                <ReviewSectionComponent />
-            </ReviewWrapper>
+            <ReviewComponent />
         </>
     )
 }
