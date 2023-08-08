@@ -24,24 +24,21 @@ import {
 
 export default function MembershipStart({ navigation }) {
   return (
-    <MembershipProvider>
-      <SafeAreaView style={styles.wrap}>
-        <Header title="회원가입" right={0} />
-        <View style={styles.container}>
-          <View>
-            <AllAgreeContent />
-            <SingleAgreesContent navigation={navigation} />
-          </View>
-          <MembershipRegisterBTN navigation={navigation} />
+    <SafeAreaView style={styles.wrap}>
+      <Header title="회원가입" right={0} />
+      <View style={styles.container}>
+        <View>
+          <AllAgreeContent />
+          <SingleAgreesContent navigation={navigation} />
         </View>
-      </SafeAreaView>
-    </MembershipProvider>
+        <MembershipRegisterBTN navigation={navigation} />
+      </View>
+    </SafeAreaView>
   );
 }
 
 function AllAgreeContent() {
-  const { allagree, changeCheck, handleAllagree } =
-    useContext(MembershipContext);
+  const { allagree, changeCheck } = useContext(MembershipContext);
 
   return (
     <>
@@ -86,6 +83,7 @@ function SingleAgreesContent({ navigation }) {
           onPress={() => {
             navigation.navigate("MembershipAgreeDesc", {
               title: "m2",
+              type: "mandatoryTwo",
             });
           }}
           param="mandatoryTwo"
@@ -100,6 +98,7 @@ function SingleAgreesContent({ navigation }) {
           onPress={() => {
             navigation.navigate("MembershipAgreeDesc", {
               title: "s1",
+              type: "selectiveOne",
             });
           }}
           param="selectiveOne"
@@ -110,6 +109,7 @@ function SingleAgreesContent({ navigation }) {
           onPress={() => {
             navigation.navigate("MembershipAgreeDesc", {
               title: "s2",
+              stype: "all",
             });
           }}
           param="selectiveTwo"

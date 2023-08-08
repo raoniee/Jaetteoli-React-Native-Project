@@ -15,7 +15,7 @@ export default function CertificationInput(InfoType) {
 
       return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 정리
     } else {
-      alert("인증 시간이 만료되었습니다. 인증을 다시 진행해주세요.");
+      //alert("인증 시간이 만료되었습니다. 인증을 다시 진행해주세요.");
       //remainHandler();
     }
   }, [remainingTime]);
@@ -33,9 +33,6 @@ export default function CertificationInput(InfoType) {
           placeholder="인증번호 입력"
           keyboardType="number-pad"
           returnKeyType="done"
-          // onBlur={() => {
-          //   console.log(InfoType);
-          // }}
           onChangeText={(text) => takeCertificationNum(text)}
         />
         <Text style={styles.timer}>

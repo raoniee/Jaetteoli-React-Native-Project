@@ -18,7 +18,8 @@ export default function LoginInput({
   vaildTest,
 }) {
   const { takeRusult, userInfo } = useContext(MembershipContext);
-  //const [text, setText] = useState("");
+  const [text, setText] = useState("");
+  const [same, setSame] = useState(true);
 
   return (
     <>
@@ -31,13 +32,6 @@ export default function LoginInput({
         returnKeyType="done"
         onBlur={vaildTest}
         onChangeText={(text) => takeRusult({ InfoType, text })}
-        // onSubmitEditing={() => {
-        //   if (text === "") {
-        //     return;
-        //   }
-        //   takeRusult(InfoType, text);
-        // }}
-        //value={text}
       />
       {!alertresult && <Text style={styles.inputalert}>{alerttext}</Text>}
       {subinput && (
@@ -46,12 +40,19 @@ export default function LoginInput({
           placeholder={subplaceholder}
           keyboardType={keyboardType}
           returnKeyType="done"
-          // onChangeText={(payload) => {
-          //   setText(payload);
-          //   props.takeText(text);
-          // }}
-          // value={text}
+          onBlur={() => {
+            if (userInfo.userpw !== text) {
+              return setSame(false);
+            } else {
+              return setSame(true);
+            }
+          }}
+          onChangeText={(text) => setText(text)}
+          value={text}
         />
+      )}
+      {!same && subinput && (
+        <Text style={styles.inputalert}>비밀번호가 일치하지 않습니다.</Text>
       )}
     </>
   );

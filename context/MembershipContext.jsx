@@ -24,7 +24,8 @@ export function MembershipProvider({ children }) {
     certificationNum: "",
   });
 
-  //console.log(userInfo);
+  console.log(userInfo);
+  console.log(agreements);
 
   const [twoState, setTwoState] = useState(
     agreements.isSns && agreements.isEmail && agreements.isPhone
@@ -40,7 +41,13 @@ export function MembershipProvider({ children }) {
       ...prev,
       [name]: !prev[name],
     }));
-    setChecked((prev) => !prev);
+  };
+
+  const descHandler = (name) => {
+    setAgreements((prev) => ({
+      ...prev,
+      [name]: true,
+    }));
   };
 
   const handleAllagree = (isChecked) => {
@@ -53,16 +60,6 @@ export function MembershipProvider({ children }) {
     setAllagree(isChecked);
   };
 
-  // const handleIndividualAgree = (name) => {
-  //   if (name === "selectiveTwo") {
-  //     return;
-  //   }
-  //   setAgreements((prev) => ({
-  //     ...prev,
-  //     [name]: true,
-  //   }));
-  // };
-
   useEffect(() => {
     if (agreements.isSns && agreements.isPhone && agreements.isEmail) {
       setTwoState(true);
@@ -73,8 +70,10 @@ export function MembershipProvider({ children }) {
         twoState
       ) {
         setAllagree(true);
+        setChecked(true);
       } else {
         setAllagree(false);
+        setChecked(false);
       }
     } else {
       setTwoState(false);
@@ -132,7 +131,9 @@ export function MembershipProvider({ children }) {
         twoAllChangeHandler,
         takeRusult,
         userInfo,
+        setUserInfo,
         takeCertificationNum,
+        descHandler,
       }}
     >
       {children}

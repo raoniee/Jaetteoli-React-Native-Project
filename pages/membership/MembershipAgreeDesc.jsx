@@ -22,45 +22,41 @@ import {
 } from "../../context/MembershipContext";
 
 export default function MembershipAgreeDesc({ navigation, route }) {
-  const { title, type } = route.params;
-
-  return (
-    <MembershipProvider>
-      <SafeAreaView style={styles.wrap}>
-        <Header title={AgreeDescm1.map((agree) => agree.title)} right={0} />
-        <View style={styles.container}>
-          <View style={styles.agreeinfo}>
-            <View style={styles.datebox}>
-              <Text style={styles.date}>07/20/2022</Text>
-              <Text style={styles.date}>09:19:24 AM</Text>
-            </View>
-            <ScrollView style={styles.agreebox}>
-              <Text style={styles.agreetext}>
-                {AgreeDescm1.map((agree) => agree.desc)}
-              </Text>
-            </ScrollView>
-          </View>
-          <AgreeBTN navigation={navigation} type={type} />
-        </View>
-      </SafeAreaView>
-    </MembershipProvider>
-  );
-}
-
-function AgreeBTN({ navigation, type }) {
-  const { setAgreements, agreedescClick, agreements } =
+  const { title, type, stype } = route.params;
+  const { descHandler, twoAllChangeHandler, agreements } =
     useContext(MembershipContext);
 
   return (
-    <Button
-      title="동의합니다"
-      backgroundColor={Color.darkPurple}
-      color={Color.white}
-      height={62}
-      onPress={() => {
-        navigation.navigate("MembershipStart");
-      }}
-    />
+    <SafeAreaView style={styles.wrap}>
+      <Header title={AgreeDescm1.map((agree) => agree.title)} right={0} />
+      <View style={styles.container}>
+        <View style={styles.agreeinfo}>
+          <View style={styles.datebox}>
+            <Text style={styles.date}>07/20/2022</Text>
+            <Text style={styles.date}>09:19:24 AM</Text>
+          </View>
+          <ScrollView style={styles.agreebox}>
+            <Text style={styles.agreetext}>
+              {AgreeDescm1.map((agree) => agree.desc)}
+            </Text>
+          </ScrollView>
+        </View>
+        <Button
+          title="동의합니다"
+          backgroundColor={Color.darkPurple}
+          color={Color.white}
+          height={62}
+          onPress={() => {
+            if (type) {
+              descHandler(type);
+            } else {
+              twoAllChangeHandler(stype);
+            }
+            navigation.navigate("MembershipStart");
+          }}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 

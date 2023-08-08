@@ -17,125 +17,18 @@ import Button from "../../components/common/Button";
 import Header from "../../components/common/Header";
 import CertificationInput from "../../components/login/CertificationInput";
 import LoginInput from "../../components/login/LoginInput";
-import {
-  MembershipContext,
-  MembershipProvider,
-} from "../../context/MembershipContext";
-import { validateName } from "../../utils/useful-function";
+import { MembershipContext } from "../../context/MembershipContext";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HIGHT } = Dimensions.get("window");
 
-export default function MembershipInfo() {
-  return (
-    <MembershipProvider>
-      <Wrap />
-    </MembershipProvider>
-  );
-}
-
-function Wrap() {
-  const { takeRusult, userInfo } = useContext(MembershipContext);
+export default function MembershipInfo({ navigation }) {
+  const { userInfo } = useContext(MembershipContext);
   const [getnumber, setGetnumber] = useState(false);
   const [vaildName, setVaildName] = useState(true);
   const [vaildBirthDay, setVaildBirthDay] = useState(true);
   const [vaildPhoneNum, setVaildPhoneNum] = useState(true);
   const [vaildCheck, setVaildCheck] = useState(false);
 
-  // useEffect(() => {
-  //   if (
-  //     userInfo.name === "" ||
-  //     userInfo.birthday === "" ||
-  //     userInfo.phone === ""
-  //   ) {
-  //     alert("입력칸을 확인해주세요");
-  //     setVaildCheck(false);
-  //   } else if (vaildName && vaildBirthDay && vaildPhoneNum) {
-  //     setVaildCheck(false);
-  //   } else {
-  //     setVaildCheck(true);
-  //   }
-  // }, [vaildName, vaildBirthDay, vaildPhoneNum]);
-
-  // const handlePhoneBTN = () => {
-  //   //인증번호 받기 위한 로직
-  //   if (!getnumber) {
-  //     if (
-  //       userInfo.name === "" ||
-  //       userInfo.birthday === "" ||
-  //       userInfo.phone === ""
-  //     ) {
-  //       alert("입력칸을 확인해주세요");
-  //       return;
-  //     } else if (!vaildName) {
-  //       return;
-  //     } else if (!vaildBirthDay) {
-  //       return;
-  //     } else if (!vaildPhoneNum) {
-  //       return;
-  //     }
-
-  //     const requestBody = {
-  //       phoneNum: userInfo.phone,
-  //       name: userInfo.name,
-  //       birthday: userInfo.birthday,
-  //     };
-
-  //     try {
-  //       // const response = await fetch(
-  //       //   "https://www.insung.shop/jat/app/users/authy",
-  //       //   {
-  //       //     method: "POST",
-  //       //     headers: {
-  //       //       "Content-Type": "application/json",
-  //       //     },
-  //       //     body: JSON.stringify(requestBody),
-  //       //   }
-  //       // );
-  //       // const data = await response.json();
-  //       // if (!data["isSuccess"]) {
-  //       //   console.log(data["message"]);
-  //       //   return;
-  //       // }
-  //       setGetnumber(true);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-
-  //     //
-  //   } else {
-  //     //인증번호 입력후의 로직
-  //     const requestBody = {
-  //       phoneNum: inputPhone,
-  //       name: inputName,
-  //       certificationNum: resultPhoneNum,
-  //     };
-
-  //     try {
-  //       const response = await fetch(
-  //         "https://www.insung.shop/jat/sellers/id-find",
-  //         {
-  //           method: "POST",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //           body: JSON.stringify(requestBody),
-  //         }
-  //       );
-
-  //       const data = await response.json();
-  //       if (!data["isSuccess"]) {
-  //         console.log('')
-  //         return;
-  //       }
-  //       const idSearchSuccess = data["result"];
-  //       navigate("/help/complete", {
-  //         state: { uid: idSearchSuccess[0]["uid"], signUpDate: idSearchSuccess[0]["signUpDate"] },
-  //       });
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   }
-  // };
   const handlePhoneBTN = async () => {
     //인증번호 받기 위한 로직
     if (!getnumber) {
@@ -173,11 +66,11 @@ function Wrap() {
         //   }
         // );
 
-        const data = await response.json();
-        if (!data["isSuccess"]) {
-          console.log(data["message"]);
-          return;
-        }
+        // const data = await response.json();
+        // if (!data["isSuccess"]) {
+        //   console.log(data["message"]);
+        //   return;
+        // }
         setGetnumber(true);
       } catch (err) {
         console.log(err);
@@ -202,18 +95,20 @@ function Wrap() {
         //     body: JSON.stringify(requestBody),
         //   }
         // );
-
-        const data = await response.json();
-        if (!data["isSuccess"]) {
-          console.log("");
-          return;
-        }
+        // const data = await response.json();
+        // if (!data["isSuccess"]) {
+        //   console.log("");
+        //   return;
+        // }
+        const nextstep = () => {
+          navigation.navigate("MembershipAccount");
+        };
+        nextstep();
       } catch (err) {
         console.log(err);
       }
     }
   };
-
   return (
     <SafeAreaView style={styles.wrap}>
       <Header title="기본정보" right={0} />
