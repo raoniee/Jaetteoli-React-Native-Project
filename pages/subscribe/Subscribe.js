@@ -33,9 +33,9 @@ const Subscribe = () => {
       // console.log("구독 가게 목록 api 호출");
       const fetchData = async () => {
         try {
-          console.log(
-            `${baseUrl}/jat/app/subscription?longitude=${myLocation.longitude}&latitude=${myLocation.latitude}`
-          );
+          // console.log(
+          //   `${baseUrl}/jat/app/subscription?longitude=${myLocation.longitude}&latitude=${myLocation.latitude}`
+          // );
           const response = await fetch(
             `${baseUrl}/jat/app/subscription?longitude=${myLocation.longitude}&latitude=${myLocation.latitude}`,
             {
@@ -67,8 +67,8 @@ const Subscribe = () => {
         const postSubcribed = subscribed === 1 ? 0 : 1;
         const requestBody = {
           storeIdx: storeIdx,
-          yn: postSubcribed
-        }
+          yn: postSubcribed,
+        };
         console.log(`${baseUrl}/jat/app/subscription`);
         const response = await fetch(`${baseUrl}/jat/app/subscription`, {
           method: "POST",
@@ -76,14 +76,14 @@ const Subscribe = () => {
             "Content-Type": "application/json",
             "X-ACCESS-TOKEN": jwt,
           },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify(requestBody),
         });
         const data = await response.json();
         if (!data.isSuccess) {
           console.log(data.message);
           return;
         }
-        console.log(data.result)
+        console.log(data.result);
       } catch (err) {
         console.log(err);
       }
@@ -105,8 +105,8 @@ const Subscribe = () => {
     // console.log("API 호출: ", storeIdx);
   };
 
-  const moveToDetailStore = () => {
-    navigation.navigate("StoreDetailPage");
+  const moveToDetailStore = (storeIdx) => {
+    navigation.navigate("StoreDetailPage", { storeIdx: storeIdx });
   };
 
   return (
@@ -137,7 +137,7 @@ const Subscribe = () => {
               star = <FontAwesome name="star-o" style={styles.star} />;
             }
             return (
-              <Pressable onPress={moveToDetailStore}>
+              <Pressable onPress={() => moveToDetailStore(item.storeIdx)}>
                 <View
                   index={item.storeIdx}
                   style={styles.subscribeItemContainer}
