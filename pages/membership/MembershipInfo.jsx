@@ -55,22 +55,22 @@ export default function MembershipInfo({ navigation }) {
 
       //console.log(requestBody);
       try {
-        // const response = await fetch(
-        //   "https://www.insung.shop/jat/app/users/authy",
-        //   {
-        //     method: "POST",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify(requestBody),
-        //   }
-        // );
+        const response = await fetch(
+          "https://www.insung.shop/jat/app/users/authy",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+          }
+        );
 
-        // const data = await response.json();
-        // if (!data["isSuccess"]) {
-        //   console.log(data["message"]);
-        //   return;
-        // }
+        const data = await response.json();
+        if (!data["isSuccess"]) {
+          console.log(data["message"]);
+          return;
+        }
         setGetnumber(true);
       } catch (err) {
         console.log(err);
@@ -85,21 +85,21 @@ export default function MembershipInfo({ navigation }) {
       };
 
       try {
-        // const response = await fetch(
-        //   "https://www.insung.shop/jat/app/users/authy-pass",
-        //   {
-        //     method: "POST",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify(requestBody),
-        //   }
-        // );
-        // const data = await response.json();
-        // if (!data["isSuccess"]) {
-        //   console.log("");
-        //   return;
-        // }
+        const response = await fetch(
+          "https://www.insung.shop/jat/app/users/authy-pass",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+          }
+        );
+        const data = await response.json();
+        if (!data["isSuccess"]) {
+          console.log("");
+          return;
+        }
         const nextstep = () => {
           navigation.navigate("MembershipAccount");
         };

@@ -62,19 +62,19 @@ export default function MembershipAccount({ navigation }) {
 
       //console.log(requestBody);
       try {
-        // const response = await fetch("https://www.insung.shop/jat/app/users", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify(requestBody),
-        // });
+        const response = await fetch("https://www.insung.shop/jat/app/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        });
 
-        // const data = await response.json();
-        // if (!data["isSuccess"]) {
-        //   console.log(data["message"]);
-        //   return;
-        // }
+        const data = await response.json();
+        if (!data["isSuccess"]) {
+          console.log(data["message"]);
+          return;
+        }
         navigation.navigate("MembershipEnd");
       } catch (err) {
         console.log(err);

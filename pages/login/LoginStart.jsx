@@ -34,21 +34,21 @@ export default function LoginStart({ navigation }) {
 
     const requestBody = {
       uid: inputID,
-      password: inputID,
+      password: inputPW,
     };
 
     console.log(requestBody);
     try {
-      const response = await fetch(
-        "https://www.insung.shop/jat/app/users/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
-        }
-      );
+      // const response = await fetch(
+      //   "https://www.insung.shop/jat/app/users/login",
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify(requestBody),
+      //   }
+      // );
 
       const data = await response.json();
       if (!data["isSuccess"]) {
