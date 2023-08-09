@@ -53,7 +53,7 @@ export default function MembershipInfo({ navigation }) {
         birth: userInfo.birthday,
       };
 
-      console.log(requestBody);
+      //console.log(requestBody);
       try {
         // const response = await fetch(
         //   "https://www.insung.shop/jat/app/users/authy",

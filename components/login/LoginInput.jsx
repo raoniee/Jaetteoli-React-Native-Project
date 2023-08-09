@@ -39,6 +39,7 @@ export default function LoginInput({
           style={styles.input}
           placeholder={subplaceholder}
           keyboardType={keyboardType}
+          secureTextEntry={true}
           returnKeyType="done"
           onBlur={() => {
             if (userInfo.userpw !== text) {

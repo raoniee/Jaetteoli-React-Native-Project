@@ -20,9 +20,73 @@ import GoMembership from "../../components/login/GoMembership";
 import Check from "../../assets/images/Check";
 
 export default function LoginStart({ navigation }) {
+  const [inputID, setInputID] = useState("");
+  const [inputPW, setInputPW] = useState("");
   const [saveId, SetSaveId] = useState(false);
 
   const handleSaveId = () => SetSaveId((prev) => !prev);
+
+  async function onClickLogin() {
+    if (inputID.trim() === "" || inputID.trim() === "") {
+      console.log("아이디또는 비밀번호를 입력해주세요.");
+      return;
+    }
+
+    const requestBody = {
+      uid: inputID,
+      password: inputID,
+    };
+
+    console.log(requestBody);
+    try {
+      const response = await fetch(
+        "https://www.insung.shop/jat/app/users/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
+
+      const data = await response.json();
+      if (!data["isSuccess"]) {
+        console.log(data["code"]);
+        console.log(data["message"]);
+        return;
+      }
+      const loginSuccess = data["result"];
+
+      setToken(loginSuccess.jwt);
+      if (isChecked) {
+        setStoreUid(inputId);
+      }
+      //각 상태 localStorage.setItem
+      localStorage.setItem("firstLogin", loginSuccess["first_login"]);
+      localStorage.setItem("menuRegister", loginSuccess["menu_register"]);
+      localStorage.setItem("storeStatus", loginSuccess["store_status"]);
+
+      dispatch(
+        SET_AUTH({
+          authenticated: true,
+          accessToken: loginSuccess.jwt,
+          expireTime: new Date().getTime() + TOKEN_TIME_OUT,
+          name: loginSuccess.name,
+          storeName: loginSuccess["store_name"],
+          firstLogin: loginSuccess["first_login"],
+          storeStaute: loginSuccess["store_status"],
+          menuRegister: loginSuccess["menu_register"],
+        })
+      );
+
+      console.log(loginSuccess);
+      console.log(`쿠키 jwt 확인 : ${getCookieToken()}`);
+    } catch (err) {
+      console.log("서버가 아직 안켜져있습니다.");
+      console.log(err);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.wrap}>
@@ -33,12 +97,14 @@ export default function LoginStart({ navigation }) {
           placeholder="아이디"
           keyboardType="ascii-capable"
           returnKeyType="done"
+          onChangeText={(text) => setInputID(text)}
         />
         <TextInput
           style={styles.pw_input}
           placeholder="비밀번호"
           secureTextEntry={true}
           returnKeyType="done"
+          onChangeText={(text) => setInputPW(text)}
         />
         <View style={styles.login_option}>
           <View style={styles.idsave_wrap}>
@@ -69,6 +135,7 @@ export default function LoginStart({ navigation }) {
           color={Color.white}
           margin="0 0 100 0"
           height={62}
+          onPress={onClickLogin}
         />
       </View>
       <GoMembership navigation={navigation} />

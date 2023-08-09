@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -13,11 +13,11 @@ import {
 } from "react-native";
 import Button from "../../components/common/Button";
 import Color from "../../assets/colors/Color";
-import AgreeSentence from "../../components/membership/AgreeSentence";
 import Header from "../../components/common/Header";
-import Check from "../../assets/images/Check";
+import { MembershipContext } from "../../context/MembershipContext";
 
 export default function MembershipEnd() {
+  const { userInfo } = useContext(MembershipContext);
   return (
     <SafeAreaView style={styles.wrap}>
       <Header title="이용약관 동의" right={0} />
@@ -32,10 +32,10 @@ export default function MembershipEnd() {
               <Text style={styles.left_label}>이메일</Text>
             </View>
             <View style={styles.right}>
-              <Text style={styles.right_label}>정한준</Text>
-              <Text style={styles.right_label}>1998.05.04</Text>
-              <Text style={styles.right_label}>010-0000-0000</Text>
-              <Text style={styles.right_label}>jung1234@gmail.com</Text>
+              <Text style={styles.right_label}>{userInfo.name}</Text>
+              <Text style={styles.right_label}>{userInfo.birthday}</Text>
+              <Text style={styles.right_label}>{userInfo.phone}</Text>
+              <Text style={styles.right_label}>{userInfo.useremail}</Text>
             </View>
           </View>
           <Text style={styles.desc}>

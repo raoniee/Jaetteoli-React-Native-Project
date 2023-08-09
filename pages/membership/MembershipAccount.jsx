@@ -29,7 +29,7 @@ export default function MembershipAccount({ navigation }) {
   const [vaildID, setVaildID] = useState(true);
   const [vaildPW, setVaildPW] = useState(true);
 
-  const handleBTN = () => {
+  const handleBTN = async () => {
     const email = userInfo.useremail;
     const result = String(email)
       .toLowerCase()
@@ -38,6 +38,10 @@ export default function MembershipAccount({ navigation }) {
       );
     if (!result) {
       alert("이메일 주소를 확인해주세요!");
+      return;
+    } else if (!vaildID) {
+      return;
+    } else if (!vaildPW) {
       return;
     } else {
       const requestBody = {
@@ -48,26 +52,23 @@ export default function MembershipAccount({ navigation }) {
         password: userInfo.userpw,
         email: userInfo.useremail,
         //true 1, false 0으로 바꿔놓기
-        serviceCheck: agreements.mandatoryOne,
-        personalCheck: agreements.mandatoryTwo,
-        info_service_check: agreements.selectiveOne,
-        smsCheck: agreements.isSns,
-        emailCheck: agreements.isEmail,
-        callCheck: agreements.isPhone,
+        serviceCheck: agreements.mandatoryOne ? 1 : 0,
+        personalCheck: agreements.mandatoryTwo ? 1 : 0,
+        info_service_check: agreements.selectiveOne ? 1 : 0,
+        smsCheck: agreements.isSns ? 1 : 0,
+        emailCheck: agreements.isEmail ? 1 : 0,
+        callCheck: agreements.isPhone ? 1 : 0,
       };
 
-      console.log(requestBody);
+      //console.log(requestBody);
       try {
-        // const response = await fetch(
-        //   "https://www.insung.shop/jat/app/users",
-        //   {
-        //     method: "POST",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify(requestBody),
-        //   }
-        // );
+        // const response = await fetch("https://www.insung.shop/jat/app/users", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(requestBody),
+        // });
 
         // const data = await response.json();
         // if (!data["isSuccess"]) {
@@ -115,7 +116,8 @@ export default function MembershipAccount({ navigation }) {
             InfoType="userpw"
             vaildTest={() => {
               const pw = userInfo.userpw;
-              const result = /^[a-zA-z0-9]{4,20}$/.test(pw);
+              const result =
+                /^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(pw);
               if (result) {
                 return setVaildPW(true);
               } else {
