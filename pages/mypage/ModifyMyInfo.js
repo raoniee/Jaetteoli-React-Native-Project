@@ -27,6 +27,10 @@ const ModifyMyInfo = () => {
         navigation.navigate('ModifyUserPhoneNum', { userPhoneNum: userPhoneNum });
     }
 
+    const moveToWithdrawal = () => {
+        navigation.navigate('Withdrawal');
+    }
+
 
     // 사용자 정보 데이터
     const [userId, setUserId] = useState('김땡땡');
@@ -196,7 +200,7 @@ const ModifyMyInfo = () => {
                     <View style={styles.logoutNsecession}>
                         <TouchableOpacity onPress={() => { setLogoutModalVisible(true) }}><Text style={styles.text}>로그아웃</Text></TouchableOpacity>
                         <Text style={styles.text}>|</Text>
-                        <TouchableOpacity><Text style={styles.text}>회원탈퇴</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={moveToWithdrawal}><Text style={styles.text}>회원탈퇴</Text></TouchableOpacity>
                     </View>
                 </View>
                 <Modal
