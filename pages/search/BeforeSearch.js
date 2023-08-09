@@ -131,6 +131,7 @@ const BeforeSeach = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   white: {
     backgroundColor: Color.white,
+    flex:1,
   },
   container: {
     flexDirection: "row",
