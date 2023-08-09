@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import {View, Text, Button, TouchableOpacity, SafeAreaView, StatusBar} from 'react-native';
+import {View, TouchableOpacity, StatusBar} from 'react-native';
 import { WithLocalSvg } from 'react-native-svg';
 import WhiteLeftSVG from '../../assets/images/white_left.svg';
 import WhiteBellSVG from '../../assets/images/white_bell.svg';
@@ -8,7 +8,7 @@ import DefaultLeftSVG from '../../assets/images/default_left.svg';
 import DefaultBellSVG from '../../assets/images/default_bell.svg';
 import DefaultCartSVG from '../../assets/images/default_cart.svg';
 import XSVG from '../../assets/images/x.svg';
-import { useNavigation } from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from "react";
 import {baseUrl, jwt} from "../../utils/baseUrl";
 
@@ -52,8 +52,21 @@ export default function Header({ color, backgroundColor, title, left = 1, right 
     const BellComponent = right === 1 ? color === 'white' ? WhiteBell : DefaultBell : EmptyView;
     const BasketComponent = right === 1 ? color === 'white' ? WhiteCart : DefaultCart : EmptyView;
     const [ nums, setNums ] = useState(0);
+    const focus = useIsFocused();
+    const routeList = useNavigation().getState().routes
+    const currentPage = routeList[routeList.length-1].name
+
 
     useEffect(() => {
+        if (focus === true){
+            console.log("(헤더)현재 페이지 이름: ", currentPage)
+            getData()
+        }
+    }, [focus])
+
+
+
+    const getData = () => {
         const apiUrl = baseUrl+"/jat/app/basket/count";
 
         const requestOptions = {
@@ -63,19 +76,16 @@ export default function Header({ color, backgroundColor, title, left = 1, right 
             },
         };
 
-        return;
-
         fetch(apiUrl, requestOptions)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 if (data.code === 1000)
                     setNums(data.result.basketCount);
             })
             .catch(error => {
                 console.log('Error fetching data:', error);
             })
-    }, [])
+    }
 
     return (
         <View style={{ position: 'relative', backgroundColor: backgroundColor ? backgroundColor : null}}>

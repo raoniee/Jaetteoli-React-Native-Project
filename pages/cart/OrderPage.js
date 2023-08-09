@@ -1,7 +1,7 @@
-import {Animated, Dimensions, SafeAreaView, Text, TouchableOpacity, TouchableWithoutFeedback} from "react-native";
+import {Dimensions, SafeAreaView, TouchableOpacity} from "react-native";
 import styled from "styled-components/native";
 import Header from "../../components/common/Header";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {WithLocalSvg} from "react-native-svg";
 import LocationSVG from '../../assets/images/location.svg';
@@ -16,6 +16,8 @@ import Ellipse1 from '../../assets/images/Ellipse1.svg';
 import Ellipse0 from '../../assets/images/Ellipse0.svg';
 import CustomModal from "../../components/modal/CustomModal";
 import * as Clipboard from "expo-clipboard";
+import {useRoute} from "@react-navigation/native";
+import {baseUrl, jwt} from "../../utils/baseUrl";
 
 
 // 안드로이드
@@ -35,6 +37,9 @@ export default function OrderPage({ navigation }) {
     const [ visibleModal, setVisibleModal ] = useState(false);
     const [ date, setDate ] = useState(new Date());
     const [ selectedDate, setSelectedDate ] = useState(new Date());
+    const [ request, setRequest ] = useState("");
+    const route = useRoute()
+    const {storeIdx, storeName, storeAddress, storePhone, orderPrice, storeUrl} = route.params;
 
     const PhoneSafeCheckComponent = safeCheck ? PhoneSafeCheckBox : PhoneSafeUnCheckBox;
     const CreditSVG1 = selectCredit === 1 ? Ellipse1 : Ellipse0;
@@ -59,6 +64,38 @@ export default function OrderPage({ navigation }) {
         setSelectedDate(currentDate)
     }
 
+    function orderPay() {
+        const apiUrl = baseUrl+"/jat/app/basket/order";
+
+
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                storeIdx: storeIdx,
+                request: request,
+                pickupTime: date.toLocaleTimeString(undefined, {hour12: false, hour: '2-digit', minute: '2-digit'}),
+                paymentStatus: "결제완료"
+            })
+        };
+
+
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                if (data.code === 1000)
+                    navigation.navigate('OrderCompletePage')
+
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            })
+    }
+
     return (
         <SafeAreaView style={{backgroundColor: 'white'}}>
             <Header
@@ -70,17 +107,17 @@ export default function OrderPage({ navigation }) {
             <Container showsVerticalScrollIndicator={false}>
                 <OrderWrapper gap={10}>
                     <ShopWrapper>
-                        <ShopImage resizeMode="cover" source={{uri: 'https://s3-alpha-sig.figma.com/img/dc3f/fab0/770d06d808e97bcc6bba2bed883bf55b?Expires=1691366400&Signature=jj0WemQiRINpwE~sArwik3nGMq9~aui8gwfowCfoJhyvRC5IzaGzCSCVNw04Onb1C2Rqb-J2wNgMsSCcOWyMhOgFjs5c0e6tK2EaDiAZkP4yowcisYjci2UK7VudXYhNzUoMepJ32oh6-TKK9-U~zLWk41bec14hyfph~TGcWvcTijoLYh5Mu3-cBxDM00nkqNaCGbBEZkBtVm-l85Zi~e8xQbtxY6aatxhoSSTJQmV8iZf0w0GPYVPLCt6SgJqmVbSxeg1l1P6DbT1qE9h~Dbo-wrBE1WjUNqmIkA8po1dY9PBzIg2oW745z8idsAEZUKWbqk5-UTA0it2OTuAbhA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}} />
+                        <ShopImage resizeMode="contain" source={{uri: storeUrl}} />
                         <ShopText>
-                            울산미주구리
+                            {storeName}
                         </ShopText>
                     </ShopWrapper>
                     <ShopAddressWrapper>
                         <WithLocalSvg asset={LocationSVG} />
                         <ShopAddressText>
-                            울산광역시 남구 대학로33번길 14 1층
+                            {storeAddress}
                         </ShopAddressText>
-                        <ShopAddressCopyTouch onPress={() => Clipboard.setStringAsync('울산광역시 남구 대학로33번길 14 1층')}>
+                        <ShopAddressCopyTouch onPress={() => Clipboard.setStringAsync(storeAddress)}>
                             <ShopAddressCopyText>
                                 복사
                             </ShopAddressCopyText>
@@ -100,7 +137,7 @@ export default function OrderPage({ navigation }) {
                     <TouchableOpacity onPress={() => setVisibleModal(true)}>
                         <PickupTimeSection>
                             <PickupTimeText>
-                                {date.toLocaleTimeString().slice(0,-3)}
+                                {date.toLocaleTimeString(undefined, {hour12: true, hour: '2-digit', minute: '2-digit'})}
                             </PickupTimeText>
                                 <WithLocalSvg
                                     width={24}
@@ -151,7 +188,12 @@ export default function OrderPage({ navigation }) {
                         </CommonText>
                     </CommonTextSection>
                     <RequestSection>
-                        <RequestTextInput placeholder="예) 일회용 수저 2개 챙겨주세요!"/>
+                        <RequestTextInput
+                            placeholder="예) 일회용 수저 2개 챙겨주세요!"
+                            value={request}
+                            onChangeText={(event) => {
+                                setRequest(event)
+                        }}/>
                     </RequestSection>
                 </OrderWrapper>
                 <OrderWrapper gap={29}>
@@ -216,12 +258,12 @@ export default function OrderPage({ navigation }) {
                     </CommonTextSection>
                     <CreditTotalPriceSection>
                         <CreditTotalPriceText>
-                            총 40,000원
+                            총 {orderPrice.toLocaleString()}원
                         </CreditTotalPriceText>
                     </CreditTotalPriceSection>
                 </OrderWrapper>
                 <PaymentWrapper>
-                    <PaymentButton onPress={() => navigation.navigate('OrderCompletePage')}>
+                    <PaymentButton onPress={orderPay}>
                         <PaymentText>
                             결제하기
                         </PaymentText>

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Animated, Dimensions, TouchableWithoutFeedback} from "react-native";
+import {Animated, Dimensions, Modal, TouchableWithoutFeedback} from "react-native";
 import styled from "styled-components/native";
 import Constants from "expo-constants";
 
@@ -16,18 +16,28 @@ const totalHeight = windowHeight;
 
 export default function CustomModal({isVisible, onBackdropPress = () => {}, children}) {
     const opacity = useState(new Animated.Value(0))[0];
+    const opacity2 = useState(new Animated.Value(0))[0];
     const translateY = useState(new Animated.Value(totalHeight * 0.1))[0]
     const [ display, setDisplay ] = useState(isVisible);
 
     useEffect(() => {
         if (isVisible)
             setDisplay(isVisible)
+
         Animated.parallel([
             Animated.timing(opacity, {
                 toValue: isVisible ? 1 : 0,
                 duration: 300,
                 useNativeDriver: true,
             }),
+            Animated.sequence([
+                Animated.delay(isVisible ? 0 : 200),
+                Animated.timing(opacity2, {
+                    toValue: isVisible ? 1: 0,
+                    duration: 100,
+                    useNativeDriver: true,
+                })
+            ]),
             Animated.timing(translateY, {
                 toValue: isVisible ? 0 : totalHeight * 0.1,
                 duration: 300,
@@ -38,25 +48,21 @@ export default function CustomModal({isVisible, onBackdropPress = () => {}, chil
                 setDisplay(false)
         })
     }, [isVisible])
-    return (
-        <>
-            {display &&
-                <TouchableWithoutFeedback onPress={onBackdropPress}>
-                    <SetPickupTimeContainer style={{ opacity }} >
-                        <TouchableWithoutFeedback>
-                            <SetPickupTimeWrapper style={{ transform: [{translateY}] }}>
-                                {children}
-                            </SetPickupTimeWrapper>
-                        </TouchableWithoutFeedback>
-                    </SetPickupTimeContainer>
-                </TouchableWithoutFeedback>
-            }
 
-        </>
+    return display && (
+        <Modal
+            transparent>
+            <TouchableWithoutFeedback onPress={onBackdropPress}>
+                <CustomModalContainer style={{ opacity }} />
+            </TouchableWithoutFeedback>
+            <CustomModalWrapper style={{ transform: [{translateY}], opacity: opacity2 }}>
+                {children}
+            </CustomModalWrapper>
+        </Modal>
     )
 }
 
-const SetPickupTimeContainer = styled(Animated.View)`
+const CustomModalContainer = styled(Animated.View)`
   position: absolute;
   top:0;
   left:0;
@@ -65,7 +71,8 @@ const SetPickupTimeContainer = styled(Animated.View)`
   height: ${totalHeight}px;
 `
 
-const SetPickupTimeWrapper = styled(Animated.View)`
+
+const CustomModalWrapper = styled(Animated.View)`
   display: flex;
   position: absolute;
   bottom: 0;

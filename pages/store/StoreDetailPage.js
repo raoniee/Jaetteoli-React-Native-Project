@@ -16,6 +16,7 @@ import {useFocusEffect, useNavigation, useRoute} from "@react-navigation/native"
 import { basketAddAction } from "../../store/basketAdd";
 import {useDispatch, useSelector} from "react-redux";
 import {baseUrl, jwt} from "../../utils/baseUrl";
+import CustomModaless from "../../components/modal/CustomModaless";
 
 export default function StoreDetailPage({navigation}) {
     const [ storeState, setStoreState ] = useState({
@@ -33,38 +34,14 @@ export default function StoreDetailPage({navigation}) {
         subscribeCheck: null
     });
     const [ selected, setSelected ] = useState(1);
-    const [ subscribe, setSubscribe ] = useState(false);
     const [ modalVisible, setModalVisible ] = useState(false);
     const [ sortBy, setSortBy ] = useState(1);
     const [ sortByTouch, setSortByTouch ] = useState(1);
     const dispatch = useDispatch()
     const basketAdd = useSelector(({basketAdd}) => basketAdd.add)
     const userLocation = useSelector(({mapAddress}) => mapAddress)
-    const fadeAnim = useRef(new Animated.Value(1)).current;
     const route = useRoute();
     const { storeIdx } = route.params;
-
-    useFocusEffect(
-        useCallback(() => {
-            if (basketAdd === true) {
-                console.log(fadeAnim)
-                setTimeout(() => {
-                    Animated.timing(fadeAnim, {
-                        toValue: 0,
-                        duration: 1000,
-                        useNativeDriver: true, // false로 설정
-                    }).start(() => {
-                        dispatch(basketAddAction({ add: false }))
-                        Animated.timing(fadeAnim, {
-                            toValue: 1,
-                            duration: 0,
-                            useNativeDriver: true
-                        }).start()
-                    });
-                }, 1000);
-            }
-        }, [basketAdd, fadeAnim, dispatch])
-    );
 
     useEffect(() => {
         getStoreState()
@@ -83,7 +60,6 @@ export default function StoreDetailPage({navigation}) {
             .then(response => response.json())
             .then(data => {
                 if (data.code === 1000){
-                    console.log(data.result)
                     setStoreState(data.result)
                 }
             })
@@ -94,7 +70,6 @@ export default function StoreDetailPage({navigation}) {
 
     const postSubscribe = (check) => {
         const apiUrl = baseUrl+`/jat/app/subscription`;
-        console.log(apiUrl, storeIdx, check)
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -111,7 +86,6 @@ export default function StoreDetailPage({navigation}) {
             .then(response => response.json())
             .then(data => {
                 if (data.code === 1000){
-                    console.log(data.result)
                 }
             })
             .catch(error => {
@@ -413,13 +387,10 @@ export default function StoreDetailPage({navigation}) {
                 </ModalSection>
             </CustomModal>
 
-            {basketAdd &&
-                <BasketAddView style={{opacity: fadeAnim}}>
-                        <BasketAddText>
-                            장바구니에 메뉴를 추가했습니다.
-                        </BasketAddText>
-                </BasketAddView>
-            }
+            <CustomModaless
+                isVisible={basketAdd}
+                setVisible={() => dispatch(basketAddAction({ add: false }))}
+                text='장바구니에 메뉴를 추가했습니다.'/>
 
         </SafeAreaView>
     )
@@ -664,11 +635,11 @@ function MenuComponent({storeIdx}) {
                 'X-ACCESS-TOKEN': jwt,
             },
         };
+
         fetch(apiUrl, requestOptions)
             .then(response => response.json())
             .then(data => {
                 if (data.code === 1000){
-                    console.log(data.result)
                     setMenuState(data.result)
                 }
             })
@@ -1069,7 +1040,6 @@ function InfoComponent({storeIdx}) {
             .then(response => response.json())
             .then(data => {
                 if (data.code === 1000){
-                    console.log(data.result)
                     setInfoState(data.result)
                 }
             })
@@ -1318,6 +1288,7 @@ function ReviewComponent({sortBy, modalVisible, storeIdx}) {
         reviewItems: []
     });
     const [ onlyImage, setOnlyImage ] = useState(false);
+    const [visibleModal, setVisibleModal] = useState({visible: false, reviewIdx: 0})
 
     useEffect(() => {
         getReviewState()
@@ -1337,8 +1308,33 @@ function ReviewComponent({sortBy, modalVisible, storeIdx}) {
             .then(response => response.json())
             .then(data => {
                 if (data.code === 1000){
-                    console.log(data.result)
                     setReviewState(data.result)
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            })
+    }
+
+    const reportReview = (reviewIdx) => {
+        const apiUrl = baseUrl+`/jat/app/reviews/report`;
+
+        const requestOptions = {
+            method: 'PATCH',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                reviewIdx: reviewIdx
+            })
+        };
+
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                if (data.code === 1000){
                 }
             })
             .catch(error => {
@@ -1366,7 +1362,6 @@ function ReviewComponent({sortBy, modalVisible, storeIdx}) {
 
         return (
             review.map((item, index) => {
-                console.log(item)
                 if (onlyImage){
                     if (item.review_url)
                         return (
@@ -1424,7 +1419,7 @@ function ReviewComponent({sortBy, modalVisible, storeIdx}) {
                                         {item.contents}
                                     </UserReviewText>
                                     </ReviewBox>
-                                    <ReviewReportTouch>
+                                    <ReviewReportTouch onPress={() => setVisibleModal({visible: true, reviewIdx: item.reviewIdx})}>
                                         <ReviewReportText>
                                             신고하기
                                         </ReviewReportText>
@@ -1517,7 +1512,7 @@ function ReviewComponent({sortBy, modalVisible, storeIdx}) {
                                     {item.contents}
                                 </UserReviewText>
                                 </ReviewBox>
-                                <ReviewReportTouch>
+                                <ReviewReportTouch onPress={() => setVisibleModal({visible: true, reviewIdx: item.reviewIdx})}>
                                     <ReviewReportText>
                                         신고하기
                                     </ReviewReportText>
@@ -1680,6 +1675,37 @@ function ReviewComponent({sortBy, modalVisible, storeIdx}) {
                 </ReviewInfoSection2>
             </ReviewInfoWrapper>
             <ReviewComponent />
+
+            <CustomModal isVisible={visibleModal.visible} onBackdropPress={() => setVisibleModal(false)}>
+                <Modal2Wrapper>
+                    <Modal2Text>
+                        신고하시겠습니까?
+                    </Modal2Text>
+                    <Modal2CheckSection>
+                        <TouchableOpacity onPress={() => {
+                            setVisibleModal({visible: false, reviewIdx: 0})
+                        }}>
+                            <Modal2CheckBox  color="#F8F8F8">
+                                <Modal2CheckText>
+                                    아니오
+                                </Modal2CheckText>
+                            </Modal2CheckBox>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+                            const reviewIdx = visibleModal.reviewIdx
+                            console.log(reviewIdx)
+                            reportReview(reviewIdx)
+                            setVisibleModal({visible: false, reviewIdx: 0})
+                        }}>
+                            <Modal2CheckBox>
+                                <Modal2CheckText>
+                                    네
+                                </Modal2CheckText>
+                            </Modal2CheckBox>
+                        </TouchableOpacity>
+                    </Modal2CheckSection>
+                </Modal2Wrapper>
+            </CustomModal>
         </>
     )
 }
@@ -2088,28 +2114,49 @@ const ModalText = styled.Text`
   line-height: 20px; /* 125% */
 `
 
-
-const BasketAddView = Animated.createAnimatedComponent(styled.View`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -23.5px;
-  margin-left: -126.5px;
+const Modal2Wrapper = styled.View`
+  width: 100%;
+  height: 313px;
   display: flex;
-  height: 47px;
-  width: 253px;
-  padding: 0 30px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 116px;
+  gap: 48px;
+`
+
+const Modal2Text = styled.Text`
+  color: #2F2F38;
+  text-align: center;
+  font-family: "Pretendard-Regular";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 111.111% */
+`
+
+const Modal2CheckSection = styled.View`
+  display: flex;
+  flex-direction: row;
+  width: 290px;
+  justify-content: space-between;
+`
+
+const Modal2CheckBox = styled.View`
+  display: flex;
+  width: 93px;
+  height: 33px;
   justify-content: center;
   align-items: center;
-  border-radius: 5px;
-  background: rgba(0, 0, 0, 0.40);
-`)
+  border-radius: 30px;
+  background: ${({color}) => color ? color : '#F5F3FF'};
+`
 
-const BasketAddText = styled.Text`
-  color: #FFF;
-  font-family: 'Pretendard-Regular';
+const Modal2CheckText = styled.Text`
+  color: #000;
+  font-family: "Pretendard-Medium";
   font-size: 15px;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 20px; /* 133.333% */
 `

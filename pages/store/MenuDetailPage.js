@@ -13,6 +13,8 @@ import { useDispatch } from "react-redux";
 import { basketAddAction } from "../../store/basketAdd";
 import {baseUrl, jwt} from "../../utils/baseUrl";
 import {useRoute} from "@react-navigation/native";
+import CustomModaless from "../../components/modal/CustomModaless";
+import CustomModal from "../../components/modal/CustomModal";
 
 // 안드로이드
 //const statusBarHeight = Constants.statusBarHeight;
@@ -42,6 +44,8 @@ export default function MenuDetailPage({ navigation }) {
     const dispatch = useDispatch();
     const route = useRoute()
     const {storeIdx, menuIdx} = route.params
+    const [ visibleModaless, setVisibleModaless ] = useState(false);
+    const [ visibleModal, setVisibleModal ] = useState(false);
 
     useEffect(() => {
         getMenuInfo()
@@ -89,24 +93,10 @@ export default function MenuDetailPage({ navigation }) {
             .then(response => response.json())
             .then(data => {
                 console.log(data)
-                const ssc = data.sameStoreCheck
                 if (data.code === 1000){
+                    const ssc = data.result.sameStoreCheck
                     if (ssc){
-                        Alert.alert(
-                            "장바구니에 추가 하시겠습니까?",
-                            "다른 가게의 메뉴입니다.\n 기존의 장바구니가 지워집니다.",
-                            [
-                                {
-                                    text: "네",
-                                    onPress: () => addBasket(ssc)
-                                },
-                                {
-                                    text: "아니오",
-                                    onPress: () => navigation.pop()
-                                }
-                            ],
-                            { cancelable: false}
-                        )
+                        setVisibleModal(true)
                     }
                     else
                         addBasket(ssc, storeIdx)
@@ -119,6 +109,8 @@ export default function MenuDetailPage({ navigation }) {
 
     const addBasket = (sameStoreCheck) => {
         const apiUrl = baseUrl+"/jat/app/basket";
+
+        console.log("테스트",storeIdx, menuIdx, quantity, sameStoreCheck)
 
         const requestOptions = {
             method: 'POST',
@@ -133,12 +125,14 @@ export default function MenuDetailPage({ navigation }) {
                 sameStoreCheck: sameStoreCheck
             })
         };
-return
+
         fetch(apiUrl, requestOptions)
             .then(response => response.json())
             .then(data => {
                 console.log(data)
                 if (data.code === 1000){
+                    // 중복 메뉴라면
+                    // setVisibleModaless(true)
                     dispatch(basketAddAction({add: true}))
                     navigation.pop();
                 }
@@ -249,6 +243,45 @@ return
                 </MenuContainer>
             </Container>
 
+            <CustomModal isVisible={visibleModal}>
+                <ModalWrapper>
+                    <ModalContentSection>
+                        <ModalTitle>
+                            장바구니에 추가 하시겠습니까?
+                        </ModalTitle>
+                        <ModalText>
+                            {`다른 가게의 메뉴입니다.\n 기존의 장바구니가 지워집니다.`}
+                        </ModalText>
+                    </ModalContentSection>
+                    <ModalCheckSection>
+                        <TouchableOpacity onPress={() => {
+                            setVisibleModal(false)
+                            navigation.pop()
+                        }}>
+                            <ModalCheckBox  color="#F8F8F8">
+                                <ModalCheckText>
+                                    아니오
+                                </ModalCheckText>
+                            </ModalCheckBox>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+                            setVisibleModal(false)
+                            addBasket(1)
+                        }}>
+                            <ModalCheckBox>
+                                <ModalCheckText>
+                                    네
+                                </ModalCheckText>
+                            </ModalCheckBox>
+                        </TouchableOpacity>
+                    </ModalCheckSection>
+                </ModalWrapper>
+            </CustomModal>
+
+            <CustomModaless
+                isVisible={visibleModaless}
+                setVisible={() => setVisibleModaless(false)}
+                text='장바구니에 메뉴를 추가했습니다.'/>
         </SafeAreaView>
     )
 }
@@ -478,4 +511,67 @@ const MenuOrderText = styled.Text`
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
+`
+
+const ModalWrapper = styled.View`
+  width: 100%;
+  height: 313px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 76px;
+  gap: 48px;
+`
+
+const ModalContentSection = styled.View`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`
+
+const ModalTitle = styled.Text`
+  color: #2F2F38;
+  text-align: center;
+  font-family: "Pretendard-SemiBold";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 20px; /* 111.111% */
+`
+
+const ModalText = styled.Text`
+  color: #2F2F38;
+  text-align: center;
+  font-family: "Pretendard-Regular";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; /* 111.111% */
+`
+
+const ModalCheckSection = styled.View`
+  display: flex;
+  flex-direction: row;
+  width: 290px;
+  justify-content: space-between;
+`
+
+const ModalCheckBox = styled.View`
+  display: flex;
+  width: 93px;
+  height: 33px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 30px;
+  background: ${({color}) => color ? color : '#F5F3FF'};
+`
+
+const ModalCheckText = styled.Text`
+  color: #000;
+  font-family: "Pretendard-Medium";
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 133.333% */
 `

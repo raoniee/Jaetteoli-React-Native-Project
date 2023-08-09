@@ -5,10 +5,8 @@ import React, {useEffect, useState} from "react";
 import {CustomMarker} from "./StoreDetailPage";
 import styled from "styled-components/native";
 import Constants from "expo-constants";
-import * as Location from 'expo-location';
-import {WithLocalSvg} from "react-native-svg";
-import {useSelector} from "react-redux";
 import {useRoute} from "@react-navigation/native";
+
 // 안드로이드
 //const statusBarHeight = Constants.statusBarHeight;
 //const windowHeight = Dimensions.get('window').height;
