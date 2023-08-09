@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components/native';
 import {
     View,
@@ -8,7 +8,7 @@ import {
     SafeAreaView,
     Dimensions,
     Platform,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback, Animated
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Constants from 'expo-constants';
@@ -20,6 +20,9 @@ import CancelSVG from "../../assets/images/cancel.svg";
 import Header from "../../components/common/Header";
 import {baseUrl, jwt} from "../../utils/baseUrl";
 import {basketAddAction} from "../../store/basketAdd";
+import CustomModal from "../../components/modal/CustomModal";
+import NetInfo from "@react-native-community/netinfo";
+import CustomModaless from "../../components/modal/CustomModaless";
 
 // 안드로이드
 //const statusBarHeight = Constants.statusBarHeight;
@@ -36,14 +39,18 @@ export default function ShopBasketPage({ navigation }) {
     const [ basketState, setBasketState ] = useState({
         storeIdx: 0,
         storeName: '',
+        storeUrl: null,
         totalMenuCount: 0,
         totalMenuPrice: 0,
         basketItems: []
     });
+    const [ visibleModal, setVisibleModal ] = useState(false);
+    const [ visibleModaless, setVisibleModaless] = useState(false);
 
     useEffect(() => {
         getBasketList();
     }, [])
+
 
     const getBasketList = () => {
         const apiUrl = baseUrl+"/jat/app/basket";
@@ -59,7 +66,6 @@ export default function ShopBasketPage({ navigation }) {
             .then(response => response.json())
             .then(data => {
                 if (data.code === 1000){
-                    console.log(data.result)
                     if (!data.result.basketItems)
                         data.result.basketItems = []
                     setBasketState(data.result)
@@ -68,6 +74,50 @@ export default function ShopBasketPage({ navigation }) {
             .catch(error => {
                 console.log('Error fetching data:', error);
             })
+    }
+
+    const getOrder = () => {
+        const apiUrl = baseUrl+"/jat/app/basket/order";
+
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+            },
+        };
+
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 1000){
+
+                    if (data.result.storeIdx === 0){
+                        setVisibleModaless(true)
+                    }
+                    else
+                        navigation.navigate('OrderPage' ,{
+                            ...data.result,
+                            storeUrl: basketState.storeUrl
+                        })
+
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            })
+    }
+
+    function cancel() {
+        setVisibleModal(false)
+    }
+
+    async function checkConnection() {
+        const state = await NetInfo.fetch()
+
+        if (state.isConnected)
+            getOrder()
+        else
+            setVisibleModal(true)
     }
 
 
@@ -82,51 +132,58 @@ export default function ShopBasketPage({ navigation }) {
                         <ShopWrapper>
                             <TouchableWithoutFeedback onPress={() => navigation.navigate('StoreDetailPage', {storeIdx: basketState.storeIdx})}>
                                 <ShopSection>
-                                    <ShopImage resizeMode="cover" source={{uri: null}} />
+                                    <ShopImage resizeMode="contain" source={{uri: basketState.storeUrl}} />
                                     <ShopText>
                                         {basketState.storeName}
                                     </ShopText>
                                 </ShopSection>
                             </TouchableWithoutFeedback>
-                            <MenuContainer>
-                                {
-                                    basketState.basketItems.map(
-                                        (items, index) => (
-                                            <MenuWrapper>
-                                                <CancelTouch>
-                                                    <WithLocalSvg
-                                                        width={12}
-                                                        height={12}
-                                                        asset={CancelSVG} />
-                                                </CancelTouch>
-                                                <MenuImage resizeMode="cover" source={{uri: items.menuUrl}} />
-                                                <TouchableWithoutFeedback onPress={() => navigation.navigate('MenuDetailPage', {storeIdx: items.storeIdx, menuIdx: items.todaymenuIdx})}>
-                                                    <MenuSection>
-                                                        <MenuTitle>
-                                                            {items.menuName}
-                                                        </MenuTitle>
-                                                        <OriginalPriceSection>
-                                                            <OriginalPriceText>
-                                                                {items.price.toLocaleString() + '원'}
-                                                            </OriginalPriceText>
-                                                            <DiscountRate>
-                                                                {items.discount.toString() + ' %'}
-                                                            </DiscountRate>
-                                                        </OriginalPriceSection>
-                                                        <DiscountSection>
-                                                            <WithLocalSvg
-                                                                width={24}
-                                                                height={22.75}
-                                                                asset={ArrowRightSVG} />
-                                                            <DiscountPriceText>
-                                                                {items.todayPrice.toLocaleString() + '원'}
-                                                            </DiscountPriceText>
-                                                        </DiscountSection>
+                        </ShopWrapper>
+                        <MenuContainer>
+                            {
+                                basketState.basketItems.map(
+                                    (items, index) => (
+                                        <TouchableWithoutFeedback onPress={() => navigation.navigate('MenuDetailPage', {
+                                            storeIdx: items.storeIdx,
+                                            menuIdx: items.todaymenuIdx,
+                                        })}>
+                                        <MenuWrapper>
+                                            <CancelTouch>
+                                                <WithLocalSvg
+                                                    width={12}
+                                                    height={12}
+                                                    asset={CancelSVG} />
+                                            </CancelTouch>
+                                            <MenuImage resizeMode="cover" source={{uri: items.menuUrl}} />
+                                                <MenuSection>
+                                                    <MenuTitle>
+                                                        {items.menuName}
+                                                    </MenuTitle>
+                                                    <OriginalPriceSection>
+                                                        <OriginalPriceText>
+                                                            {items.price.toLocaleString() + '원'}
+                                                        </OriginalPriceText>
+                                                        <DiscountRate>
+                                                            {items.discount.toString() + ' %'}
+                                                        </DiscountRate>
+                                                    </OriginalPriceSection>
+                                                    <DiscountSection>
+                                                        <WithLocalSvg
+                                                            width={24}
+                                                            height={22.75}
+                                                            asset={ArrowRightSVG} />
+                                                        <DiscountPriceText>
+                                                            {items.todayPrice.toLocaleString() + '원'}
+                                                        </DiscountPriceText>
+                                                    </DiscountSection>
+                                                    <TouchableWithoutFeedback>
                                                         <QuantitySection>
                                                             <TouchableOpacity onPress={() => {
                                                                 const temp = { ...basketState };
-                                                                temp.basketItems[index].count--;
-                                                                setBasketState(temp)
+                                                                if (temp.basketItems[index].count > 1){
+                                                                    temp.basketItems[index].count--;
+                                                                    setBasketState(temp)
+                                                                }
                                                             }}>
                                                                 <WithLocalSvg
                                                                     width={22}
@@ -138,8 +195,10 @@ export default function ShopBasketPage({ navigation }) {
                                                             </QuantityText>
                                                             <TouchableOpacity onPress={() => {
                                                                 const temp = { ...basketState };
-                                                                temp.basketItems[index].count++;
-                                                                setBasketState(temp)
+                                                                if (temp.basketItems[index].count < 99){
+                                                                    temp.basketItems[index].count++;
+                                                                    setBasketState(temp)
+                                                                }
                                                             }}>
                                                                 <WithLocalSvg
                                                                     width={22}
@@ -147,17 +206,18 @@ export default function ShopBasketPage({ navigation }) {
                                                                     asset={PlusSVG} />
                                                             </TouchableOpacity>
                                                         </QuantitySection>
-                                                    </MenuSection>
-                                                </TouchableWithoutFeedback>
-                                            </MenuWrapper>
-                                        )
+                                                    </TouchableWithoutFeedback>
+
+                                                </MenuSection>
+                                        </MenuWrapper>
+                                        </TouchableWithoutFeedback>
                                     )
-                                }
-                            </MenuContainer>
-                        </ShopWrapper>
+                                )
+                            }
+                        </MenuContainer>
                     </CartContainer>
                     <CartOrderWrapper>
-                        <CartOrderButton onPress={() => navigation.navigate('OrderPage')}>
+                        <CartOrderButton onPress={checkConnection}>
                             <CartOrderText>
                                 주문하기
                             </CartOrderText>
@@ -170,13 +230,34 @@ export default function ShopBasketPage({ navigation }) {
                                 /
                             </CartQuantityText>
                             <CartTotalPriceText>
-                                총 {basketState.totalMenuPrice}원
+                                총 {basketState.totalMenuPrice.toLocaleString()}원
                             </CartTotalPriceText>
                         </CartQuantitySection>
                     </CartOrderWrapper>
                 </Container>
             </ContainerScrollView>
 
+            <CustomModal
+                isVisible={visibleModal}
+                onBackdropPress={cancel}>
+                <DisconnectedWrapper>
+                    <DisconnectedText>
+                        인터넷 연결을 확인하고 다시 시도해주세요.
+                    </DisconnectedText>
+                    <TouchableOpacity onPress={cancel}>
+                        <DisconnectedCheckBox>
+                            <DisconnectedCheckText>
+                                확인
+                            </DisconnectedCheckText>
+                        </DisconnectedCheckBox>
+                    </TouchableOpacity>
+                </DisconnectedWrapper>
+            </CustomModal>
+
+            <CustomModaless
+                isVisible={visibleModaless}
+                setVisible={() => setVisibleModaless(false)}
+                text='장바구니가 비어있습니다.'/>
         </SafeAreaView>
     )
 }
@@ -330,11 +411,11 @@ const DiscountPriceText = styled.Text`
 const QuantitySection = styled.View`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   height: 35px;
+  width: 187px;
   padding:0 22px;
-  gap: 40px;
   border-radius: 15px;
   background: #F8F8F8;
 `
@@ -409,4 +490,44 @@ const CartOrderText = styled.Text`
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
+`
+
+const DisconnectedWrapper = styled.View`
+  width: 100%;
+  height: 313px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 116px;
+  gap: 48px;
+`
+
+const DisconnectedText = styled.Text`
+  color: #2F2F38;
+  text-align: center;
+  font-family: "Pretendard-Medium";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 111.111% */
+`
+
+const DisconnectedCheckBox = styled.View`
+  display: flex;
+  width: 93px;
+  height: 33px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 30px;
+  background: #F5F3FF;
+`
+
+const DisconnectedCheckText = styled.Text`
+  color: #000;
+  font-family: "Pretendard-Medium";
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 133.333% */
 `
