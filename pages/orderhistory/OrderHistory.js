@@ -8,7 +8,6 @@ import {
   Text,
   View,
 } from "react-native";
-import { orderHistoryData } from "../../components/orderhistory/dummy/dummy";
 import Close from "../../assets/images/Close";
 import Color from "../../assets/colors/Color";
 import ArrowRight from "../../assets/images/ArrowRight";
@@ -41,14 +40,12 @@ const OrderHistory = ({ navigation }) => {
             console.log(data.message);
             return;
           }
-          console.log(data.result);
           setInitData(data.result);
         } catch (err) {
           console.log(err);
         }
       };
       fetchOrderHistory();
-      // setInitData(orderHistoryData);
     }
   }, [isFocused]);
 
@@ -133,17 +130,40 @@ const OrderHistory = ({ navigation }) => {
             // 배열의 요소를 숫자로 변환하여 Date 객체로 사용
             const apiYear = parseInt(apiDateArray[0]);
             const apiMonth = parseInt(apiDateArray[1]) - 1; // JavaScript에서 월은 0부터 시작
-            const apiDay = parseInt(apiDateArray[2]);
+            const apiDay = parseInt(apiDateArray[2]) + 4;
             const apiDate = new Date(apiYear, apiMonth, apiDay);
-
-            // 오늘 날짜를 생성
+            // 오늘 날짜를 생성합니다.
             const today = new Date();
-            // 두 날짜 간의 차이
-            const timeDifference = today - apiDate;
-            const daysDifference = Math.floor(
-              timeDifference / (1000 * 60 * 60 * 24)
-            );
 
+            // 한국 시간대 오프셋을 설정합니다. (한국 표준시 +09:00, 분 단위로 설정)
+            const koreaTimeOffset = 9 * 60; // 분 단위로 설정
+
+            // UTC 날짜에 한국 시간대 오프셋을 적용하여 한국 날짜 및 시간을 얻습니다.
+            const apiKoreaDate = new Date(
+              apiDate.getTime() + koreaTimeOffset * 60 * 1000
+            );
+            const todayKoreaDate = new Date(
+              today.getTime() + koreaTimeOffset * 60 * 1000
+            );
+            // 년, 월, 일 정보를 추출합니다.
+            const year = todayKoreaDate.getFullYear();
+            const month = todayKoreaDate.getMonth(); // JavaScript에서 월은 0부터 시작하므로 +1을 해줍니다.
+            const day = todayKoreaDate.getDate();
+
+            const ayear = apiKoreaDate.getFullYear();
+            const amonth = apiKoreaDate.getMonth(); // JavaScript에서 월은 0부터 시작하므로 +1을 해줍니다.
+            const aday = apiKoreaDate.getDate();
+
+            let daysDifference = -1;
+            if (year === ayear && month === amonth) {
+              daysDifference = aday - day;
+            }
+            // 결과를 출력합니다.
+            console.log("api: ", ayear, amonth, aday);
+            console.log("today:", year, month, day);
+
+            // 결과를 출력합니다.
+            console.log("두 날짜 간의 차이 (일):", daysDifference);
             const isReview =
               daysDifference >= 0 && daysDifference <= 5 ? true : false;
             return (
