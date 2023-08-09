@@ -23,7 +23,7 @@ import { useSelector } from "react-redux";
 const Subscribe = () => {
   const [initData, setInitData] = useState([]);
   const navigation = useNavigation();
-  const myLocation = useSelector((state) => state.mapAddress);
+  const myLocation = useSelector((state) => state.myAddress);
 
   const isFocused = useIsFocused();
 
