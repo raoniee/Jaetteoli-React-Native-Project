@@ -1,66 +1,50 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, View, FlatList, Image } from 'react-native'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import reveiwImg from '../../assets/images/reviewImg.png'
 import Color from '../../assets/colors/Color';
 import ArrowRight from '../../assets/images/ArrowRight';
 import Star from '../../assets/images/Star';
 import profile from '../../assets/images/profile.png';
 import Header from '../../components/common/Header';
+import { baseUrl, jwt } from "../../utils/baseUrl";
 
 const ManageReview = () => {
 
+    useEffect(() => {
+        getReviews() .then(reviewItems => {
+            setReviewCount(reviewItems.totalReviews);
+            setReviews(reviewItems.myReviews)
+        })
+    }, []);
+
+    async function getReviews() {
+
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-ACCESS-TOKEN': jwt,
+            },
+        };
+        try {
+            const response = await fetch(`${baseUrl}/jat/app/reviews`, requestOptions);
+            const data = await response.json();
+
+            if (!data.isSuccess) {
+                console.log(data.message);
+                return;
+            }
+            console.log(data.result)
+            return data.result;
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const [reviewCount, setReviewCount] = useState(0)
+
     // 사용자 리뷰 데이터
-    const [reviews, setReviews] = useState([
-        {
-            reviewIdx: 0,
-            storeName: 'BBQ 울산대학교점',
-            star: 5,
-            contents: '너무너무 맛있습니다!',
-            date: '2023-7-12',
-            comment: '',
-            reviewImg: '',
-            orderMenu: [
-                {
-                    menuName: '황금올리브',
-                    menuCount: 1,
-                },
-            ]
-        },
-        {
-            reviewIdx: 1,
-            storeName: '김치찜은 못참지 울산무거짐',
-            star: 4,
-            contents: '너무너무 맛있습니다!',
-            date: '2023-3-12',
-            comment: '',
-            reviewImg: '',
-            orderMenu: [
-                {
-                    menuName: '김치찜',
-                    menuCount: 1,
-                },
-            ]
-        },
-        {
-            reviewIdx: 2,
-            storeName: '울산미주구리',
-            star: 5,
-            contents: '너무너무 맛있습니다!',
-            comment: '김땡땡님, 소중한 리뷰 써주셔서 감사합니다!',
-            date: '2022-7-12',
-            reviewImg: reveiwImg,
-            orderMenu: [
-                {
-                    menuName: '미주구리회',
-                    menuCount: 1,
-                },
-                {
-                    menuName: '알탕',
-                    menuCount: 1,
-                },
-            ]
-        },
-    ]);
+    const [reviews, setReviews] = useState(null);
 
     const getDateDifference = (dateString) => {
         const currentDate = new Date();
@@ -107,24 +91,24 @@ const ManageReview = () => {
                             <Star fill={Color.yellow}></Star>
                             <Star fill={Color.yellow}></Star>
                         </View>
-                        <Text style={styles.date}>{getDateDifference(item.date)}</Text>
+                        <Text style={styles.date}>{item.date}</Text>
                     </View>
                 </View>
-                {item.reviewImg && <Image source={item.reviewImg} style={styles.reviewImg}></Image>}
+                {item.reviewUrl && <Image source={{ uri: item.reviewUrl}} style={styles.reviewImg}></Image>}
                 <Text style={styles.contents}>{item.contents}</Text>
             </View>
             <Text style={styles.delete}>삭제하기</Text>
             <View style={styles.menuWrapper}>
-                {item.orderMenu.map((menu, index) => (
+                {item.reviewMenus.map((menu, index) => (
                     <View style={styles.menu} key={index}><Text style={styles.menuText}>{menu.menuName}</Text></View>
                 ))}
             </View>
-            {item.comment && <View style={styles.comment}>
+            {item.sellerComment && <View style={styles.comment}>
                 <View style={styles.profile}>
                     <Image source={profile} style={styles.profileImg}></Image>
                     <Text style={styles.profileText}>사장님</Text>
                 </View>
-                <Text style={styles.commentText}>{item.comment}</Text>
+                <Text style={styles.commentText}>{item.sellerComment}</Text>
             </View>
             }
         </View>
@@ -140,7 +124,7 @@ const ManageReview = () => {
                 keyExtractor={item => item.reviewIdx}
                 ListHeaderComponent={
                     <View style={styles.reviewCount}>
-                      <Text style={styles.reviewCountText}>내가 쓴 리뷰 총 {reviews.length}개</Text>
+                      <Text style={styles.reviewCountText}>내가 쓴 리뷰 총 {reviewCount}개</Text>
                     </View>
                   }
             />
