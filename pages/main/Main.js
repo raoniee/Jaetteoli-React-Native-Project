@@ -266,12 +266,7 @@ const Main = () => {
   //목록보기 눌렀을때의 함수
   const moveToStores = () => {
     console.log(center);
-    // dispatch(
-    //   changeAddress({
-    //     longitude: center.longitude,
-    //     latitude: center.latitude,
-    //   })
-    // );
+    
     navigation.navigate("Stores", { currentAddress: currentAddress });
   };
 
