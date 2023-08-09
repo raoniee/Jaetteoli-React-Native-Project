@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {View, Text, Button, TouchableOpacity, SafeAreaView, Dimensions, ScrollView, Alert} from 'react-native';
 import Constants from 'expo-constants';
@@ -12,6 +12,7 @@ import Header from '../../components/common/Header';
 import { useDispatch } from "react-redux";
 import { basketAddAction } from "../../store/basketAdd";
 import {baseUrl, jwt} from "../../utils/baseUrl";
+import {useRoute} from "@react-navigation/native";
 
 // 안드로이드
 //const statusBarHeight = Constants.statusBarHeight;
@@ -23,14 +24,52 @@ const windowHeight = Dimensions.get('window').height
 
 const totalHeight = windowHeight;
 
-export default function MenuDetailPage({ navigation, storeIdx, menuIdx }) {
+export default function MenuDetailPage({ navigation }) {
+    const [ menuState, setMenuState ] = useState({
+        storeIdx: 0,
+        todaymenuIdx: 0,
+        menuUrl: null,
+        menuName: '',
+        remain: 0,
+        composition: '',
+        description: '',
+        originPrice: 0,
+        discount: 0,
+        todayPrice: 0
+    });
     const [isExpanded, setIsExpanded] = useState(false);
     const [quantity, setQuantity] = useState(1);
-    const [discountRate, setDiscountRate] = useState(50)
-    const [originalPrice, setOriginalPrice] = useState(40000);
-    const [discountPrice, setDiscountPrice] = useState(20000);
     const dispatch = useDispatch();
+    const route = useRoute()
+    const {storeIdx, menuIdx} = route.params
 
+    useEffect(() => {
+        getMenuInfo()
+    }, [])
+
+    // 메뉴 데이터 가져오기
+    const getMenuInfo = () => {
+        const apiUrl = baseUrl+`/jat/app/menus/detail?todaymenuIdx=${menuIdx}`;
+
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+            }
+        }
+
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 1000) {
+                    console.log(data.result)
+                    setMenuState(data.result)
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            })
+    }
 
     const checkSameStore = () => {
         const apiUrl = baseUrl+"/jat/app/basket/same-store";
@@ -42,7 +81,7 @@ export default function MenuDetailPage({ navigation, storeIdx, menuIdx }) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                storeIdx: 2
+                storeIdx: storeIdx
             })
         };
 
@@ -59,7 +98,7 @@ export default function MenuDetailPage({ navigation, storeIdx, menuIdx }) {
                             [
                                 {
                                     text: "네",
-                                    onPress: () => addBasket(ssc, storeIdx)
+                                    onPress: () => addBasket(ssc)
                                 },
                                 {
                                     text: "아니오",
@@ -70,7 +109,7 @@ export default function MenuDetailPage({ navigation, storeIdx, menuIdx }) {
                         )
                     }
                     else
-                        addBasket(ssc)
+                        addBasket(ssc, storeIdx)
                 }
             })
             .catch(error => {
@@ -88,14 +127,13 @@ export default function MenuDetailPage({ navigation, storeIdx, menuIdx }) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                storeIdx: 2,
-                todaymenuIdx: 1,
-                count: 2,
-                sameStoreCheck: 0
+                storeIdx: storeIdx,
+                todaymenuIdx: menuIdx,
+                count: quantity,
+                sameStoreCheck: sameStoreCheck
             })
         };
-        return;
-
+return
         fetch(apiUrl, requestOptions)
             .then(response => response.json())
             .then(data => {
@@ -113,7 +151,8 @@ export default function MenuDetailPage({ navigation, storeIdx, menuIdx }) {
 
     return (
         <SafeAreaView>
-            <FoodImg resizeMode="cover" source={{uri: 'https://s3-alpha-sig.figma.com/img/d396/b86b/28f9a26c66ec21b7fb0e47c1a6d0971f?Expires=1690761600&Signature=PgokyQeLzYtWB959gYiSJmnLqMiWHjTrHfi0zghq7m-7kAEt3HLr52nnhFPcqak6wBd3hKSRb2PtUr0vwjcBb~TVu2Ll3gpbdEwGILPd5INOzCNmy3~TDL2sL3gvRKflnTbP0rakY1DmXMil5WqERb4AzD9a7EMK2K5DTXqcAcWaNvxk1CXzTTMG3mVuuEADdwWToGRX1cy62rr51n8k8-5vBFzK~FDgqXjYRDc5~HIEVX2y04DA2nKpCxXuceHblajsxSKDI3qkUSA3u0VK2VjwO7ActmNh7dRYCfqUFA9faHD3y2s~T4ZsMD-mqz7UrxPcQvUCEzsukPJWAKKiXA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}} />
+
+            <FoodImg resizeMode="cover" source={{uri: menuState.menuUrl}} />
             <Header
                 color="white"
                 navigation={navigation}/>
@@ -123,14 +162,14 @@ export default function MenuDetailPage({ navigation, storeIdx, menuIdx }) {
                         <MenuInfoWrapper>
                             <MenuTitleSection>
                                 <MenuTitleText1>
-                                    도다리
+                                    {menuState.menuName}
                                 </MenuTitleText1>
                                 <MenuTitleText2>
-                                    상추, 깻잎, 마늘, 고추, 된장 포함
+                                    {menuState.composition}
                                 </MenuTitleText2>
                             </MenuTitleSection>
                             <MenuDescriptionText numberOfLines={isExpanded ? undefined : 2}>
-                                식사와 술안주 대용으로 골라먹는 재미와 든든한 한끼를 준비해 봤습니다. 식사와 술안주 대용으로 골라먹는 재미와 든든한 한끼를 준비해 봤습니다.식사와 술안주 대용으로 골라먹는 재미와 든든한 한끼를 준비해 봤습니다. 식사와 술안주 대용으로 골라먹는 재미와 든든한 한끼를 준비해 봤습니다.식사와 술안주 대용으로 골라먹는 재미와 든든한 한끼를 준비해 봤습니다. 식사와 술안주 대용으로 골라먹는 재미와 든든한 한끼를 준비해 봤습니다.식사와 술안주 대용으로 골라먹는 재미와 든든한 한끼를 준비해 봤습니다. 식사와 술안주 대용으로 골라먹는 재미와 든든한 한끼를 준비해 봤습니다.식사와 술안주 대용으로 골라먹는 재미와 든든한 한끼를 준비해 봤습니다. 식사와 술안주 대용으로 골라먹는 재미와 든든한 한끼를 준비해 봤습니다.식사와 술안주 대용으로 골라먹는 재미와 든든한 한끼를 준비해 봤습니다. 식사와 술안주 대용으로 골라먹는 재미와 든든한 한끼를 준비해 봤습니다.
+                                {menuState.description}
                             </MenuDescriptionText>
                             <MenuDescriptionButton onPress={() => setIsExpanded(!isExpanded)}>
                                 <WithLocalSvg
@@ -145,7 +184,7 @@ export default function MenuDetailPage({ navigation, storeIdx, menuIdx }) {
                                     height={13.5}
                                     asset={WarningSVG} />
                                 <QuantityLeftText>
-                                    재고 3개
+                                    {`재고 ${menuState.remain}개`}
                                 </QuantityLeftText>
                             </QuantityLeftSection>
                         </MenuInfoWrapper>
@@ -156,10 +195,10 @@ export default function MenuDetailPage({ navigation, storeIdx, menuIdx }) {
                             <MenuPriceSection>
                                 <OriginalPriceSection>
                                     <OriginalPriceText>
-                                        {originalPrice.toLocaleString()}원
+                                        {menuState.originPrice.toLocaleString()}원
                                     </OriginalPriceText>
                                     <DiscountRateText>
-                                        {discountRate} %
+                                        {menuState.discount} %
                                     </DiscountRateText>
                                 </OriginalPriceSection>
                                 <WithLocalSvg
@@ -167,7 +206,7 @@ export default function MenuDetailPage({ navigation, storeIdx, menuIdx }) {
                                     height={22.75}
                                     asset={ArrowRightSVG} />
                                 <DiscountPriceText>
-                                    {discountPrice.toLocaleString()}원
+                                    {menuState.todayPrice.toLocaleString()}원
                                 </DiscountPriceText>
                             </MenuPriceSection>
                         </MenuPriceWrapper>
@@ -203,7 +242,7 @@ export default function MenuDetailPage({ navigation, storeIdx, menuIdx }) {
                     <MenuOrderWrapper>
                         <MenuOrderButton onPress={() => checkSameStore()}>
                             <MenuOrderText>
-                                {(discountPrice * quantity).toLocaleString()}원 담기
+                                {(menuState.todayPrice * quantity).toLocaleString()}원 담기
                             </MenuOrderText>
                         </MenuOrderButton>
                     </MenuOrderWrapper>

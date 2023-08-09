@@ -33,7 +33,13 @@ const windowHeight = Dimensions.get('window').height
 const totalHeight = windowHeight - statusBarHeight;
 
 export default function ShopBasketPage({ navigation }) {
-
+    const [ basketState, setBasketState ] = useState({
+        storeIdx: 0,
+        storeName: '',
+        totalMenuCount: 0,
+        totalMenuPrice: 0,
+        basketItems: []
+    });
 
     useEffect(() => {
         getBasketList();
@@ -52,9 +58,11 @@ export default function ShopBasketPage({ navigation }) {
         fetch(apiUrl, requestOptions)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 if (data.code === 1000){
-                    console.log(data)
+                    console.log(data.result)
+                    if (!data.result.basketItems)
+                        data.result.basketItems = []
+                    setBasketState(data.result)
                 }
             })
             .catch(error => {
@@ -72,68 +80,81 @@ export default function ShopBasketPage({ navigation }) {
                 <Container>
                     <CartContainer>
                         <ShopWrapper>
-                            <TouchableWithoutFeedback onPress={() => navigation.navigate('StoreDetailPage')}>
+                            <TouchableWithoutFeedback onPress={() => navigation.navigate('StoreDetailPage', {storeIdx: basketState.storeIdx})}>
                                 <ShopSection>
-                                    <ShopImage resizeMode="cover" source={{uri: 'https://s3-alpha-sig.figma.com/img/dc3f/fab0/770d06d808e97bcc6bba2bed883bf55b?Expires=1691366400&Signature=jj0WemQiRINpwE~sArwik3nGMq9~aui8gwfowCfoJhyvRC5IzaGzCSCVNw04Onb1C2Rqb-J2wNgMsSCcOWyMhOgFjs5c0e6tK2EaDiAZkP4yowcisYjci2UK7VudXYhNzUoMepJ32oh6-TKK9-U~zLWk41bec14hyfph~TGcWvcTijoLYh5Mu3-cBxDM00nkqNaCGbBEZkBtVm-l85Zi~e8xQbtxY6aatxhoSSTJQmV8iZf0w0GPYVPLCt6SgJqmVbSxeg1l1P6DbT1qE9h~Dbo-wrBE1WjUNqmIkA8po1dY9PBzIg2oW745z8idsAEZUKWbqk5-UTA0it2OTuAbhA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}} />
+                                    <ShopImage resizeMode="cover" source={{uri: null}} />
                                     <ShopText>
-                                        울산미주구리
+                                        {basketState.storeName}
                                     </ShopText>
                                 </ShopSection>
                             </TouchableWithoutFeedback>
+                            <MenuContainer>
+                                {
+                                    basketState.basketItems.map(
+                                        (items, index) => (
+                                            <MenuWrapper>
+                                                <CancelTouch>
+                                                    <WithLocalSvg
+                                                        width={12}
+                                                        height={12}
+                                                        asset={CancelSVG} />
+                                                </CancelTouch>
+                                                <MenuImage resizeMode="cover" source={{uri: items.menuUrl}} />
+                                                <TouchableWithoutFeedback onPress={() => navigation.navigate('MenuDetailPage', {storeIdx: items.storeIdx, menuIdx: items.todaymenuIdx})}>
+                                                    <MenuSection>
+                                                        <MenuTitle>
+                                                            {items.menuName}
+                                                        </MenuTitle>
+                                                        <OriginalPriceSection>
+                                                            <OriginalPriceText>
+                                                                {items.price.toLocaleString() + '원'}
+                                                            </OriginalPriceText>
+                                                            <DiscountRate>
+                                                                {items.discount.toString() + ' %'}
+                                                            </DiscountRate>
+                                                        </OriginalPriceSection>
+                                                        <DiscountSection>
+                                                            <WithLocalSvg
+                                                                width={24}
+                                                                height={22.75}
+                                                                asset={ArrowRightSVG} />
+                                                            <DiscountPriceText>
+                                                                {items.todayPrice.toLocaleString() + '원'}
+                                                            </DiscountPriceText>
+                                                        </DiscountSection>
+                                                        <QuantitySection>
+                                                            <TouchableOpacity onPress={() => {
+                                                                const temp = { ...basketState };
+                                                                temp.basketItems[index].count--;
+                                                                setBasketState(temp)
+                                                            }}>
+                                                                <WithLocalSvg
+                                                                    width={22}
+                                                                    height={20}
+                                                                    asset={MinusSVG} />
+                                                            </TouchableOpacity>
+                                                            <QuantityText>
+                                                                {items.count.toString()+ '개'}
+                                                            </QuantityText>
+                                                            <TouchableOpacity onPress={() => {
+                                                                const temp = { ...basketState };
+                                                                temp.basketItems[index].count++;
+                                                                setBasketState(temp)
+                                                            }}>
+                                                                <WithLocalSvg
+                                                                    width={22}
+                                                                    height={20}
+                                                                    asset={PlusSVG} />
+                                                            </TouchableOpacity>
+                                                        </QuantitySection>
+                                                    </MenuSection>
+                                                </TouchableWithoutFeedback>
+                                            </MenuWrapper>
+                                        )
+                                    )
+                                }
+                            </MenuContainer>
                         </ShopWrapper>
-                        <MenuContainer>
-                            <MenuWrapper>
-                                <CancelTouch>
-                                    <WithLocalSvg
-                                        width={12}
-                                        height={12}
-                                        asset={CancelSVG} />
-                                </CancelTouch>
-                                <MenuImage resizeMode="cover" source={{uri: 'https://s3-alpha-sig.figma.com/img/dc3f/fab0/770d06d808e97bcc6bba2bed883bf55b?Expires=1691366400&Signature=jj0WemQiRINpwE~sArwik3nGMq9~aui8gwfowCfoJhyvRC5IzaGzCSCVNw04Onb1C2Rqb-J2wNgMsSCcOWyMhOgFjs5c0e6tK2EaDiAZkP4yowcisYjci2UK7VudXYhNzUoMepJ32oh6-TKK9-U~zLWk41bec14hyfph~TGcWvcTijoLYh5Mu3-cBxDM00nkqNaCGbBEZkBtVm-l85Zi~e8xQbtxY6aatxhoSSTJQmV8iZf0w0GPYVPLCt6SgJqmVbSxeg1l1P6DbT1qE9h~Dbo-wrBE1WjUNqmIkA8po1dY9PBzIg2oW745z8idsAEZUKWbqk5-UTA0it2OTuAbhA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}} />
-                                <TouchableWithoutFeedback onPress={() => navigation.navigate('MenuDetailPage')}>
-                                    <MenuSection>
-                                        <MenuTitle>
-                                            도다리 1KG
-                                        </MenuTitle>
-                                        <OriginalPriceSection>
-                                            <OriginalPriceText>
-                                                40,000원
-                                            </OriginalPriceText>
-                                            <DiscountRate>
-                                                50 %
-                                            </DiscountRate>
-                                        </OriginalPriceSection>
-                                        <DiscountSection>
-                                            <WithLocalSvg
-                                                width={24}
-                                                height={22.75}
-                                                asset={ArrowRightSVG} />
-                                            <DiscountPriceText>
-                                                20,000원
-                                            </DiscountPriceText>
-                                        </DiscountSection>
-                                        <QuantitySection>
-                                            <TouchableOpacity>
-                                                <WithLocalSvg
-                                                    width={22}
-                                                    height={20}
-                                                    asset={MinusSVG} />
-                                            </TouchableOpacity>
-                                            <QuantityText>
-                                                2개
-                                            </QuantityText>
-                                            <TouchableOpacity>
-                                                <WithLocalSvg
-                                                    width={22}
-                                                    height={20}
-                                                    asset={PlusSVG} />
-                                            </TouchableOpacity>
-                                        </QuantitySection>
-                                    </MenuSection>
-                                </TouchableWithoutFeedback>
-                            </MenuWrapper>
-                        </MenuContainer>
-
                     </CartContainer>
                     <CartOrderWrapper>
                         <CartOrderButton onPress={() => navigation.navigate('OrderPage')}>
@@ -143,13 +164,13 @@ export default function ShopBasketPage({ navigation }) {
                         </CartOrderButton>
                         <CartQuantitySection>
                             <CartQuantityText>
-                                담은 갯수 : 2개
+                                담은 갯수 : {basketState.totalMenuCount}개
                             </CartQuantityText>
                             <CartQuantityText>
                                 /
                             </CartQuantityText>
                             <CartTotalPriceText>
-                                총 40,000원
+                                총 {basketState.totalMenuPrice}원
                             </CartTotalPriceText>
                         </CartQuantitySection>
                     </CartOrderWrapper>
