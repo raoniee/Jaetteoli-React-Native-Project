@@ -96,13 +96,6 @@ const Subscribe = () => {
           : item
       )
     );
-    // console.log(initData);
-
-    // console.log(storeIdx);
-
-    // Here, you can make the API call using axios.
-    // For demonstration purposes, let's just log the API call.
-    // console.log("API 호출: ", storeIdx);
   };
 
   const moveToDetailStore = (storeIdx) => {
@@ -179,7 +172,7 @@ const Subscribe = () => {
                       <View style={styles.locationContainer}>
                         <Location />
                         <Text>
-                          {item.distance}m {item.duration}분
+                          {item.distance}m 도보 {item.duration}분
                         </Text>
                       </View>
                     </View>
