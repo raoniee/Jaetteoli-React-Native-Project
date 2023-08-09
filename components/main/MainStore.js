@@ -91,7 +91,7 @@ const MainStore = ({ item, onPress }) => {
               <View style={styles.locationContainer}>
                 <Location />
                 <Text>
-                  {item.distance}m {item.duration}분
+                  {item.distance}m 도보 {item.duration}분
                 </Text>
               </View>
             </View>
