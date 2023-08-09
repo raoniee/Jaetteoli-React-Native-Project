@@ -45,6 +45,7 @@ import { store } from "./store/store";
 import MembershipStart from "./pages/membership/MembershipStart";
 import MembershipAgreeDesc from "./pages/membership/MembershipAgreeDesc";
 import { MembershipProvider } from "./context/MembershipContext";
+import Withdrawal from './pages/mypage/Withdrawal';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -125,14 +126,9 @@ export default function App() {
               <Stack.Screen name="WriteReview" component={WriteReview} />
               <Stack.Screen name="TermsOfService" component={TermsOfService} />
               <Stack.Screen name="ModifyUserId" component={ModifyUserId} />
-              <Stack.Screen
-                name="ModifyUserEmail"
-                component={ModifyUserEmail}
-              />
-              <Stack.Screen
-                name="ModifyUserPhoneNum"
-                component={ModifyUserPhoneNum}
-              />
+              <Stack.Screen name="ModifyUserEmail" component={ModifyUserEmail}/>
+              <Stack.Screen name="ModifyUserPhoneNum" component={ModifyUserPhoneNum}/>
+              <Stack.Screen name="Withdrawal" component={Withdrawal} />
             </Stack.Navigator>
           </NavigationContainer>
         </MembershipProvider>

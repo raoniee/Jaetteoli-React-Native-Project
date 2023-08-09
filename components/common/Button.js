@@ -1,4 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import Color from '../../assets/colors/Color';
 
 const Button = (props) => {
     const marginValues = props.margin ? props.margin.split(' ').map(val => Number(val)) : [0, 0, 0, 0];
@@ -17,7 +18,7 @@ const Button = (props) => {
     };
 
     const buttonTextStyle = {
-        color: props.color,
+        color: props.disabled ? Color.white : props.color,
         fontSize: 18,
         fontFamily: 'Pretendard-SemiBold',
         lineHeight: 36,

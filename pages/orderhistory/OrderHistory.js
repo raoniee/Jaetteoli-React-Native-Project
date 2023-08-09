@@ -76,15 +76,15 @@ const OrderHistory = ({ navigation }) => {
   };
 
   const moveToDetailStore = (storeIdx) => {
-    navigation.navigate("StoreDetailPage", {storeIdx: storeIdx});
+    navigation.navigate("StoreDetailPage", { storeIdx: storeIdx });
   };
 
   const moveOrderDetail = () => {
     navigation.navigate("OrderDetail");
   };
 
-  const moveToWriteReview = () => {
-    navigation.navigate("WriteReview");
+  const moveToWriteReview = (orederIdx, storeIdx) => {
+    navigation.navigate("WriteReview", { orderIdx: orederIdx, storeIdx: storeIdx });
   };
 
   return (
@@ -201,7 +201,7 @@ const OrderHistory = ({ navigation }) => {
                 {/* 리뷰 */}
                 {isReview && (
                   <Pressable
-                    onPress={moveToWriteReview}
+                    onPress={() => moveToWriteReview(item.orderIdx, item.storeIdx)}
                     android_ripple={{ color: Color.lightPurple }}
                     style={({ pressed }) => pressed && styles.pressedItem}
                   >
