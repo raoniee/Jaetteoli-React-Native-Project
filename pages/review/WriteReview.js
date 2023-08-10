@@ -57,19 +57,26 @@ const WriteReview = () => {
     const [reviewPic, setReviewPic] = useState('');
 
     const deleteReviewPic = () => {
+        console.log(reviewPic)
         setReviewPic('');
     }
 
     // 리뷰 작성 api
     async function setComment() {
-        console.log(storeIdx, orderIdx, starRating, reviewText, reviewPic)
-        const requestBody = {
-            storeIdx: storeIdx,
-            orderIdx: orderIdx,
-            stars: starRating,
-            contents: reviewText,
-            reviewFile: reviewPic,
-        };
+        const formData = new FormData();
+        formData.append('storeIdx', storeIdx);
+        formData.append('orderIdx', orderIdx);
+        formData.append('stars', starRating);
+        formData.append('contents', reviewText);
+        if (reviewPic) {
+            const uriParts = reviewPic.split('.');
+            const fileType = uriParts[uriParts.length - 1];
+            formData.append('reviewFile', {
+                uri: reviewPic,
+                name: `review.${fileType}`,
+                type: `image/${fileType}`,
+            });
+        }
 
         const requestOptions = {
             method: 'POST',
@@ -77,7 +84,7 @@ const WriteReview = () => {
                 'Content-Type': 'application/json',
                 'X-ACCESS-TOKEN': jwt,
             },
-            body: JSON.stringify(requestBody),
+            body: formData,
         };
         try {
             const response = await fetch(`${baseUrl}/jat/app/reviews`, requestOptions);
@@ -134,6 +141,7 @@ const WriteReview = () => {
 
         if (!result.canceled) {
             setReviewPic(result.assets[0].uri)
+            console.log(result.assets[0].uri)
         }
     };
 
@@ -268,7 +276,7 @@ const WriteReview = () => {
                     {reviewPic && <TouchableOpacity style={styles.deleteReviewPic} onPress={deleteReviewPic}><Text style={styles.deleteReviewPicText}>사진 삭제</Text></TouchableOpacity>}
                 </View>
                 <TextInput placeholder='음식에 대한 리뷰를 남겨주세요!' placeholderTextColor={Color.lightGray} multiline style={styles.review} onChangeText={(value) => setReviewText(value)}></TextInput>
-                <Button onPress={setComment} title='완료' backgroundColor={Color.darkPurple} color={Color.white} margin='50 0 0 0' height={50} disabled={reviewText === ''}></Button>
+                <Button onPress={setComment} title='완료' backgroundColor={Color.darkPurple} color={Color.white} margin='50 0 0 0' height={50} disabled={reviewText === '' || starRating === 0}></Button>
             </View>
             <Modal
                 isVisible={modalVisible}
