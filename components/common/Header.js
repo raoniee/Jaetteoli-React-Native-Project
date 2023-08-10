@@ -225,5 +225,4 @@ const BasketQuantityText = styled.Text`
   font-size: 11px;
   font-style: normal;
   font-weight: 500;
-  line-height: normal;
 `
