@@ -50,15 +50,14 @@ const ManageReview = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [reviewIdx, setReviewIdx] = useState(null);
 
-    const closeModal = () => {
-        setModalVisible(false);
-    };
-
     const openModal = (reviewIdx) => {
         setModalVisible(true);
         setReviewIdx(reviewIdx);
     };
 
+    const closeModal = () => {
+        setModalVisible(false);
+    };
 
     // 리뷰 삭제하기 api
     async function deleteReview(reviewIdx) {
