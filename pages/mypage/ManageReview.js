@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Pressable } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import reveiwImg from '../../assets/images/reviewImg.png'
 import Color from '../../assets/colors/Color';
@@ -8,6 +8,8 @@ import profile from '../../assets/images/profile.png';
 import Header from '../../components/common/Header';
 import { baseUrl, jwt } from "../../utils/baseUrl";
 import { useNavigation } from '@react-navigation/native';
+import Close from '../../assets/images/Close';
+import Modal from 'react-native-modal';
 
 const ManageReview = () => {
 
@@ -45,6 +47,19 @@ const ManageReview = () => {
         }
     }
 
+    const [modalVisible, setModalVisible] = useState(false);
+    const [reviewIdx, setReviewIdx] = useState(null);
+
+    const closeModal = () => {
+        setModalVisible(false);
+    };
+
+    const openModal = (reviewIdx) => {
+        setModalVisible(true);
+        setReviewIdx(reviewIdx);
+    };
+
+
     // 리뷰 삭제하기 api
     async function deleteReview(reviewIdx) {
         const requestBody = {
@@ -65,7 +80,8 @@ const ManageReview = () => {
 
             if (data.isSuccess) {
                 // 삭제 후 사용자 리뷰 데이터를 다시 불러옴
-                getReviews()
+                closeModal();
+                getReviews();
             } else {
                 console.log(data.message);
             }
@@ -134,7 +150,7 @@ const ManageReview = () => {
                     {item.reviewUrl && <Image source={{ uri: item.reviewUrl }} style={styles.reviewImg}></Image>}
                     <Text style={styles.contents}>{item.contents}</Text>
                 </View>
-                <TouchableOpacity style={styles.delete}><Text style={styles.deleteText}>삭제하기</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => { openModal(item.reviewIdx) }} style={styles.delete}><Text style={styles.deleteText}>삭제하기</Text></TouchableOpacity>
                 <View style={styles.menuWrapper}>
                     {item.reviewMenus.map((menu, index) => (
                         <View style={styles.menu} key={index}><Text style={styles.menuText}>{menu}</Text></View>
@@ -165,6 +181,38 @@ const ManageReview = () => {
                     </View>
                 }
             />
+            <Modal
+                isVisible={modalVisible}
+                onBackdropPress={closeModal}
+                style={{
+                    justifyContent: 'flex-end',
+                    margin: 0,
+                }}
+            >
+                <View style={styles.modalContainer}>
+                    <Text style={styles.text}>리뷰를 삭제하시면 재작성이 불가합니다.{'\n'}삭제하시겠습니까?</Text>
+                    <View style={styles.btnContainer}>
+                        <Pressable
+                            onPress={closeModal}
+                            android_ripple={{ color: Color.lightPurple }}
+                            style={({ pressed }) => pressed && styles.pressedItem}
+                        >
+                            <View style={[styles.modalButton, { backgroundColor: Color.brightGray }]}>
+                                <Text style={styles.modalButtonText}>아니오</Text>
+                            </View>
+                        </Pressable>
+                        <Pressable
+                            android_ripple={{ color: Color.lightPurple }}
+                            style={({ pressed }) => pressed && styles.pressedItem}
+                            onPress={() => deleteReview(reviewIdx)}
+                        >
+                            <View style={styles.modalButton}>
+                                <Text style={styles.modalButtonText}>예</Text>
+                            </View>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
         </SafeAreaView>
     )
 }
@@ -208,7 +256,6 @@ const styles = StyleSheet.create({
     storeText: {
         fontSize: 16,
         fontFamily: 'Pretendard-SemiBold',
-        lineHeight: 35,
     },
     star: {
         flexDirection: 'row',
@@ -290,7 +337,49 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontFamily: 'Pretendard-Regular',
         lineHeight: 35
-    }
+    },
+    closeModal: {
+        width: '100%',
+        marginTop: 20,
+        marginBottom: 20,
+        alignItems: 'flex-end'
+    },
+    modalContainer: {
+        height: 313,
+        width: '100%',
+        backgroundColor: Color.white,
+        alignItems: 'center',
+        borderTopLeftRadius: 25,
+        borderTopRightRadius: 25,
+    },
+    text: {
+        marginTop: 116,
+        fontFamily: 'Pretendard-Medium',
+        fontSize: 18,
+        lineHeight: 23,
+        textAlign: 'center'
+    },
+    btnContainer: {
+        flexDirection: "row",
+        width: '100%',
+        justifyContent: "space-between",
+        paddingLeft: 50,
+        paddingRight: 50,
+        marginTop: 48,
+    },
+    modalButton: {
+        alignItems: 'center',
+        backgroundColor: Color.lightPurple,
+        borderRadius: 30,
+        width: 93,
+        height: 33,
+        justifyContent: 'center',
+    },
+    modalButtonText: {
+        color: Color.black,
+        fontSize: 14,
+        fontFamily: "Pretendard-Regular",
+    },
 })
 
 export default ManageReview;
