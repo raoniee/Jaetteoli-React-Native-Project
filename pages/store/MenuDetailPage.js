@@ -178,6 +178,13 @@ export default function MenuDetailPage({ navigation }) {
                             addBasket(ssc)
                         }
                     }
+                    else
+                        // 장바구니가 비면
+                        addBasket(ssc)
+                }
+                else{
+                    // 장바구니가 비면 데이터베이스 에러 뜨는 듯
+                    addBasket(ssc)
                 }
             })
             .catch(error => {
@@ -381,10 +388,10 @@ const FoodImg = styled.Image`
 
 const Container = styled.ScrollView`
   position: absolute;
-  top: 281px;
+  top: ${Platform.OS === 'ios' ? 227 + statusBarHeight : 227}px;
   left: 0;
   width: 100%;
-  height: ${totalHeight - 223 - statusBarHeight}px;
+  height: ${totalHeight - 227}px;
   border-radius: 30px 30px 0 0;
   background: white;
 `
