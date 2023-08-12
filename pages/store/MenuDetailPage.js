@@ -1,6 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
-import {View, Text, Button, TouchableOpacity, SafeAreaView, Dimensions, ScrollView, Alert} from 'react-native';
+import {
+    View,
+    Text,
+    Button,
+    TouchableOpacity,
+    SafeAreaView,
+    Dimensions,
+    ScrollView,
+    Alert,
+    Platform
+} from 'react-native';
 import Constants from 'expo-constants';
 import { WithLocalSvg } from 'react-native-svg';
 import DownSVG from '../../assets/images/down.svg';
@@ -16,15 +26,10 @@ import {useRoute} from "@react-navigation/native";
 import CustomModaless from "../../components/modal/CustomModaless";
 import CustomModal from "../../components/modal/CustomModal";
 
-// 안드로이드
-//const statusBarHeight = Constants.statusBarHeight;
-//const windowHeight = Dimensions.get('window').height;
-
-// IOS
 const statusBarHeight = Constants.statusBarHeight;
 const windowHeight = Dimensions.get('window').height
 
-const totalHeight = windowHeight;
+const totalHeight = Platform.OS === 'ios' ? windowHeight : windowHeight - statusBarHeight;
 
 export default function MenuDetailPage({ navigation }) {
     const [ menuState, setMenuState ] = useState({
@@ -43,7 +48,7 @@ export default function MenuDetailPage({ navigation }) {
     const [quantity, setQuantity] = useState(1);
     const dispatch = useDispatch();
     const route = useRoute()
-    const {storeIdx, menuIdx} = route.params
+    const {storeIdx, menuIdx, from} = route.params
     const [ visibleModaless, setVisibleModaless ] = useState(false);
     const [ visibleModal, setVisibleModal ] = useState(false);
 
@@ -52,7 +57,7 @@ export default function MenuDetailPage({ navigation }) {
     }, [])
 
     // 메뉴 데이터 가져오기
-    const getMenuInfo = () => {
+    const getMenuInfo = (check = 0) => {
         const apiUrl = baseUrl+`/jat/app/menus/detail?todaymenuIdx=${menuIdx}`;
 
         const requestOptions = {
@@ -65,9 +70,15 @@ export default function MenuDetailPage({ navigation }) {
         fetch(apiUrl, requestOptions)
             .then(response => response.json())
             .then(data => {
-                if (data.code === 1000) {
-                    console.log(data.result)
+                if (data.code === 1000 && !check) {
                     setMenuState(data.result)
+                }
+                else if (check){
+                    // 매진인지 확인
+                    if (data.result.remain === 0)
+                        setVisibleModaless(true)
+                    else
+                        checkSameStore()
                 }
             })
             .catch(error => {
@@ -92,14 +103,16 @@ export default function MenuDetailPage({ navigation }) {
         fetch(apiUrl, requestOptions)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 if (data.code === 1000){
                     const ssc = data.result.sameStoreCheck
                     if (ssc){
                         setVisibleModal(true)
                     }
                     else
-                        addBasket(ssc, storeIdx)
+                        // 만약 중복되는 메뉴이다
+                        // 그러면 장바구니 추가가 아니라 수정 API 사용
+                        // 장바구니->메뉴 이렇게 갔으면
+                        getBasket(ssc)
                 }
             })
             .catch(error => {
@@ -109,8 +122,6 @@ export default function MenuDetailPage({ navigation }) {
 
     const addBasket = (sameStoreCheck) => {
         const apiUrl = baseUrl+"/jat/app/basket";
-
-        console.log("테스트",storeIdx, menuIdx, quantity, sameStoreCheck)
 
         const requestOptions = {
             method: 'POST',
@@ -129,17 +140,82 @@ export default function MenuDetailPage({ navigation }) {
         fetch(apiUrl, requestOptions)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 if (data.code === 1000){
-                    // 중복 메뉴라면
-                    // setVisibleModaless(true)
-                    dispatch(basketAddAction({add: true}))
+                    // 가게 상세에서 온건지, 장바구니에서 온건지 확인
+                    if (from === 'StoreDetailPage')
+                        dispatch(basketAddAction({add: true}))
                     navigation.pop();
                 }
             })
             .catch(error => {
                 console.log('Error fetching data:', error);
             })
+    }
+
+    const getBasket = (ssc) => {
+        const apiUrl = baseUrl+"/jat/app/basket";
+
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+            },
+        };
+
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 1000){
+                    const basketList = data.result.basketItems
+                    if (basketList){
+                        const duplicateItem = basketList.find(item => item.todaymenuIdx === menuState.todaymenuIdx);
+                        if (duplicateItem) {
+                            // 중복된 메뉴일 경우 개수 추가
+                            modifyBasket(duplicateItem.basketIdx, quantity);
+                        }
+                        else {
+                            // 아니면 그냥 메뉴 추가
+                            addBasket(ssc)
+                        }
+                    }
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            })
+    }
+
+    const modifyBasket = (basketIdx = 0, count = 0) => {
+        const apiUrl = baseUrl + "/jat/app/basket";
+
+        const requestOptions = {
+            method: 'PATCH',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                basketIdx: basketIdx,
+                inDecrease: 1,
+                patchStatus: 'count'
+            })
+        };
+
+        for (let i = 0; i < count; i++) {
+            fetch(apiUrl, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 1000 && i === count - 1) {
+                        // 가게 상세에서 온건지, 장바구니에서 온건지 확인
+                        if (from === 'StoreDetailPage')
+                            dispatch(basketAddAction({add: true}))
+                        navigation.pop();
+                    }
+                })
+                .catch(error => {
+                    console.log('Error fetching data:', error);
+                })
+        }
     }
 
 
@@ -222,7 +298,7 @@ export default function MenuDetailPage({ navigation }) {
                                     {quantity}개
                                 </MenuQuantityText2>
                                 <TouchableOpacity onPress={() => {
-                                    if (quantity < 99)
+                                    if (quantity < menuState.remain)
                                         setQuantity(quantity + 1)
                                 }}>
                                     <WithLocalSvg
@@ -234,7 +310,7 @@ export default function MenuDetailPage({ navigation }) {
                         </MenuQuantityWrapper>
                     </View>
                     <MenuOrderWrapper>
-                        <MenuOrderButton onPress={() => checkSameStore()}>
+                        <MenuOrderButton onPress={() => getMenuInfo(1)}>
                             <MenuOrderText>
                                 {(menuState.todayPrice * quantity).toLocaleString()}원 담기
                             </MenuOrderText>
@@ -278,13 +354,22 @@ export default function MenuDetailPage({ navigation }) {
                 </ModalWrapper>
             </CustomModal>
 
-            <CustomModaless
-                isVisible={visibleModaless}
-                setVisible={() => setVisibleModaless(false)}
-                text='장바구니에 메뉴를 추가했습니다.'/>
+            <ModalessSection>
+                <CustomModaless
+                    isVisible={visibleModaless}
+                    setVisible={() => setVisibleModaless(false)}
+                    text="해당 메뉴는 매진되었습니다."/>
+            </ModalessSection>
         </SafeAreaView>
     )
 }
+
+const ModalessSection = styled.View`
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+`
 
 const FoodImg = styled.Image`
   position: absolute;

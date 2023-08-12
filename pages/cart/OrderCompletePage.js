@@ -1,4 +1,4 @@
-import {Animated, Dimensions, SafeAreaView} from "react-native";
+import {Animated, Dimensions, Platform, SafeAreaView} from "react-native";
 import Header from "../../components/common/Header";
 import Constants from "expo-constants";
 import styled from "styled-components/native";
@@ -7,16 +7,10 @@ import { Svg, Path, Circle } from 'react-native-svg';
 
 
 
-// 안드로이드
-//const statusBarHeight = Constants.statusBarHeight;
-//const windowHeight = Dimensions.get('window').height;
-
-
-// IOS
 const statusBarHeight = Constants.statusBarHeight;
 const windowHeight = Dimensions.get('window').height
 
-const totalHeight = windowHeight - statusBarHeight;
+const totalHeight = Platform.OS === 'ios' ? windowHeight : windowHeight - statusBarHeight;
 
 export default function OrderCompletePage() {
 

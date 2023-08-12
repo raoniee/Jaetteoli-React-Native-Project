@@ -23,17 +23,12 @@ import {basketAddAction} from "../../store/basketAdd";
 import CustomModal from "../../components/modal/CustomModal";
 import NetInfo from "@react-native-community/netinfo";
 import CustomModaless from "../../components/modal/CustomModaless";
+import {useIsFocused} from "@react-navigation/native";
 
-// 안드로이드
-//const statusBarHeight = Constants.statusBarHeight;
-//const windowHeight = Dimensions.get('window').height;
-
-
-// IOS
 const statusBarHeight = Constants.statusBarHeight;
 const windowHeight = Dimensions.get('window').height
 
-const totalHeight = windowHeight - statusBarHeight;
+const totalHeight = Platform.OS === 'ios' ? windowHeight : windowHeight - statusBarHeight;
 
 export default function ShopBasketPage({ navigation }) {
     const [ basketState, setBasketState ] = useState({
@@ -46,10 +41,13 @@ export default function ShopBasketPage({ navigation }) {
     });
     const [ visibleModal, setVisibleModal ] = useState(false);
     const [ visibleModaless, setVisibleModaless] = useState(false);
+    const focus = useIsFocused();
 
+    // 여기는 focus마다 실행되게 해야하나?
     useEffect(() => {
-        getBasketList();
-    }, [])
+        if (focus)
+            getBasketList();
+    }, [focus])
 
 
     const getBasketList = () => {
@@ -107,6 +105,49 @@ export default function ShopBasketPage({ navigation }) {
             })
     }
 
+    const modifyBasket = (basketIdx = 0, inDecrease = 0, patchStatus = '') => {
+        const apiUrl = baseUrl+"/jat/app/basket";
+
+        const requestOptions = {
+            method: 'PATCH',
+            headers: {
+                'X-ACCESS-TOKEN': jwt,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                basketIdx: basketIdx,
+                inDecrease: inDecrease,
+                patchStatus: patchStatus
+            })
+        };
+
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 1000){
+                    // 장바구니가 아직 존재
+                    if (!data.result.basketItems)
+                        data.result.basketItems = []
+                    setBasketState(data.result)
+                }
+                else if (data.code === 4000){
+                    // 장바구니가 다 비어버리면 이거 주는 듯
+                    setBasketState({
+                        storeIdx: 0,
+                        storeName: '',
+                        storeUrl: null,
+                        totalMenuCount: 0,
+                        totalMenuPrice: 0,
+                        basketItems: []
+                    })
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            })
+
+    }
+
     function cancel() {
         setVisibleModal(false)
     }
@@ -132,7 +173,7 @@ export default function ShopBasketPage({ navigation }) {
                         <ShopWrapper>
                             <TouchableWithoutFeedback onPress={() => navigation.navigate('StoreDetailPage', {storeIdx: basketState.storeIdx})}>
                                 <ShopSection>
-                                    <ShopImage resizeMode="contain" source={{uri: basketState.storeUrl}} />
+                                    {basketState.storeUrl? <ShopImage resizeMode="contain" source={{uri: basketState.storeUrl}}/> : null}
                                     <ShopText>
                                         {basketState.storeName}
                                     </ShopText>
@@ -143,12 +184,18 @@ export default function ShopBasketPage({ navigation }) {
                             {
                                 basketState.basketItems.map(
                                     (items, index) => (
-                                        <TouchableWithoutFeedback onPress={() => navigation.navigate('MenuDetailPage', {
+                                        <TouchableWithoutFeedback
+                                            key={items.basketIdx}
+                                            onPress={() => navigation.navigate('MenuDetailPage', {
                                             storeIdx: items.storeIdx,
                                             menuIdx: items.todaymenuIdx,
                                         })}>
-                                        <MenuWrapper>
-                                            <CancelTouch>
+                                            <MenuWrapper>
+                                            <CancelTouch onPress={() => {
+                                                const basketList = basketState.basketItems.filter(item => item.basketIdx !== items.basketIdx)
+                                                //setBasketState({...basketState, basketItems: basketList})
+                                                modifyBasket(items.basketIdx, 0, 'remove')
+                                            }}>
                                                 <WithLocalSvg
                                                     width={12}
                                                     height={12}
@@ -182,6 +229,7 @@ export default function ShopBasketPage({ navigation }) {
                                                                 const temp = { ...basketState };
                                                                 if (temp.basketItems[index].count > 1){
                                                                     temp.basketItems[index].count--;
+                                                                    modifyBasket(items.basketIdx, 0, 'count')
                                                                     setBasketState(temp)
                                                                 }
                                                             }}>
@@ -197,6 +245,7 @@ export default function ShopBasketPage({ navigation }) {
                                                                 const temp = { ...basketState };
                                                                 if (temp.basketItems[index].count < 99){
                                                                     temp.basketItems[index].count++;
+                                                                    modifyBasket(items.basketIdx, 1, 'count')
                                                                     setBasketState(temp)
                                                                 }
                                                             }}>

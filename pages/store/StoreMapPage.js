@@ -1,4 +1,4 @@
-import {Dimensions, SafeAreaView} from "react-native";
+import {Dimensions, Platform, SafeAreaView} from "react-native";
 import Header from "../../components/common/Header";
 import MapView, {Marker, PROVIDER_GOOGLE} from "react-native-maps";
 import React, {useEffect, useState} from "react";
@@ -7,20 +7,14 @@ import styled from "styled-components/native";
 import Constants from "expo-constants";
 import {useRoute} from "@react-navigation/native";
 
-// 안드로이드
-//const statusBarHeight = Constants.statusBarHeight;
-//const windowHeight = Dimensions.get('window').height;
-
-// IOS
 const statusBarHeight = Constants.statusBarHeight;
 const windowHeight = Dimensions.get('window').height
 
-const totalHeight = windowHeight - statusBarHeight;
+const totalHeight = Platform.OS === 'ios' ? windowHeight : windowHeight - statusBarHeight;
 
 export default function StoreMapPage() {
     const route = useRoute()
     const {latitude, longitude} = route.params
-    console.log(latitude, longitude)
 
     return (
         <SafeAreaView style={{backgroundColor: 'white'}}>

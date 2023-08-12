@@ -1,4 +1,4 @@
-import {Dimensions, SafeAreaView, TouchableOpacity} from "react-native";
+import {Dimensions, Platform, SafeAreaView, TouchableOpacity} from "react-native";
 import styled from "styled-components/native";
 import Header from "../../components/common/Header";
 import React, {useState} from "react";
@@ -18,23 +18,21 @@ import CustomModal from "../../components/modal/CustomModal";
 import * as Clipboard from "expo-clipboard";
 import {useRoute} from "@react-navigation/native";
 import {baseUrl, jwt} from "../../utils/baseUrl";
+import CustomModaless from "../../components/modal/CustomModaless";
+import Constants from "expo-constants";
 
 
-// 안드로이드
-//const statusBarHeight = Constants.statusBarHeight;
-//const windowHeight = Dimensions.get('window').height;
-
-// IOS
-const statusBarHeight = 0;
+const statusBarHeight = Constants.statusBarHeight;
 const windowHeight = Dimensions.get('window').height
 
-const totalHeight = statusBarHeight + windowHeight;
+const totalHeight = Platform.OS === 'ios' ? windowHeight : windowHeight - statusBarHeight;
 
 
 export default function OrderPage({ navigation }) {
     const [ safeCheck, setSafeCheck ] = useState(false)
     const [ selectCredit, setSelectCredit ] = useState(0);
     const [ visibleModal, setVisibleModal ] = useState(false);
+    const [ visibleModaless, setVisibleModaless ] = useState(false);
     const [ date, setDate ] = useState(new Date());
     const [ selectedDate, setSelectedDate ] = useState(new Date());
     const [ request, setRequest ] = useState("");
@@ -86,9 +84,10 @@ export default function OrderPage({ navigation }) {
         fetch(apiUrl, requestOptions)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 if (data.code === 1000)
                     navigation.navigate('OrderCompletePage')
+                else if (data.code === 2061)
+                    setVisibleModaless(true)
 
             })
             .catch(error => {
@@ -298,8 +297,11 @@ export default function OrderPage({ navigation }) {
                         display="spinner"
                         onChange={onChange}/>
                 </SetPickupTimeWrapper>
-
             </CustomModal>
+            <CustomModaless
+                isVisible={visibleModaless}
+                setVisible={() => setVisibleModaless(false)}
+                text='떨이 메뉴 재고가 부족합니다.'/>
         </SafeAreaView>
     )
 }
