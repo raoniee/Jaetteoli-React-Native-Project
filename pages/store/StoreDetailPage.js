@@ -1371,6 +1371,7 @@ function ReviewComponent({sortBy, modalVisible, storeIdx}) {
 
         return (
             review.map((item, index) => {
+                console.log(item.reviewIdx)
                 if (onlyImage){
                     if (item.review_url)
                         return (
@@ -2003,6 +2004,9 @@ const ReviewMenuSection = styled.View`
   justify-content: flex-start;
   align-items: center;
   gap: 5px;
+  max-width: 360px;
+  overflow: hidden;
+  flex-wrap: wrap;
 `
 
 const ReviewMenuBox = styled.View`
