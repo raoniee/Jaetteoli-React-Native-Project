@@ -10,7 +10,7 @@ import {useRoute} from "@react-navigation/native";
 const statusBarHeight = Constants.statusBarHeight;
 const windowHeight = Dimensions.get('window').height
 
-const totalHeight = Platform.OS === 'ios' ? windowHeight : windowHeight - statusBarHeight;
+const totalHeight = Platform.OS === 'ios' ? windowHeight - statusBarHeight : windowHeight;
 
 export default function StoreMapPage() {
     const route = useRoute()
