@@ -1,5 +1,5 @@
 import Header from "../../components/common/Header";
-import {Animated, SafeAreaView, TouchableOpacity, TouchableWithoutFeedback} from "react-native";
+import {Animated, Linking, SafeAreaView, TouchableOpacity, TouchableWithoutFeedback} from "react-native";
 import * as Clipboard from 'expo-clipboard';
 import styled from "styled-components/native";
 import { Path, Svg, WithLocalSvg} from "react-native-svg";
@@ -39,7 +39,7 @@ export default function StoreDetailPage({navigation}) {
     const [ sortByTouch, setSortByTouch ] = useState(1);
     const dispatch = useDispatch()
     const basketAdd = useSelector(({basketAdd}) => basketAdd.add)
-    const userLocation = useSelector(({mapAddress}) => mapAddress)
+    const userLocation = useSelector(({myAddress}) => myAddress)
     const route = useRoute();
     const { storeIdx } = route.params;
 
@@ -199,7 +199,16 @@ export default function StoreDetailPage({navigation}) {
                             </TouchableWithoutFeedback>
                         </StoreInformationSection>
                         <StoreInformationSection2>
-                            <StoreInformationTouch>
+                            <StoreInformationTouch onPress={async () => {
+                                const phoneNumber = storeState.storePhone.replace(/-/g, ''); // 전화번호
+
+                                const supported = await Linking.canOpenURL(`tel:${phoneNumber}`);
+                                if (supported) {
+                                    await Linking.openURL(`tel:${phoneNumber}`);
+                                } else {
+                                    console.log(`전화 걸기를 지원하지 않는 기기입니다.`);
+                                }
+                            }}>
                                 <StoreInformationTouchSVGBox>
                                     <Svg width="25" height="26" viewBox="0 0 25 26" fill="none">
                                         <Path
@@ -286,8 +295,8 @@ export default function StoreDetailPage({navigation}) {
                                         {storeState.storeAddress}
                                     </StoreAddressText>
                                     <StoreAddressText>
-                                        {userLocation.longitude && userLocation.latitude && `(현재 주소로부터 약 ${storeState.distance}m, 도보 ${storeState.duration}분)`}
-                                        {!userLocation.longitude && !userLocation.latitude && `(위치에 문제가 발생했습니다)`}
+                                        {userLocation.longitude && userLocation.latitude ? `(현재 주소로부터 약 ${storeState.distance}m, 도보 ${storeState.duration}분)` : ''}
+                                        {!userLocation.longitude && !userLocation.latitude ? `(위치에 문제가 발생했습니다)` : ''}
                                     </StoreAddressText>
                                 </StoreAddressTextBox>
                             </StoreAddressSection>
@@ -688,7 +697,8 @@ function MenuComponent({storeIdx}) {
                             key={item.todaymenuIdx}
                             onPress={() => navigation.navigate('MenuDetailPage', {
                             storeIdx: storeIdx,
-                            menuIdx: item.todaymenuIdx
+                            menuIdx: item.todaymenuIdx,
+                            from: 'StoreDetailPage'
                         })}>
                             <MenuWrapper>
                                 <MenuSection>
@@ -1333,7 +1343,6 @@ function ReviewComponent({sortBy, modalVisible, storeIdx}) {
         fetch(apiUrl, requestOptions)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 if (data.code === 1000){
                 }
             })
@@ -1365,7 +1374,7 @@ function ReviewComponent({sortBy, modalVisible, storeIdx}) {
                 if (onlyImage){
                     if (item.review_url)
                         return (
-                            <ReviewWrapper keys={item.reviewIdx}>
+                            <ReviewWrapper key={item.reviewIdx}>
                                 <ReviewSection>
                                     <ReviewBox>
                                         <UserSection>
@@ -1458,7 +1467,7 @@ function ReviewComponent({sortBy, modalVisible, storeIdx}) {
                 }
                 else
                     return (
-                        <ReviewWrapper keys={item.reviewIdx}>
+                        <ReviewWrapper key={item.reviewIdx}>
                             <ReviewSection>
                                 <ReviewBox>
                                     <UserSection>
@@ -1693,7 +1702,6 @@ function ReviewComponent({sortBy, modalVisible, storeIdx}) {
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
                             const reviewIdx = visibleModal.reviewIdx
-                            console.log(reviewIdx)
                             reportReview(reviewIdx)
                             setVisibleModal({visible: false, reviewIdx: 0})
                         }}>
