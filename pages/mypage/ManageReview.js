@@ -293,7 +293,8 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     menuWrapper: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        flexWrap: 'wrap',
     },
     menu: {
         backgroundColor: Color.lightPurple,
@@ -301,6 +302,7 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         borderRadius: 18,
         marginRight: 5,
+        marginBottom: 8,
     },
     menuText: {
         fontSize: 12,
