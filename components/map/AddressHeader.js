@@ -9,7 +9,7 @@ import DefaultBellSVG from '../../assets/images/default_bell.svg';
 import DefaultCartSVG from '../../assets/images/default_cart.svg';
 import XSVG from '../../assets/images/x.svg';
 import { useNavigation } from '@react-navigation/native';
-import ShopBasketPage from "../../pages/cart/ShopBasketPage";
+import ShopBasketPage from "../../pages/BasketPage/BasketPage";
 
 const HeaderWrapper = styled.View`
   position: relative;
