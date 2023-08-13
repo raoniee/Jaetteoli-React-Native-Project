@@ -21,7 +21,7 @@ import OrderPage from "./pages/OrderPage/OrderPage";
 import MenuDetailPage from "./pages/MenuDetailPage/MenuDetailPage";
 import OrderCompletePage from "./pages/OrderCompletePage/OrderCompletePage";
 import StoreDetailPage from "./pages/StoreDetailPage/StoreDetailPage";
-import StoreMapPage from "./pages/StoreMapPage/StoreMapPage
+import StoreMapPage from "./pages/StoreMapPage/StoreMapPage";
 import ModifyMyInfo from "./pages/mypage/ModifyMyInfo";
 import AlramList from "./pages/mypage/AlramList";
 import ManageReview from "./pages/mypage/ManageReview";
