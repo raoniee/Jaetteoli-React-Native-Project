@@ -1,18 +1,9 @@
+// react-native, expo
 import React, {useEffect, useState} from "react";
-import {Animated, Dimensions, Modal, TouchableWithoutFeedback} from "react-native";
+import {Animated, Modal, TouchableWithoutFeedback} from "react-native";
 import styled from "styled-components/native";
-import Constants from "expo-constants";
-
-// 안드로이드
-//const statusBarHeight = Constants.statusBarHeight;
-//const windowHeight = Dimensions.get('window').height;
-
-
-// IOS
-const statusBarHeight = Constants.statusBarHeight;
-const windowHeight = Dimensions.get('window').height
-
-const totalHeight = windowHeight;
+// utils
+import {totalHeight} from 'utils/dimensions'
 
 export default function CustomModal({isVisible, onBackdropPress = () => {}, children}) {
     const opacity = useState(new Animated.Value(0))[0];

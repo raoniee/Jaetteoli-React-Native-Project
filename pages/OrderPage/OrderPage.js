@@ -1,31 +1,29 @@
-import {Dimensions, Platform, SafeAreaView, TouchableOpacity} from "react-native";
-import styled from "styled-components/native";
-import Header from "../../components/common/Header";
+// react-native, expo
 import React, {useState} from "react";
+import {SafeAreaView, TouchableOpacity} from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {WithLocalSvg} from "react-native-svg";
-import LocationSVG from '../../assets/images/location.svg';
-import WalletSVG from '../../assets/images/wallet.svg';
-import ClockSVG from '../../assets/images/clock.svg';
-import PhoneSVG from '../../assets/images/phone.svg';
-import PencilSVG from '../../assets/images/pencil.svg';
-import CreditCardSVG from '../../assets/images/credit-card.svg';
-import RightSVG from '../../assets/images/right.svg';
-import CheckSVG from '../../assets/images/check.svg';
-import Ellipse1 from '../../assets/images/Ellipse1.svg';
-import Ellipse0 from '../../assets/images/Ellipse0.svg';
-import CustomModal from "../../components/modal/CustomModal";
 import * as Clipboard from "expo-clipboard";
 import {useRoute} from "@react-navigation/native";
-import {baseUrl, jwt} from "../../utils/baseUrl";
-import CustomModaless from "../../components/modal/CustomModaless";
-import Constants from "expo-constants";
-
-
-const statusBarHeight = Constants.statusBarHeight;
-const windowHeight = Dimensions.get('window').height
-
-const totalHeight = Platform.OS === 'ios' ? windowHeight - statusBarHeight : windowHeight;
+// utils
+import {postOrderPay} from "./utils/postOrderPay";
+// styles
+import styled from "styled-components/native";
+// images
+import LocationSVG from 'assets/images/location.svg';
+import WalletSVG from 'assets/images/wallet.svg';
+import ClockSVG from 'assets/images/clock.svg';
+import PhoneSVG from 'assets/images/phone.svg';
+import PencilSVG from 'assets/images/pencil.svg';
+import CreditCardSVG from 'assets/images/credit-card.svg';
+import RightSVG from 'assets/images/right.svg';
+import CheckSVG from 'assets/images/check.svg';
+import Ellipse1 from 'assets/images/Ellipse1.svg';
+import Ellipse0 from 'assets/images/Ellipse0.svg';
+// components
+import Header from "components/common/Header";
+import CustomModal from "components/Heo/modal/CustomModal";
+import CustomModaless from "components/Heo/modal/CustomModaless";
 
 
 export default function OrderPage({ navigation }) {
@@ -62,37 +60,13 @@ export default function OrderPage({ navigation }) {
         setSelectedDate(currentDate)
     }
 
-    function orderPay() {
-        const apiUrl = baseUrl+"/jat/app/basket/order";
-
-
-        const requestOptions = {
-            method: 'POST',
-            headers: {
-                'X-ACCESS-TOKEN': jwt,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                storeIdx: storeIdx,
-                request: request,
-                pickupTime: date.toLocaleTimeString(undefined, {hour12: false, hour: '2-digit', minute: '2-digit'}),
-                paymentStatus: "결제완료"
-            })
-        };
-
-
-        fetch(apiUrl, requestOptions)
-            .then(response => response.json())
-            .then(data => {
-                if (data.code === 1000)
-                    navigation.navigate('OrderCompletePage')
-                else if (data.code === 2061)
-                    setVisibleModaless(true)
-
-            })
-            .catch(error => {
-                console.log('Error fetching data:', error);
-            })
+    async function handleOrderPay() {
+        const result = await postOrderPay(storeIdx, request, date);
+        if (result.status === 1)
+            navigation.navigate('OrderCompletePage')
+        else if (result.status === 2)
+            setVisibleModaless(true)
+        // 3은 주문 실패
     }
 
     return (
@@ -262,13 +236,14 @@ export default function OrderPage({ navigation }) {
                     </CreditTotalPriceSection>
                 </OrderWrapper>
                 <PaymentWrapper>
-                    <PaymentButton onPress={orderPay}>
+                    <PaymentButton onPress={handleOrderPay}>
                         <PaymentText>
                             결제하기
                         </PaymentText>
                     </PaymentButton>
                 </PaymentWrapper>
             </Container>
+
             <CustomModal
                 isVisible={visibleModal}
                 onBackdropPress={cancel}>
@@ -298,6 +273,7 @@ export default function OrderPage({ navigation }) {
                         onChange={onChange}/>
                 </SetPickupTimeWrapper>
             </CustomModal>
+
             <CustomModaless
                 isVisible={visibleModaless}
                 setVisible={() => setVisibleModaless(false)}

@@ -1,16 +1,16 @@
-import {Dimensions, Platform, SafeAreaView} from "react-native";
-import Header from "../../components/common/Header";
+// react-native, expo
+import React from "react";
+import {SafeAreaView} from "react-native";
 import MapView, {Marker, PROVIDER_GOOGLE} from "react-native-maps";
-import React, {useEffect, useState} from "react";
-import {CustomMarker} from "./StoreDetailPage";
-import styled from "styled-components/native";
-import Constants from "expo-constants";
 import {useRoute} from "@react-navigation/native";
-
-const statusBarHeight = Constants.statusBarHeight;
-const windowHeight = Dimensions.get('window').height
-
-const totalHeight = Platform.OS === 'ios' ? windowHeight - statusBarHeight : windowHeight;
+// redux
+// utils
+import {totalHeight} from 'utils/dimensions'
+// styles
+import styled from "styled-components/native";
+// components
+import Header from "components/common/Header";
+import CustomMarker from "components/Heo/CustomMarker";
 
 export default function StoreMapPage() {
     const route = useRoute()
@@ -53,10 +53,4 @@ export default function StoreMapPage() {
 const Container = styled.View`
   width: 100%;
   height: ${totalHeight - 44}px;
-`
-
-
-const CurrentLocation = styled.View`
-  width: 13px;
-  height: 13px;
 `

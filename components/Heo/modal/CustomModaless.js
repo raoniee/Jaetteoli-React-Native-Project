@@ -1,6 +1,10 @@
+// react-native, expo
 import React, {useEffect, useRef} from "react";
 import styled from "styled-components/native";
 import {Animated} from "react-native";
+// utils
+import {totalHeight} from 'utils/dimensions'
+
 
 export default function CustomModaless({isVisible, setVisible, text}) {
     const fadeAnim = useRef(new Animated.Value(1)).current;
@@ -36,7 +40,7 @@ export default function CustomModaless({isVisible, setVisible, text}) {
 
 const BasketAddView = styled(Animated.View)`
   position: absolute;
-  top: 50%;
+  top: ${totalHeight/2}px;
   left: 50%;
   margin-top: -23.5px;
   margin-left: -126.5px;

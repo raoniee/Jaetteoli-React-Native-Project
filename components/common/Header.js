@@ -1,16 +1,20 @@
-import styled from 'styled-components/native';
+// react-native, expo
 import {View, TouchableOpacity, StatusBar} from 'react-native';
-import { WithLocalSvg } from 'react-native-svg';
-import WhiteLeftSVG from '../../assets/images/white_left.svg';
-import WhiteBellSVG from '../../assets/images/white_bell.svg';
-import WhiteCartSVG from '../../assets/images/white_cart.svg';
-import DefaultLeftSVG from '../../assets/images/default_left.svg';
-import DefaultBellSVG from '../../assets/images/default_bell.svg';
-import DefaultCartSVG from '../../assets/images/default_cart.svg';
-import XSVG from '../../assets/images/x.svg';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from "react";
-import {baseUrl, jwt} from "../../utils/baseUrl";
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import { WithLocalSvg } from 'react-native-svg';
+// utils
+import {baseUrl, jwt} from "utils/baseUrl";
+// styles
+import styled from 'styled-components/native';
+// images
+import WhiteLeftSVG from 'assets/images/white_left.svg';
+import WhiteBellSVG from 'assets/images/white_bell.svg';
+import WhiteCartSVG from 'assets/images/white_cart.svg';
+import DefaultLeftSVG from 'assets/images/default_left.svg';
+import DefaultBellSVG from 'assets/images/default_bell.svg';
+import DefaultCartSVG from 'assets/images/default_cart.svg';
+import XSVG from 'assets/images/x.svg';
 
 const HeaderWrapper = styled.View`
   position: relative;
@@ -156,7 +160,7 @@ const WhiteBell = () => {
 const DefaultCart = ({nums}) => {
     const navigation = useNavigation();
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('ShopBasketPage')}>
+        <TouchableOpacity onPress={() => navigation.navigate('BasketPage')}>
             <WithLocalSvg
                 width={24}
                 height={24}
@@ -173,7 +177,7 @@ const DefaultCart = ({nums}) => {
 const WhiteCart = ({nums}) => {
     const navigation = useNavigation();
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('ShopBasketPage')}>
+        <TouchableOpacity onPress={() => navigation.navigate('BasketPage')}>
             <WithLocalSvg
                 width={24}
                 height={24}

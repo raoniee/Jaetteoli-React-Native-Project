@@ -1,36 +1,34 @@
-import React, {useEffect, useRef, useState} from 'react';
-import styled from 'styled-components/native';
+// react-native, expo
+import React, {useEffect, useState} from 'react';
+import {useIsFocused} from "@react-navigation/native";
 import {
-    View,
-    Text,
-    Button,
     TouchableOpacity,
     SafeAreaView,
-    Dimensions,
     Platform,
-    TouchableWithoutFeedback, Animated
+    TouchableWithoutFeedback
 } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import Constants from 'expo-constants';
-import { WithLocalSvg } from 'react-native-svg';
-import ArrowRightSVG from '../../assets/images/arrow_right.svg';
-import MinusSVG from "../../assets/images/minus.svg";
-import PlusSVG from "../../assets/images/plus.svg";
-import CancelSVG from "../../assets/images/cancel.svg";
-import Header from "../../components/common/Header";
-import {baseUrl, jwt} from "../../utils/baseUrl";
-import {basketAddAction} from "../../store/basketAdd";
-import CustomModal from "../../components/modal/CustomModal";
 import NetInfo from "@react-native-community/netinfo";
-import CustomModaless from "../../components/modal/CustomModaless";
-import {useIsFocused} from "@react-navigation/native";
+import { WithLocalSvg } from 'react-native-svg';
+// utils
+import {totalHeight} from 'utils/dimensions'
+import {getBasket} from "./utils/getBasket";
+import {patchModifyBasket} from "./utils/patchModifyBasket";
+import {getOrder} from "./utils/getOrder";
+// styles
+import styled from 'styled-components/native';
+// images
+import ArrowRightSVG from 'assets/images/arrow_right.svg';
+import MinusSVG from "assets/images/minus.svg";
+import PlusSVG from "assets/images/plus.svg";
+import CancelSVG from "assets/images/cancel.svg";
+// components
+import Header from "components/common/Header";
+import CustomModal from "components/Heo/modal/CustomModal";
+import CustomModaless from "components/Heo/modal/CustomModaless";
 
-const statusBarHeight = Constants.statusBarHeight;
-const windowHeight = Dimensions.get('window').height
 
-const totalHeight = Platform.OS === 'ios' ? windowHeight - statusBarHeight : windowHeight;
 
-export default function ShopBasketPage({ navigation }) {
+export default function BasketPage({ navigation }) {
     const [ basketState, setBasketState ] = useState({
         storeIdx: 0,
         storeName: '',
@@ -46,106 +44,40 @@ export default function ShopBasketPage({ navigation }) {
     // 여기는 focus마다 실행되게 해야하나?
     useEffect(() => {
         if (focus)
-            getBasketList();
+            handleGetBasket();
     }, [focus])
 
-
-    const getBasketList = () => {
-        const apiUrl = baseUrl+"/jat/app/basket";
-
-        const requestOptions = {
-            method: 'GET',
-            headers: {
-                'X-ACCESS-TOKEN': jwt,
-            },
-        };
-
-        fetch(apiUrl, requestOptions)
-            .then(response => response.json())
-            .then(data => {
-                if (data.code === 1000){
-                    if (!data.result.basketItems)
-                        data.result.basketItems = []
-                    setBasketState(data.result)
-                }
-            })
-            .catch(error => {
-                console.log('Error fetching data:', error);
-            })
+    const handleGetBasket = async () => {
+        const result = await getBasket();
+        if (result.status === 1)
+            setBasketState(result.data)
     }
 
-    const getOrder = () => {
-        const apiUrl = baseUrl+"/jat/app/basket/order";
-
-        const requestOptions = {
-            method: 'GET',
-            headers: {
-                'X-ACCESS-TOKEN': jwt,
-            },
-        };
-
-        fetch(apiUrl, requestOptions)
-            .then(response => response.json())
-            .then(data => {
-                if (data.code === 1000){
-
-                    if (data.result.storeIdx === 0){
-                        setVisibleModaless(true)
-                    }
-                    else
-                        navigation.navigate('OrderPage' ,{
-                            ...data.result,
-                            storeUrl: basketState.storeUrl
-                        })
-
-                }
+    const handleModifyBasket = async (basketIdx, inDecrease, patchStatus) => {
+        const result = await patchModifyBasket({basketIdx: basketIdx, inDecrease: inDecrease, patchStatus: patchStatus})
+        if (result.status === 1) {
+            setBasketState(result.data)
+        } else if (result.code === 4000 && result.status === 0) {
+            setBasketState({
+                storeIdx: 0,
+                storeName: '',
+                storeUrl: null,
+                totalMenuCount: 0,
+                totalMenuPrice: 0,
+                basketItems: []
             })
-            .catch(error => {
-                console.log('Error fetching data:', error);
-            })
+        }
     }
 
-    const modifyBasket = (basketIdx = 0, inDecrease = 0, patchStatus = '') => {
-        const apiUrl = baseUrl+"/jat/app/basket";
-
-        const requestOptions = {
-            method: 'PATCH',
-            headers: {
-                'X-ACCESS-TOKEN': jwt,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                basketIdx: basketIdx,
-                inDecrease: inDecrease,
-                patchStatus: patchStatus
+    const handleGetOrder = async () => {
+        const result = await getOrder()
+        if (result.status === 1)
+            navigation.navigate('OrderPage' ,{
+                ...result.data,
+                storeUrl: basketState.storeUrl
             })
-        };
-
-        fetch(apiUrl, requestOptions)
-            .then(response => response.json())
-            .then(data => {
-                if (data.code === 1000){
-                    // 장바구니가 아직 존재
-                    if (!data.result.basketItems)
-                        data.result.basketItems = []
-                    setBasketState(data.result)
-                }
-                else if (data.code === 4000){
-                    // 장바구니가 다 비어버리면 이거 주는 듯
-                    setBasketState({
-                        storeIdx: 0,
-                        storeName: '',
-                        storeUrl: null,
-                        totalMenuCount: 0,
-                        totalMenuPrice: 0,
-                        basketItems: []
-                    })
-                }
-            })
-            .catch(error => {
-                console.log('Error fetching data:', error);
-            })
-
+        else if (result.status === 2)
+            setVisibleModaless(true)
     }
 
     function cancel() {
@@ -156,7 +88,7 @@ export default function ShopBasketPage({ navigation }) {
         const state = await NetInfo.fetch()
 
         if (state.isConnected)
-            getOrder()
+            await handleGetOrder()
         else
             setVisibleModal(true)
     }
@@ -194,7 +126,7 @@ export default function ShopBasketPage({ navigation }) {
                                             <CancelTouch onPress={() => {
                                                 const basketList = basketState.basketItems.filter(item => item.basketIdx !== items.basketIdx)
                                                 //setBasketState({...basketState, basketItems: basketList})
-                                                modifyBasket(items.basketIdx, 0, 'remove')
+                                                handleModifyBasket(items.basketIdx, 0, 'remove')
                                             }}>
                                                 <WithLocalSvg
                                                     width={12}
@@ -229,7 +161,7 @@ export default function ShopBasketPage({ navigation }) {
                                                                 const temp = { ...basketState };
                                                                 if (temp.basketItems[index].count > 1){
                                                                     temp.basketItems[index].count--;
-                                                                    modifyBasket(items.basketIdx, 0, 'count')
+                                                                    handleModifyBasket(items.basketIdx, 0, 'count')
                                                                     setBasketState(temp)
                                                                 }
                                                             }}>
@@ -245,7 +177,7 @@ export default function ShopBasketPage({ navigation }) {
                                                                 const temp = { ...basketState };
                                                                 if (temp.basketItems[index].count < 99){
                                                                     temp.basketItems[index].count++;
-                                                                    modifyBasket(items.basketIdx, 1, 'count')
+                                                                    handleModifyBasket(items.basketIdx, 1, 'count')
                                                                     setBasketState(temp)
                                                                 }
                                                             }}>
