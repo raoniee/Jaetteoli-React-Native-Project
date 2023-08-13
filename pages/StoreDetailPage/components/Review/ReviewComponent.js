@@ -43,6 +43,7 @@ export default function ReviewComponent({storeIdx}) {
     const [visibleSortByModal, setVisibleSortByModal] = useState(false)
     const [sortBy, setSortBy] = useState(1)
     useEffect(() => {
+        fetchAndProcessReviewInfo()
     }, [])
 
     async function fetchAndProcessReviewInfo() {
