@@ -25,7 +25,6 @@ const OrderHistory = ({ navigation }) => {
 
   useEffect(() => {
     if (isFocused) {
-      console.log("주문 내역 목록 api 호출");
       const fetchOrderHistory = async () => {
         try {
           const response = await fetch(`${baseUrl}/jat/app/orders`, {
@@ -40,6 +39,7 @@ const OrderHistory = ({ navigation }) => {
             console.log(data.message);
             return;
           }
+          console.log(data.result)
           setInitData(data.result);
         } catch (err) {
           console.log(err);
@@ -59,14 +59,31 @@ const OrderHistory = ({ navigation }) => {
     setSelectedItem(null);
   };
 
-  const yesModal = () => {
+  const yesModal = async (orderIdx) => {
     if (selectedItem) {
       // 선택된 아이템을 initData에서 제거
       setInitData((prevData) =>
-        prevData.filter((item) => item.key !== selectedItem.key)
+        prevData.filter((item) => item.orderIdx !== selectedItem.orderIdx)
       );
       //주문 내역 삭제 api 호출
       console.log("주문 내역 삭제 api 호출");
+      const requestBody = {
+        orderIdx: orderIdx,
+      };
+      const response = await fetch(`${baseUrl}/jat/app/orders`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "X-ACCESS-TOKEN": jwt,
+        },
+        body: JSON.stringify(requestBody),
+      });
+      const data = await response.json();
+      if (!data.isSuccess) {
+        console.log(data.message);
+        return;
+      }
+      console.log(data.result)
     }
     setModalVisible(false);
     setSelectedItem(null);
@@ -76,12 +93,15 @@ const OrderHistory = ({ navigation }) => {
     navigation.navigate("StoreDetailPage", { storeIdx: storeIdx });
   };
 
-  const moveOrderDetail = () => {
-    navigation.navigate("OrderDetail");
+  const moveOrderDetail = (orderIdx) => {
+    navigation.navigate("OrderDetail", { orderIdx: orderIdx });
   };
 
   const moveToWriteReview = (orederIdx, storeIdx) => {
-    navigation.navigate("WriteReview", { orderIdx: orederIdx, storeIdx: storeIdx });
+    navigation.navigate("WriteReview", {
+      orderIdx: orederIdx,
+      storeIdx: storeIdx,
+    });
   };
 
   return (
@@ -158,12 +178,6 @@ const OrderHistory = ({ navigation }) => {
             if (year === ayear && month === amonth) {
               daysDifference = aday - day;
             }
-            // 결과를 출력합니다.
-            console.log("api: ", ayear, amonth, aday);
-            console.log("today:", year, month, day);
-
-            // 결과를 출력합니다.
-            console.log("두 날짜 간의 차이 (일):", daysDifference);
             const isReview =
               daysDifference >= 0 && daysDifference <= 5 ? true : false;
             return (
@@ -209,7 +223,7 @@ const OrderHistory = ({ navigation }) => {
                       </Text>
                       <Pressable
                         style={({ pressed }) => pressed && styles.pressedItem}
-                        onPress={moveOrderDetail}
+                        onPress={() => moveOrderDetail(item.orderIdx)}
                       >
                         <View style={styles.orderDetailContainer}>
                           <Text style={styles.orderDetail}>주문상세보기</Text>
@@ -219,9 +233,11 @@ const OrderHistory = ({ navigation }) => {
                   </View>
                 </View>
                 {/* 리뷰 */}
-                {isReview && (
+                {isReview && item.reviewExist === 0 && (
                   <Pressable
-                    onPress={() => moveToWriteReview(item.orderIdx, item.storeIdx)}
+                    onPress={() =>
+                      moveToWriteReview(item.orderIdx, item.storeIdx)
+                    }
                     android_ripple={{ color: Color.lightPurple }}
                     style={({ pressed }) => pressed && styles.pressedItem}
                   >
@@ -260,7 +276,7 @@ const OrderHistory = ({ navigation }) => {
                   </View>
                 </Pressable>
                 <Pressable
-                  onPress={yesModal}
+                  onPress={() => yesModal(selectedItem.orderIdx)}
                   android_ripple={{ color: Color.lightPurple }}
                   style={({ pressed }) => pressed && styles.pressedItem}
                 >
