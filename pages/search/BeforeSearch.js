@@ -21,11 +21,13 @@ import {
 import Graph from "../../assets/images/Graph";
 import PopularItem from "../../components/search/item/PopularItem";
 import { useEffect, useState } from "react";
+import { baseUrl, jwt } from "../../utils/baseUrl";
 
 const BeforeSeach = ({ navigation, route }) => {
   const [inputText, setInputText] = useState(
     route.params !== undefined ? route.params.searchText : ""
   );
+  const [searchData, setSearchData] = useState(null);
 
   useEffect(() => {
     if (route.params !== undefined) {
@@ -35,8 +37,24 @@ const BeforeSeach = ({ navigation, route }) => {
 
   useEffect(() => {
     //검색기록, 검색어 순위 api호출
-    console.log('검색기록, 검색어 순위 api호출')
-  }, [])
+    console.log("검색기록, 검색어 순위 api호출");
+    const fetchData = async () => {
+      const response = await fetch(`${baseUrl}/jat/app/search`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-ACCESS-TOKEN": jwt,
+        },
+      });
+      const data = await response.json();
+      if (!data.isSuccess) {
+        console.log(data.message);
+        return;
+      }
+      setSearchData(data.result);
+    };
+    fetchData();
+  }, []);
 
   const moveToAfterSearch = () => {
     navigation.popToTop(); // 스택에 쌓인 모든 화면을 제거하고 AfterSearch 화면으로 이동
@@ -44,9 +62,13 @@ const BeforeSeach = ({ navigation, route }) => {
   };
 
   const moveToPop = () => {
-    // 결과 화면으로 이동하면서 입력된 텍스트를 전달
     navigation.pop();
   };
+
+  const selectedItemHandler = (name) => {
+    navigation.popToTop(); // 스택에 쌓인 모든 화면을 제거하고 AfterSearch 화면으로 이동
+    navigation.navigate("AfterSearch", { searchText: name });
+  }
 
   return (
     <SafeAreaView style={styles.white}>
@@ -87,15 +109,17 @@ const BeforeSeach = ({ navigation, route }) => {
             </View>
           </View>
           <View style={styles.recentSearchFlatContainer}>
-            <FlatList
-              data={recentSearchData}
-              horizontal={true}
-              scrollEnabled={true}
-              showsHorizontalScrollIndicator={false}
-              renderItem={({ item, index }) => {
-                return <RecentItem index={index} item={item} />;
-              }}
-            />
+            {searchData && (
+              <FlatList
+                data={searchData.recentWords}
+                horizontal={true}
+                scrollEnabled={true}
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item, index }) => {
+                  return <RecentItem index={index} item={item} onPress={selectedItemHandler}/>;
+                }}
+              />
+            )}
           </View>
         </View>
 
@@ -108,19 +132,25 @@ const BeforeSeach = ({ navigation, route }) => {
               <Text style={styles.title}>인기 검색어</Text>
             </View>
             <View>
-              <Text style={styles.semiText}>07.18 18:00 기준</Text>
+              {searchData && (
+                <Text style={styles.semiText}>
+                  {searchData.standardTime}:00 기준
+                </Text>
+              )}
             </View>
           </View>
           {/* flatlist*/}
           <View style={styles.popularSearchFlatContainer}>
-            <FlatList
-              data={popularSearchData}
-              scrollEnabled={false}
-              showsHorizontalScrollIndicator={false}
-              renderItem={({ item, index }) => {
-                return <PopularItem index={index} item={item} />;
-              }}
-            />
+            {searchData && (
+              <FlatList
+                data={searchData.popularWords}
+                scrollEnabled={false}
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item, index }) => {
+                  return <PopularItem index={index} item={item} onPress={selectedItemHandler} />;
+                }}
+              />
+            )}
           </View>
         </View>
       </ScrollView>
@@ -131,7 +161,7 @@ const BeforeSeach = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   white: {
     backgroundColor: Color.white,
-    flex:1,
+    flex: 1,
   },
   container: {
     flexDirection: "row",
