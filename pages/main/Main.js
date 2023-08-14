@@ -319,7 +319,7 @@ const Main = () => {
               }}
               onPress={() => clickedStoreHandler(item.storeIdx)}
             >
-              <CustomMarker title={item.storeName} />
+              <CustomMarker title={item.storeName} storeCategory={item.storeCategory}/>
             </Marker>
           ))}
         </MapView>
