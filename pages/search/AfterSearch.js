@@ -5,13 +5,11 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import Color from "../../assets/colors/Color";
 import SearchImg from "../../assets/images/SearchImg";
-import { searchResultData } from "../../components/search/dummy/dummy";
 import EmptyHeart from "../../assets/images/EmptyHeart";
 import { FontAwesome } from "@expo/vector-icons"; // expo-vector-icons 라이브러리 필요
 import Location from "../../assets/images/Location";
@@ -20,10 +18,13 @@ import Globe from "../../assets/images/Globe";
 import { useEffect, useState } from "react";
 import Header from "../../components/common/Header";
 import { useIsFocused } from "@react-navigation/native";
+import { baseUrl, jwt } from "../../utils/baseUrl";
+import { useSelector } from "react-redux";
 
 const AfterSearch = ({ navigation, route }) => {
   const [initData, setInitData] = useState([]);
   const isFocused = useIsFocused();
+  const myAddress = useSelector((state) => state.myAddress);
 
   const [inputText, setInputText] = useState(
     route.params !== undefined ? route.params.searchText : ""
@@ -35,23 +36,73 @@ const AfterSearch = ({ navigation, route }) => {
     }
   }, [route.params]);
 
-  const handleHeartClick = (itemKey) => {
+  const handleHeartClick = (storeIdx, subscribed) => {
+    const storeSubscribeApi = async () => {
+      try {
+        const postSubcribed = subscribed === 1 ? 0 : 1;
+        const requestBody = {
+          storeIdx: storeIdx,
+          yn: postSubcribed,
+        };
+        console.log(`${baseUrl}/jat/app/subscription`);
+        const response = await fetch(`${baseUrl}/jat/app/subscription`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-ACCESS-TOKEN": jwt,
+          },
+          body: JSON.stringify(requestBody),
+        });
+        const data = await response.json();
+        if (!data.isSuccess) {
+          console.log(data.message);
+          return;
+        }
+        console.log(data.result);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    storeSubscribeApi(storeIdx, subscribed);
     setInitData((prevData) =>
       prevData.map((item) =>
-        item.key === itemKey ? { ...item, like: !item.like } : item
+        item.storeIdx === storeIdx
+          ? { ...item, subscribed: item.subscribed === 1 ? 0 : 1 }
+          : item
       )
     );
-
-    // Here, you can make the API call using axios.
-    // For demonstration purposes, let's just log the API call.
-    console.log("API 호출: ", itemKey);
   };
 
   useEffect(() => {
     if (isFocused) {
       // 구독 가게 목록 api 호출
       console.log("검색 가게 목록 api 호출");
-      setInitData(searchResultData);
+      const fetchData = async () => {
+        if (inputText === "") {
+          return;
+        }
+        const requestBody = {
+          searchWord: inputText,
+          longitude: myAddress.longitude,
+          latitude: myAddress.latitude,
+        };
+        const response = await fetch(`${baseUrl}/jat/app/search`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-ACCESS-TOKEN": jwt,
+          },
+          body: JSON.stringify(requestBody),
+        });
+
+        const data = await response.json();
+        if (!data.isSuccess) {
+          console.log(data.message);
+          return;
+        }
+        setInitData(data.result);
+      };
+      fetchData();
     }
   }, [isFocused]);
 
@@ -62,13 +113,13 @@ const AfterSearch = ({ navigation, route }) => {
     });
   };
 
-  const moveToDetailStore = () => {
-    navigation.navigate("StoreDetailPage");
+  const moveToDetailStore = (storeIdx) => {
+    navigation.navigate("StoreDetailPage", { storeIdx: storeIdx });
   };
 
   const moveToMain = () => {
-    navigation.navigate('Main')
-  }
+    navigation.navigate("Main");
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -112,12 +163,12 @@ const AfterSearch = ({ navigation, route }) => {
               star = <FontAwesome name="star-o" style={styles.star} />;
             }
             return (
-              <Pressable onPress={moveToDetailStore}>
+              <Pressable onPress={() => moveToDetailStore(item.storeIdx)}>
                 <View index={index} style={styles.searchItemContainer}>
                   <View style={styles.imgContainer}>
                     <View style={styles.firstImgContiner}>
                       <Image
-                        source={require("../../components/orderhistory/dummy/image1.png")}
+                        source={{ uri: `${item.storeLogoUrl}` }}
                         resizeMode="stretch"
                         style={styles.firstImg}
                       />
@@ -125,14 +176,14 @@ const AfterSearch = ({ navigation, route }) => {
                     <View style={styles.rightContiner}>
                       <View style={styles.secondImgContiner}>
                         <Image
-                          source={require("../../components/orderhistory/dummy/image2.png")}
+                          source={{ uri: `${item.storeSignUrl}` }}
                           resizeMode="stretch"
                           style={styles.secondImg}
                         />
                       </View>
                       <View style={styles.thirdImgContainer}>
                         <Image
-                          source={require("../../components/orderhistory/dummy/image4.png")}
+                          source={{ uri: `${item.storeSignUrl}` }}
                           resizeMode="stretch"
                           style={styles.thirdImg}
                         />
@@ -142,19 +193,25 @@ const AfterSearch = ({ navigation, route }) => {
                   <View style={styles.resultBottomContainer}>
                     <View>
                       <View style={styles.menuContainer}>
-                        <Text style={styles.menu}>{item.name}</Text>
+                        <Text style={styles.menu}>{item.storeName}</Text>
                         {star}
-                        <Text style={styles.rating}>{item.rating}</Text>
+                        <Text style={styles.rating}>
+                          {item.star.toFixed(1)}
+                        </Text>
                       </View>
                       <View style={styles.locationContainer}>
                         <Location />
-                        <Text>{item.distance}</Text>
+                        <Text>
+                          {item.distance}m 도보 {item.duration}분
+                        </Text>
                       </View>
                     </View>
                     <TouchableOpacity
-                      onPress={() => handleHeartClick(item.key)}
+                      onPress={() =>
+                        handleHeartClick(item.storeIdx, item.subscribed)
+                      }
                     >
-                      {item.like ? <FillHeart /> : <EmptyHeart />}
+                      {item.subscribed ? <FillHeart /> : <EmptyHeart />}
                     </TouchableOpacity>
                   </View>
                 </View>

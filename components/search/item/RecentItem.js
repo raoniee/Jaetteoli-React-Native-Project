@@ -1,11 +1,13 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import Close from "../../../assets/images/Close";
 import Color from "../../../assets/colors/Color";
 
-const RecentItem = ({ item }) => {
+const RecentItem = ({ item, onPress }) => {
   return (
     <View style={styles.recentSearchItem}>
-      <Text style={styles.recentItemText}>{item.name}</Text>
+      <Pressable onPress={() => onPress(item)}>
+        <Text style={styles.recentItemText}>{item}</Text>
+      </Pressable>
       <Close />
     </View>
   );
