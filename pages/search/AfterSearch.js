@@ -219,11 +219,11 @@ const AfterSearch = ({ navigation, route }) => {
             );
           }}
         />
-        <TouchableOpacity style={styles.mapButton} onPress={moveToMain}>
-          <Globe />
-          <Text style={styles.mapButtonText}>지도보기</Text>
-        </TouchableOpacity>
       </View>
+      <TouchableOpacity style={styles.mapButton} onPress={moveToMain}>
+        <Globe />
+        <Text style={styles.mapButtonText}>지도보기</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -272,6 +272,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   searchResultContainer: {
+    // flex:1,
     marginBottom: 150,
   },
   searchItemContainer: {
@@ -360,7 +361,7 @@ const styles = StyleSheet.create({
   mapButton: {
     flexDirection: "row",
     position: "absolute",
-    bottom: 20,
+    bottom: 100,
     left: 16,
     backgroundColor: Color.white,
     paddingVertical: 12,
