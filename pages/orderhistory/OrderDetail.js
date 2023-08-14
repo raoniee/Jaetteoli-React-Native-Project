@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   FlatList,
+  Linking,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -17,17 +18,38 @@ import ArrowLineRight from "../../assets/images/ArrowLineRight";
 import { formatPriceWithCurrency } from "../../utils/format";
 import Header from "../../components/common/Header";
 import { useNavigation } from "@react-navigation/native";
+import { baseUrl, jwt } from "../../utils/baseUrl";
 
-const OrderDetail = () => {
+const OrderDetail = ({ route }) => {
   const navigation = useNavigation();
   const [detailData, setDetailData] = useState([]);
+  const phoneNumber = "010-4071-5624"; // 원하는 전화번호를 입력하세요.
+
+  const makeCall = () => {
+    Linking.openURL(`tel:${phoneNumber}`);
+    // Linking.openURL(`tel:${detailData.storePhone}`);
+  };
   useEffect(() => {
+    const getOrderDetailApi = async () => {
+      const response = await fetch(
+        `${baseUrl}/jat/app/orders/details?orderIdx=${route.params.orderIdx}`,
+        {
+          method: "GET",
+          headers: {
+            "X-ACCESS-TOKEN": jwt,
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data.result);
+      setDetailData(data.result);
+    };
     console.log("주문 상세 조회 api 호출");
-    setDetailData(orderDetailData);
+    getOrderDetailApi();
   }, []);
 
   const moveToDetailStore = () => {
-    navigation.navigate("StoreDetailPage");
+    navigation.navigate("StoreDetailPage", { storeIdx: detailData.storeIdx });
   };
 
   const line = <View style={styles.line}></View>;
@@ -43,7 +65,7 @@ const OrderDetail = () => {
       <ScrollView style={styles.bottomMargin}>
         <View style={styles.storeOuterContainer}>
           <View style={styles.dateContainer}>
-            <Text style={styles.date}>{detailData.date}</Text>
+            <Text style={styles.date}>{detailData.orderDate}</Text>
           </View>
           <View style={styles.storeInnerContainer}>
             <View>
@@ -53,14 +75,15 @@ const OrderDetail = () => {
                 style={({ pressed }) => pressed && styles.pressedItem}
               >
                 <View style={styles.storeContainer}>
-                  <Text style={styles.nameText}>{detailData.name}</Text>
+                  <Text style={styles.nameText}>{detailData.storeName}</Text>
                   <ArrowRight stroke="#2F2F38" />
                 </View>
               </Pressable>
-              <Text style={styles.describeText}>{detailData.describe}</Text>
+              <Text style={styles.describeText}>{detailData.simpleMenu}</Text>
             </View>
             <View style={styles.storeRightContainer}>
               <Pressable
+                onPress={makeCall}
                 android_ripple={{ color: Color.lightPurple }}
                 style={({ pressed }) => pressed && styles.pressedItem}
               >
@@ -86,14 +109,14 @@ const OrderDetail = () => {
         <View style={styles.menuOuterContainer}>
           <Text style={styles.menuTitle}>메뉴</Text>
           <FlatList
-            data={detailData["menu"]}
+            data={detailData.orderMenus}
             scrollEnabled={false}
             showsVerticalScrollIndicator={false}
             renderItem={({ item, index }) => {
               return (
-                <View>
+                <View index={index}>
                   <Text style={styles.menuCountText}>
-                    {item.name} {item.count}개
+                    {item.menuName} {item.menuCount}개
                   </Text>
                   <View style={styles.priceOuterContainer}>
                     <View style={styles.originPriceContainer}>
@@ -101,12 +124,12 @@ const OrderDetail = () => {
                         {formatPriceWithCurrency(item.originPrice)}
                       </Text>
                       <Text style={styles.discountRatioText}>
-                        {item.discountRatio}%
+                        {item.discount}%
                       </Text>
                     </View>
                     <ArrowLineRight stroke={Color.lightGray} />
                     <Text style={styles.discountPriceText}>
-                      {formatPriceWithCurrency(item.discountPrice)}
+                      {formatPriceWithCurrency(item.discountedPrice)}
                     </Text>
                   </View>
                 </View>
@@ -119,7 +142,7 @@ const OrderDetail = () => {
           <Text style={styles.paymentPriceTitle}>결제금액</Text>
           <View style={styles.paymentPriceContainer}>
             <Text style={styles.basketCountText}>
-              담은 개수 : {detailData.basketCount}개 /{" "}
+              담은 개수 : {detailData.count}개 /{" "}
             </Text>
             <Text style={styles.totalPriceText}>
               총 {formatPriceWithCurrency(detailData.totalPrice)}
@@ -129,26 +152,24 @@ const OrderDetail = () => {
         {line}
         <View style={styles.paymentMethodOuterContainer}>
           <Text style={styles.paymentPriceTitle}>결제방법</Text>
-          <Text style={styles.paymentMethodText}>
-            {detailData.paymentMethod}
-          </Text>
+          <Text style={styles.paymentMethodText}>{detailData.payStatus}</Text>
         </View>
         {line}
         <View style={styles.userRequestOuterContainer}>
           <Text style={styles.userRequestTitle}>요청사항</Text>
           <View style={styles.userRequestContainer}>
-            <Text style={styles.userRequestText}>{detailData.userRequest}</Text>
+            <Text style={styles.userRequestText}>{detailData.request}</Text>
           </View>
         </View>
         {line}
-        <View style={styles.orderPhoneOuterContainer}>
+        {/* <View style={styles.orderPhoneOuterContainer}>
           <Text style={styles.orderPhoneTitle}>전화번호</Text>
           <View style={styles.orderPhoneContainer}>
             <Text style={styles.safePhoneText}>{detailData.safePhone}</Text>
             <Text style={styles.userPhoneText}>{detailData.userPhone}</Text>
           </View>
         </View>
-        {line}
+        {line} */}
       </ScrollView>
     </SafeAreaView>
   );
