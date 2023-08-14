@@ -115,7 +115,6 @@ const Subscribe = () => {
             color={Color.lightGray}
           />
         </View>
-
         <FlatList
           data={initData}
           scrollEnabled={true}
@@ -200,10 +199,14 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
   },
   subscribeContainer: {
-    marginBottom: 100,
+    flex:1,
+    paddingBottom:40,
   },
   header: {
     marginBottom: 10,
+  },
+  flatContainer:{
+    flex:1,
   },
   subscribeItemContainer: {
     marginHorizontal: 26,
