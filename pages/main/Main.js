@@ -101,14 +101,11 @@ const Main = () => {
   //지도 중심 가게 마커 조회 api
   const fetchGetMarkerApi = async (latitude, longitude) => {
     try {
+      if (Object.keys(boundaries).length === 0) {
+        return;
+      }
       const response = await fetch(
-        `${baseUrl}/jat/app/stores/address?max_lon=${boundaries.maxLon.toFixed(
-          12
-        )}&max_lat=${boundaries.maxLat.toFixed(
-          12
-        )}&min_lon=${boundaries.minLon.toFixed(
-          12
-        )}&min_lat=${boundaries.minLat.toFixed(12)}`,
+        `${baseUrl}/jat/app/stores/address?max_lon=${boundaries.maxLon}&max_lat=${boundaries.maxLat}&min_lon=${boundaries.minLon}&min_lat=${boundaries.minLat}`,
         {
           method: "GET",
           headers: {
@@ -208,7 +205,7 @@ const Main = () => {
 
   const lookStoreCloseHandler = () => {
     setMarkerClicked(false);
-    setPreviewStore(null)
+    setPreviewStore(null);
   };
 
   //지도 중심을 내 휴대폰 위치로 움직이는 함수
@@ -266,7 +263,7 @@ const Main = () => {
   //목록보기 눌렀을때의 함수
   const moveToStores = () => {
     console.log(center);
-    
+
     navigation.navigate("Stores", { currentAddress: currentAddress });
   };
 
