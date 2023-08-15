@@ -46,9 +46,8 @@ import MembershipStart from "./pages/membership/MembershipStart";
 import MembershipAgreeDesc from "./pages/membership/MembershipAgreeDesc";
 import { MembershipProvider } from "./context/MembershipContext";
 import NewPW from "./pages/accountsearch/NewPW";
-import Withdrawal from './pages/mypage/Withdrawal';
-import DetailInfo from './pages/termsOfService/DetailInfo';
-
+import Withdrawal from "./pages/mypage/Withdrawal";
+import DetailInfo from "./pages/termsOfService/DetailInfo";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -109,6 +108,7 @@ export default function App() {
               <Stack.Screen name="SearchAccunt" component={SearchAccunt} />
               <Stack.Screen name="IDshow" component={IDshow} />
               <Stack.Screen name="NewPW" component={NewPW} />
+              <Stack.Screen name="Main" component={Main} />
               <Stack.Screen name="MainTabs" component={MainTabs} />
               <Stack.Screen name="InitAddress" component={InitAddress} />
               <Stack.Screen name="MapFind" component={MapFind} />
@@ -131,8 +131,14 @@ export default function App() {
               <Stack.Screen name="WriteReview" component={WriteReview} />
               <Stack.Screen name="TermsOfService" component={TermsOfService} />
               <Stack.Screen name="ModifyUserId" component={ModifyUserId} />
-              <Stack.Screen name="ModifyUserEmail" component={ModifyUserEmail}/>
-              <Stack.Screen name="ModifyUserPhoneNum" component={ModifyUserPhoneNum}/>
+              <Stack.Screen
+                name="ModifyUserEmail"
+                component={ModifyUserEmail}
+              />
+              <Stack.Screen
+                name="ModifyUserPhoneNum"
+                component={ModifyUserPhoneNum}
+              />
               <Stack.Screen name="Withdrawal" component={Withdrawal} />
               <Stack.Screen name="DetailInfo" component={DetailInfo} />
             </Stack.Navigator>

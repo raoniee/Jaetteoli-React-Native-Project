@@ -81,11 +81,12 @@ export default function LoginStart({ navigation }) {
 
       const fetchCurrentLocationAndAddress = async () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
+        console.log(status);
         if (status !== "granted") {
           const truenextstep = () => navigation.navigate("TermsOfService");
           truenextstep();
         } else {
-          const falsenextstep = () => navigation.navigate("StoreMapPage");
+          const falsenextstep = () => navigation.navigate("Main");
           falsenextstep();
         }
       };

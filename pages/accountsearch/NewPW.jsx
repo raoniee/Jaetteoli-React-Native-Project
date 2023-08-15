@@ -85,7 +85,7 @@ export default function NewPW({ navigation }) {
           const truenextstep = () => navigation.navigate("TermsOfService");
           truenextstep();
         } else {
-          const falsenextstep = () => navigation.navigate("StoreMapPage");
+          const falsenextstep = () => navigation.navigate("Main");
           falsenextstep();
         }
       };
