@@ -23,9 +23,11 @@ export function MembershipProvider({ children }) {
     useremail: "",
     certificationNum: "",
   });
+  const [searchID, setSearchID] = useState("");
+  const [searchPW, setSearchPW] = useState("");
 
-  console.log(userInfo);
-  console.log(agreements);
+  //console.log(userInfo);
+  //console.log(agreements);
 
   const [twoState, setTwoState] = useState(
     agreements.isSns && agreements.isEmail && agreements.isPhone
@@ -134,6 +136,10 @@ export function MembershipProvider({ children }) {
         setUserInfo,
         takeCertificationNum,
         descHandler,
+        searchID,
+        setSearchID,
+        searchPW,
+        setSearchPW,
       }}
     >
       {children}

@@ -1,17 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import {
-  StyleSheet,
-  SafeAreaView,
-  Text,
-  View,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  TouchableWithoutFeedback,
-  TouchableHighlight,
-  Image,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, SafeAreaView, View, Dimensions } from "react-native";
 import Color from "../../assets/colors/Color";
 import Button from "../../components/common/Button";
 import Header from "../../components/common/Header";
@@ -27,7 +15,6 @@ export default function MembershipInfo({ navigation }) {
   const [vaildName, setVaildName] = useState(true);
   const [vaildBirthDay, setVaildBirthDay] = useState(true);
   const [vaildPhoneNum, setVaildPhoneNum] = useState(true);
-  const [vaildCheck, setVaildCheck] = useState(false);
 
   const handlePhoneBTN = async () => {
     //인증번호 받기 위한 로직
@@ -196,6 +183,7 @@ const styles = StyleSheet.create({
   wrap: {
     flex: 1,
     position: "relative",
+    backgroundColor: Color.white,
   },
   container: {
     flexDirection: "column",

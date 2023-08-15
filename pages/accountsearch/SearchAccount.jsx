@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -18,19 +18,34 @@ import IDSearch from "../../components/searchaccout/IDSearch";
 import PWSearch from "../../components/searchaccout/PWSearch";
 import GoMembership from "../../components/login/GoMembership";
 import Header from "../../components/common/Header";
-import NewPW from "../../components/searchaccout/NewPW";
+import { MembershipContext } from "../../context/MembershipContext";
+import TopHeader from "../../components/login/TopHeader";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HIGHT } = Dimensions.get("window");
 
-export default function SearchAccunt() {
+export default function SearchAccunt({ navigation }) {
+  const { searchID } = useContext(MembershipContext);
   const [option, setOption] = useState(true);
+
+  //console.log(typeof searchID);
+
+  useEffect(() => {
+    if (typeof searchID === "object") {
+      setOption(false);
+    } else {
+      setOption(true);
+    }
+  }, [searchID]);
 
   const id = () => setOption(true);
   const pw = () => setOption(false);
 
   return (
     <SafeAreaView style={styles.wrap}>
-      <Header title="아이디_비밀번호 찾기" right={0} />
+      <TopHeader
+        title="아이디-비밀번호 찾기"
+        onPress={() => navigation.navigate("LoginStart")}
+      />
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={id}>
@@ -68,10 +83,13 @@ export default function SearchAccunt() {
             </View>
           </TouchableOpacity>
         </View>
-        {option ? <IDSearch /> : <PWSearch />}
-        {/* <NewPW /> */}
+        {option ? (
+          <IDSearch navigation={navigation} />
+        ) : (
+          <PWSearch navigation={navigation} />
+        )}
       </View>
-      <GoMembership />
+      <GoMembership navigation={navigation} />
     </SafeAreaView>
   );
 }
@@ -80,6 +98,7 @@ const styles = StyleSheet.create({
   wrap: {
     flex: 1,
     position: "relative",
+    backgroundColor: Color.white,
   },
   container: {
     flexDirection: "column",

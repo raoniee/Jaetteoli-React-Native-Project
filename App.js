@@ -45,6 +45,7 @@ import { store } from "./store/store";
 import MembershipStart from "./pages/membership/MembershipStart";
 import MembershipAgreeDesc from "./pages/membership/MembershipAgreeDesc";
 import { MembershipProvider } from "./context/MembershipContext";
+import NewPW from "./pages/accountsearch/NewPW";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -103,6 +104,8 @@ export default function App() {
               />
               <Stack.Screen name="MembershipEnd" component={MembershipEnd} />
               <Stack.Screen name="SearchAccunt" component={SearchAccunt} />
+              <Stack.Screen name="IDshow" component={IDshow} />
+              <Stack.Screen name="NewPW" component={NewPW} />
               <Stack.Screen name="MainTabs" component={MainTabs} />
               <Stack.Screen name="InitAddress" component={InitAddress} />
               <Stack.Screen name="MapFind" component={MapFind} />

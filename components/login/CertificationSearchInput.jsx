@@ -3,8 +3,7 @@ import Color from "../../assets/colors/Color";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { MembershipContext } from "../../context/MembershipContext";
 
-export default function CertificationInput(InfoType) {
-  const { takeCertificationNum, userInfo } = useContext(MembershipContext);
+export default function CertificationSearchInput({ takeresult }) {
   const [remainingTime, setRemainingTime] = useState(180); // 초기 제한 시간을 3분(180초)으로 설정
 
   useEffect(() => {
@@ -20,35 +19,8 @@ export default function CertificationInput(InfoType) {
     }
   }, [remainingTime]);
 
-  const handleretry = async () => {
+  const handleretry = () => {
     alert("인증번호를 재전송하였습니다!");
-
-    const requestBody = {
-      phoneNum: userInfo.phone,
-      name: userInfo.name,
-      birth: userInfo.birthday,
-    };
-
-    //console.log(requestBody);
-    try {
-      // const response = await fetch(
-      //   "https://www.insung.shop/jat/app/users/authy",
-      //   {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify(requestBody),
-      //   }
-      // );
-      // const data = await response.json();
-      // if (!data["isSuccess"]) {
-      //   console.log(data["message"]);
-      //   return;
-      // }
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   return (
@@ -60,7 +32,7 @@ export default function CertificationInput(InfoType) {
           placeholder="인증번호 입력"
           keyboardType="number-pad"
           returnKeyType="done"
-          onChangeText={(text) => takeCertificationNum(text)}
+          onChangeText={(text) => takeresult(text)}
         />
         <Text style={styles.timer}>
           {Math.floor(remainingTime / 60)}:

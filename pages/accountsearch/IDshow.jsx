@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -16,13 +16,20 @@ import Color from "../../assets/colors/Color";
 import Button from "../../components/common/Button";
 import Header from "../../components/common/Header";
 import GoMembership from "../../components/login/GoMembership";
+import TopHeader from "../../components/login/TopHeader";
+import { MembershipContext } from "../../context/MembershipContext";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HIGHT } = Dimensions.get("window");
 
-export default function IDshow() {
+export default function IDshow({ navigation }) {
+  const { searchID } = useContext(MembershipContext);
+
   return (
     <SafeAreaView style={styles.wrap}>
-      <Header title="아이디_비밀번호 찾기" right={0} />
+      <TopHeader
+        title="아이디-비밀번호 찾기"
+        onPress={() => navigation.navigate("LoginStart")}
+      />
       <View style={styles.container}>
         <View style={styles.idshowbox}>
           <View style={styles.idshowtext}>
@@ -31,8 +38,8 @@ export default function IDshow() {
               인증한 휴대폰 번호로 가입한 아이디 입니다. 아이디 확인 후 로그인을
               진행해 주세요.
             </Text>
-            <Text style={styles.user_id}>jungsh4064</Text>
-            <Text style={styles.user_date}>2023.06.07. 가입</Text>
+            <Text style={styles.user_id}>{searchID[0].uid}</Text>
+            <Text style={styles.user_date}>{searchID[0].signUpDate}</Text>
           </View>
         </View>
         <Button
@@ -41,8 +48,15 @@ export default function IDshow() {
           color={Color.white}
           width={SCREEN_WIDTH - 40}
           height={62}
+          onPress={() => {
+            navigation.navigate("LoginStart");
+          }}
         />
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("SearchAccunt");
+          }}
+        >
           <Text style={styles.pw_search}>비밀번호를 잊으셨나요?</Text>
         </TouchableOpacity>
       </View>
@@ -55,6 +69,7 @@ const styles = StyleSheet.create({
   wrap: {
     flex: 1,
     position: "relative",
+    backgroundColor: Color.white,
   },
   container: {
     flexDirection: "column",

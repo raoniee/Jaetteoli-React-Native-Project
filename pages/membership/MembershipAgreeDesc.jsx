@@ -16,6 +16,9 @@ import Button from "../../components/common/Button";
 import Color from "../../assets/colors/Color";
 import Header from "../../components/common/Header";
 import AgreeDescm1 from "../../assets/data/agree_m1.json";
+import AgreeDescm2 from "../../assets/data/agree_m2.json";
+import AgreeDescs1 from "../../assets/data/agree_s1.json";
+import AgreeDescs2 from "../../assets/data/agree_s2.json";
 import {
   MembershipContext,
   MembershipProvider,
@@ -26,9 +29,50 @@ export default function MembershipAgreeDesc({ navigation, route }) {
   const { descHandler, twoAllChangeHandler, agreements } =
     useContext(MembershipContext);
 
+  // const result = AgreeDescm1.map((agree) => agree.title);
+  // console.log(result);
+
+  function titlevalue(val) {
+    var result = "";
+    switch (val) {
+      case "mandatoryOne":
+        result = AgreeDescm1.map((agree) => agree.title);
+        break;
+      case "mandatoryTwo":
+        result = AgreeDescm2.map((agree) => agree.title);
+        break;
+      case "selectiveOne":
+        result = AgreeDescs1.map((agree) => agree.title);
+        break;
+      case "all":
+        result = AgreeDescs2.map((agree) => agree.title);
+        break;
+    }
+    return result;
+  }
+
+  function descvalue(val) {
+    var result = "";
+    switch (val) {
+      case "mandatoryOne":
+        result = AgreeDescm1.map((agree) => agree.desc);
+        break;
+      case "mandatoryTwo":
+        result = AgreeDescm2.map((agree) => agree.desc);
+        break;
+      case "selectiveOne":
+        result = AgreeDescs1.map((agree) => agree.desc);
+        break;
+      case "all":
+        result = AgreeDescs2.map((agree) => agree.desc);
+        break;
+    }
+    return result;
+  }
+
   return (
     <SafeAreaView style={styles.wrap}>
-      <Header title={AgreeDescm1.map((agree) => agree.title)} right={0} />
+      <Header title={titlevalue(type)} right={0} />
       <View style={styles.container}>
         <View style={styles.agreeinfo}>
           <View style={styles.datebox}>
@@ -36,9 +80,7 @@ export default function MembershipAgreeDesc({ navigation, route }) {
             <Text style={styles.date}>09:19:24 AM</Text>
           </View>
           <ScrollView style={styles.agreebox}>
-            <Text style={styles.agreetext}>
-              {AgreeDescm1.map((agree) => agree.desc)}
-            </Text>
+            <Text style={styles.agreetext}>{descvalue(type)}</Text>
           </ScrollView>
         </View>
         <Button
@@ -63,6 +105,7 @@ export default function MembershipAgreeDesc({ navigation, route }) {
 const styles = StyleSheet.create({
   wrap: {
     flex: 1,
+    backgroundColor: Color.white,
   },
   container: {
     flex: 1,

@@ -15,12 +15,16 @@ import Button from "../../components/common/Button";
 import Color from "../../assets/colors/Color";
 import Header from "../../components/common/Header";
 import { MembershipContext } from "../../context/MembershipContext";
+import TopHeader from "../../components/login/TopHeader";
 
-export default function MembershipEnd() {
+export default function MembershipEnd({ navigation }) {
   const { userInfo } = useContext(MembershipContext);
   return (
     <SafeAreaView style={styles.wrap}>
-      <Header title="이용약관 동의" right={0} />
+      <TopHeader
+        title="회원가입 완료"
+        onPress={() => navigation.navigate("LoginStart")}
+      />
       <View style={styles.container}>
         <View>
           <Text style={styles.title}>회원가입이 완료되었습니다! </Text>
@@ -47,6 +51,9 @@ export default function MembershipEnd() {
           backgroundColor={Color.darkPurple}
           color={Color.white}
           height={62}
+          onPress={() => {
+            navigation.navigate("LoginStart");
+          }}
         />
       </View>
     </SafeAreaView>
@@ -54,6 +61,9 @@ export default function MembershipEnd() {
 }
 
 const styles = StyleSheet.create({
+  wrap: {
+    backgroundColor: Color.white,
+  },
   container: {
     flexDirection: "column",
     gap: 100,

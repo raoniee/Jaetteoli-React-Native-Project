@@ -21,11 +21,16 @@ import {
   MembershipContext,
   MembershipProvider,
 } from "../../context/MembershipContext";
+import TopHeader from "../../components/login/TopHeader";
+import { useEffect } from "react";
 
 export default function MembershipStart({ navigation }) {
   return (
     <SafeAreaView style={styles.wrap}>
-      <Header title="회원가입" right={0} />
+      <TopHeader
+        title="회원가입"
+        onPress={() => navigation.navigate("LoginStart")}
+      />
       <View style={styles.container}>
         <View>
           <AllAgreeContent />
@@ -140,6 +145,9 @@ function MembershipRegisterBTN({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  wrap: {
+    backgroundColor: Color.white,
+  },
   container: {
     flexDirection: "column",
     gap: 100,
