@@ -16,6 +16,7 @@ import Color from "../../assets/colors/Color";
 import Button from "../../components/common/Button";
 import Header from "../../components/common/Header";
 import LoginInput from "../../components/login/LoginInput";
+import TopHeader from "../../components/login/TopHeader";
 import EmailInput from "../../components/membership/EmailInput";
 import {
   MembershipContext,
@@ -84,7 +85,10 @@ export default function MembershipAccount({ navigation }) {
 
   return (
     <SafeAreaView style={styles.wrap}>
-      <Header title="기본정보" right={0} />
+      <TopHeader
+        title="기본정보"
+        onPress={() => navigation.navigate("LoginStart")}
+      />
       <View style={styles.container}>
         <Text style={styles.title}>
           회원정보를 입력 후, 가입을 완료해주세요.
@@ -149,6 +153,7 @@ const styles = StyleSheet.create({
   wrap: {
     flex: 1,
     position: "relative",
+    backgroundColor: Color.white,
   },
   container: {
     flexDirection: "column",

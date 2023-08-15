@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -18,11 +18,24 @@ import Color from "../../assets/colors/Color";
 import logo from "../../assets/images/logo.png";
 import GoMembership from "../../components/login/GoMembership";
 import Check from "../../assets/images/Check";
+import { getToken, setToken, setUserID, getUserID } from "../../utils/Cookie";
+import * as Location from "expo-location";
+import { MembershipContext } from "../../context/MembershipContext";
+import { useEffect } from "react";
 
 export default function LoginStart({ navigation }) {
   const [inputID, setInputID] = useState("");
   const [inputPW, setInputPW] = useState("");
   const [saveId, SetSaveId] = useState(false);
+
+  // useEffect(async () => {
+  //   const savedvalue = await getUserID();
+  //   if (savedvalue) {
+  //     SetSaveId(true);
+  //   } else {
+  //     SetSaveId(false);
+  //   }
+  // }, []);
 
   const handleSaveId = () => SetSaveId((prev) => !prev);
 
@@ -39,16 +52,16 @@ export default function LoginStart({ navigation }) {
 
     console.log(requestBody);
     try {
-      // const response = await fetch(
-      //   "https://www.insung.shop/jat/app/users/login",
-      //   {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify(requestBody),
-      //   }
-      // );
+      const response = await fetch(
+        "https://www.insung.shop/jat/app/users/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
 
       const data = await response.json();
       if (!data["isSuccess"]) {
@@ -59,29 +72,25 @@ export default function LoginStart({ navigation }) {
       const loginSuccess = data["result"];
 
       setToken(loginSuccess.jwt);
-      if (isChecked) {
-        setStoreUid(inputId);
+      if (saveId) {
+        setUserID(inputID);
       }
-      //각 상태 localStorage.setItem
-      localStorage.setItem("firstLogin", loginSuccess["first_login"]);
-      localStorage.setItem("menuRegister", loginSuccess["menu_register"]);
-      localStorage.setItem("storeStatus", loginSuccess["store_status"]);
-
-      dispatch(
-        SET_AUTH({
-          authenticated: true,
-          accessToken: loginSuccess.jwt,
-          expireTime: new Date().getTime() + TOKEN_TIME_OUT,
-          name: loginSuccess.name,
-          storeName: loginSuccess["store_name"],
-          firstLogin: loginSuccess["first_login"],
-          storeStaute: loginSuccess["store_status"],
-          menuRegister: loginSuccess["menu_register"],
-        })
-      );
-
       console.log(loginSuccess);
-      console.log(`쿠키 jwt 확인 : ${getCookieToken()}`);
+      console.log("jwt저장확인용", await getToken());
+      console.log("아이디저장확인용", await getUserID());
+
+      const fetchCurrentLocationAndAddress = async () => {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          const truenextstep = () => navigation.navigate("TermsOfService");
+          truenextstep();
+        } else {
+          const falsenextstep = () => navigation.navigate("StoreMapPage");
+          falsenextstep();
+        }
+      };
+
+      fetchCurrentLocationAndAddress();
     } catch (err) {
       console.log("서버가 아직 안켜져있습니다.");
       console.log(err);
@@ -98,6 +107,7 @@ export default function LoginStart({ navigation }) {
           keyboardType="ascii-capable"
           returnKeyType="done"
           onChangeText={(text) => setInputID(text)}
+          //value=""
         />
         <TextInput
           style={styles.pw_input}
@@ -105,6 +115,7 @@ export default function LoginStart({ navigation }) {
           secureTextEntry={true}
           returnKeyType="done"
           onChangeText={(text) => setInputPW(text)}
+          //value=""
         />
         <View style={styles.login_option}>
           <View style={styles.idsave_wrap}>
@@ -147,6 +158,7 @@ const styles = StyleSheet.create({
   wrap: {
     flex: 1,
     position: "relative",
+    backgroundColor: Color.white,
   },
   container: {
     flex: 1,
