@@ -9,6 +9,7 @@ import * as Notifications from 'expo-notifications';
 import * as Location from 'expo-location';
 import Modal from 'react-native-modal';
 import Close from '../../assets/images/Close';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const TermsOfService = () => {
 
@@ -64,15 +65,35 @@ const TermsOfService = () => {
 
     const startBtnHandler = async () => {
         if (!location) {
-          setModalVisible(true);
-          return;
+            setModalVisible(true);
+            return;
         } else {
-          if (alram) {
-            await requestNotificationPermission();
-          }
-          await requestLocationPermission();
+            if (alram) {
+                await requestNotificationPermission();
+            }
+            await requestLocationPermission();
         }
-      };
+    };
+
+    const navigation = useNavigation();
+
+    const moveToDetailInfo = (service) => {
+        navigation.navigate("DetailInfo", { service: service })
+    }
+
+    const route = useRoute();
+    useEffect(() => {
+        if (route.params) {
+            const { locationState, alramState } = route.params;
+            if (locationState) {
+                setLocation(true);
+            }
+            if (alramState) {
+                setAlram(true);
+                console.log(alram)
+            }
+        }
+    }, [route.params]); 
 
     return (
         <SafeAreaView style={styles.container}>
@@ -93,7 +114,7 @@ const TermsOfService = () => {
                             <TouchableOpacity onPress={locationAgree}><Check width={24} height={24} stroke={location ? Color.darkPurple : Color.gray} /></TouchableOpacity>
                             <Text style={styles.text}>위치기반 서비스 약관동의 (필수)</Text>
                         </View>
-                        <TouchableOpacity><ArrowRight stroke={Color.gray} /></TouchableOpacity>
+                        <TouchableOpacity onPress={() => moveToDetailInfo('location')}><ArrowRight stroke={Color.gray} /></TouchableOpacity>
                         <Text style={styles.additionInfo}>주변 식당 검색에만 사용합니다.</Text>
                     </View>
                     <View style={styles.agreeItem}>
@@ -101,7 +122,7 @@ const TermsOfService = () => {
                             <TouchableOpacity onPress={alramAgree}><Check width={24} height={24} stroke={alram ? Color.darkPurple : Color.gray} /></TouchableOpacity>
                             <Text style={styles.text}>재떨이 알림 동의 (선택)</Text>
                         </View>
-                        <TouchableOpacity><ArrowRight stroke={Color.gray} /></TouchableOpacity>
+                        <TouchableOpacity onPress={() => moveToDetailInfo('alram')}><ArrowRight stroke={Color.gray} /></TouchableOpacity>
                         <Text style={styles.additionInfo}>서비스 알림을 전달 합니다.</Text>
                     </View>
                 </View>
@@ -122,7 +143,7 @@ const TermsOfService = () => {
                         </TouchableOpacity>
                         <Text style={styles.modalTitle}>위치 정보 허용을 안 하시면{'\n'}재떨이 서비스 이용이 불가능합니다.</Text>
                         <Text style={styles.modalContents}>{modalLinkingVisible ? '위치 정보 사용을 원하시면 휴대폰 설정에서 재떨이의 위치 정보 접근 권한을 허용해 주세요.' : '재떨이 서비스 이용을 원하신다면 재떨이의 위치 정보 접근 권한을 허용해 주세요.'}</Text>
-                        {modalLinkingVisible && <Button title='설정하러 가기' backgroundColor={Color.darkPurple} color={Color.white} height={62} onPress={openAppSettings} margin='0 0 50 0'/>}
+                        {modalLinkingVisible && <Button title='설정하러 가기' backgroundColor={Color.darkPurple} color={Color.white} height={62} onPress={openAppSettings} margin='0 0 50 0' />}
                     </View>
                 </Modal>
             </View>

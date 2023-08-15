@@ -1,28 +1,20 @@
-import {Dimensions, SafeAreaView} from "react-native";
-import Header from "../../components/common/Header";
+// react-native, expo
+import React from "react";
+import {SafeAreaView} from "react-native";
 import MapView, {Marker, PROVIDER_GOOGLE} from "react-native-maps";
-import React, {useEffect, useState} from "react";
-import {CustomMarker} from "./StoreDetailPage";
-import styled from "styled-components/native";
-import Constants from "expo-constants";
-import * as Location from 'expo-location';
-import {WithLocalSvg} from "react-native-svg";
-import {useSelector} from "react-redux";
 import {useRoute} from "@react-navigation/native";
-// 안드로이드
-//const statusBarHeight = Constants.statusBarHeight;
-//const windowHeight = Dimensions.get('window').height;
-
-// IOS
-const statusBarHeight = Constants.statusBarHeight;
-const windowHeight = Dimensions.get('window').height
-
-const totalHeight = windowHeight - statusBarHeight;
+// redux
+// utils
+import {totalHeight} from 'utils/dimensions'
+// styles
+import styled from "styled-components/native";
+// components
+import Header from "components/common/Header";
+import CustomMarker from "components/Heo/CustomMarker";
 
 export default function StoreMapPage() {
     const route = useRoute()
     const {latitude, longitude} = route.params
-    console.log(latitude, longitude)
 
     return (
         <SafeAreaView style={{backgroundColor: 'white'}}>
@@ -61,10 +53,4 @@ export default function StoreMapPage() {
 const Container = styled.View`
   width: 100%;
   height: ${totalHeight - 44}px;
-`
-
-
-const CurrentLocation = styled.View`
-  width: 13px;
-  height: 13px;
 `

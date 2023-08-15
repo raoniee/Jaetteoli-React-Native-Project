@@ -1,19 +1,17 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import RankUp from "../../../assets/images/RankUp";
 import Color from "../../../assets/colors/Color";
 
-const PopularItem = ({ item, index }) => {
+const PopularItem = ({ item, index, onPress }) => {
   return (
     <View style={styles.popularSearchItem}>
-      <View
-        style={
-          index < 3 ? styles.purple : styles.popularNumContainer
-        }
-      >
+      <View style={index < 3 ? styles.purple : styles.popularNumContainer}>
         <Text style={styles.popularNumText}>{index + 1}</Text>
       </View>
       <View style={styles.popularTextContainer}>
-        <Text style={styles.poularText}>{item.name}</Text>
+        <Pressable onPress={() => onPress(item)}>
+          <Text style={styles.poularText}>{item}</Text>
+        </Pressable>
         <RankUp />
       </View>
     </View>

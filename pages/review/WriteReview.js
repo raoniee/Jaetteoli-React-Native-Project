@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ActionSheetIOS, SafeAreaView, Image } from 'react-native';
-import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Color from '../../assets/colors/Color';
 import Camera from '../../assets/images/Camera';
 import Button from '../../components/common/Button';
@@ -9,62 +9,97 @@ import Header from '../../components/common/Header';
 import * as ImagePicker from 'expo-image-picker';
 import Close from '../../assets/images/Close';
 import Modal from 'react-native-modal';
+import { baseUrl, jwt } from "../../utils/baseUrl";
 
 const WriteReview = () => {
 
-    async function setComment(comment) {
-        const requestBody = {
-            /*customerIdx: 나중에 jwt 쓰면 안 쓸 듯 한디*/
-            storeIdx: orderInfo.storeIdx,
-            /*orderIdx: */
-            stars: starRating,
-            contents: reviewText,
-            reivewFile: reviewPic,
+    const navigation = useNavigation();
+
+    // 주문 내역에서 넘어올 때 storeIdx, orderIdx을 받아옴
+    const route = useRoute();
+    const { storeIdx, orderIdx } = route.params;
+
+    // 주문 정보 데이터
+    const [orderInfo, setOrderInfo] = useState({});
+
+    // 컴포넌트가 마운트 될 경우 주문 정보(가게 이름, 메뉴) api 요청
+    useEffect(() => {
+        getOrderInfo()
+    }, []);
+
+    // 주문 정보(가게 이름, 메뉴) api
+    async function getOrderInfo() {
+
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-ACCESS-TOKEN': jwt,
+            },
         };
+        try {
+            const response = await fetch(`${baseUrl}/jat/app/reviews/pre?orderIdx=${orderIdx}`, requestOptions);
+            const data = await response.json();
+
+            if (data.isSuccess) {
+                setOrderInfo(data.result)
+            } else {
+                console.log(data.message);
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // 리뷰 작성 데이터
+    const [starRating, setStarRating] = useState(0);
+    const [reviewText, setReviewText] = useState('');
+    const [reviewPic, setReviewPic] = useState('');
+
+    const deleteReviewPic = () => {
+        console.log(reviewPic)
+        setReviewPic('');
+    }
+
+    // 리뷰 작성 api
+    async function setComment() {
+        const formData = new FormData();
+        formData.append('storeIdx', storeIdx);
+        formData.append('orderIdx', orderIdx);
+        formData.append('stars', starRating);
+        formData.append('contents', reviewText);
+        if (reviewPic) {
+            const uriParts = reviewPic.split('.');
+            const fileType = uriParts[uriParts.length - 1];
+            formData.append('reviewFile', {
+                uri: reviewPic,
+                name: `review.${fileType}`,
+                type: `image/${fileType}`,
+            });
+        }
 
         const requestOptions = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                /*'X-ACCESS-TOKEN': token,*/
+                'X-ACCESS-TOKEN': jwt,
             },
-            body: JSON.stringify(requestBody),
+            body: formData,
         };
         try {
-            const response = await fetch("https://www.insung.shop/jat/app/reviews", requestOptions);
+            const response = await fetch(`${baseUrl}/jat/app/reviews`, requestOptions);
             const data = await response.json();
 
-            if (!data.isSuccess) {
+            if (data.isSuccess) {
+                navigation.navigate('주문내역')
+            } else {
                 console.log(data.message);
-                return;
             }
-            return data.result;
         } catch (error) {
             console.log('서버가 아직 안켜져있습니다.')
             console.log(error)
         }
     }
-
-    const navigation = useNavigation();
-
-    const [orderInfo, setOrderInfo] = useState({
-        storeIdx: 1,
-        storeName: '울산미주구리',
-        orderMenu: [
-            {
-                menuName: '도다리',
-                menuCount: 1,
-            },
-            {
-                menuName: '공깃밥',
-                menuCount: 1,
-            },
-        ]
-    });
-
-    const [starRating, setStarRating] = useState(0);
-    const [reviewText, setReviewText] = useState('');
-    const [reviewPic, setReviewPic] = useState(null);
 
     // 미디어 라이브러리(사진 보관함) 권한 상태, 권한 요청 함수
     const [mediaLibrary, requestMediaLibraryPermission] = ImagePicker.useMediaLibraryPermissions();
@@ -106,6 +141,7 @@ const WriteReview = () => {
 
         if (!result.canceled) {
             setReviewPic(result.assets[0].uri)
+            console.log(result.assets[0].uri)
         }
     };
 
@@ -183,11 +219,11 @@ const WriteReview = () => {
         <SafeAreaView style={styles.container}>
             <Header left={2} right={0} backgroundColor={Color.white} title='리뷰쓰기' navigation={navigation} />
             <View style={styles.container}>
-                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent:'space-between'}}>
-                    <View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 40, marginBottom: 40, }}>
+                    <View style={styles.orderInfoNStar}>
                         <View style={styles.orderInfo}>
                             <Text style={styles.storeName}>{orderInfo.storeName}</Text>
-                            <Text style={styles.orderMenu}>{orderInfo.orderMenu.map((orderMenu) => orderMenu.menuName).join(', ')}</Text>
+                            <Text style={styles.orderMenu}>{orderInfo.menuNames}</Text>
                         </View>
                         {(starRating === 0) && <View style={styles.star}>
                             <TouchableOpacity onPress={() => { setStarRating(1) }}><StarStroke stroke={Color.black} fill={Color.white}></StarStroke></TouchableOpacity>
@@ -237,9 +273,10 @@ const WriteReview = () => {
                         <Text style={styles.addPictureText}>사진 첨부하기</Text>
                     </TouchableOpacity>}
                     {reviewPic && <Image source={{ uri: reviewPic }} style={styles.reviewPic}></Image>}
+                    {reviewPic && <TouchableOpacity style={styles.deleteReviewPic} onPress={deleteReviewPic}><Text style={styles.deleteReviewPicText}>사진 삭제</Text></TouchableOpacity>}
                 </View>
                 <TextInput placeholder='음식에 대한 리뷰를 남겨주세요!' placeholderTextColor={Color.lightGray} multiline style={styles.review} onChangeText={(value) => setReviewText(value)}></TextInput>
-                <Button title='완료' backgroundColor={Color.darkPurple} color={Color.white} margin='50 0 0 0' height={50} disabled={reviewText === ''}></Button>
+                <Button onPress={setComment} title='완료' backgroundColor={Color.darkPurple} color={Color.white} margin='50 0 0 0' height={50} disabled={reviewText === '' || starRating === 0}></Button>
             </View>
             <Modal
                 isVisible={modalVisible}
@@ -271,8 +308,11 @@ const styles = StyleSheet.create({
         paddingRight: 16,
         backgroundColor: Color.white,
     },
+    orderInfoNStar: {
+        width: 194,
+        justifyContent: 'flex-start',
+    },
     orderInfo: {
-        marginTop: 60,
         marginBottom: 10,
         height: 70,
     },
@@ -284,13 +324,14 @@ const styles = StyleSheet.create({
     orderMenu: {
         fontSize: 16,
         fontFamily: 'Pretendard-Regular',
-        lineHeight: 35,
+        lineHeight: 24,
         color: Color.darkGray,
     },
     star: {
-        marginBottom: 45,
+        marginTop: 10,
         flexDirection: 'row',
         justifyContent: 'center',
+        justifyContent: 'flex-start'
     },
     addPicture: {
         width: 127,
@@ -358,6 +399,15 @@ const styles = StyleSheet.create({
         width: 127,
         height: 127,
         borderRadius: 30,
+    },
+    deleteReviewPic: {
+        position: 'absolute',
+        right: 37,
+        bottom: -30,
+    },
+    deleteReviewPicText: {
+        fontFamily: 'Pretendard-Regular',
+        color: Color.darkGray,
     }
 
 })

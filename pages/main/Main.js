@@ -1,10 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import Header from "../../components/common/Header";
 import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import MapView from "react-native-maps";
 import CustomMarker from "../../components/map/CustomMarker";
-import { markerData } from "../../components/map/dummy/dummy";
 import * as Location from "expo-location";
 import _ from "lodash"; // lodash 라이브러리 가져오기
 import Color from "../../assets/colors/Color";
@@ -18,6 +24,7 @@ import { baseUrl, jwt } from "../../utils/baseUrl";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { changeAddress } from "../../store/mapAddress";
+import { myChangeAddress } from "../../store/myAddress";
 
 const Main = () => {
   const navigation = useNavigation();
@@ -30,14 +37,18 @@ const Main = () => {
     longitude: "",
     latitude: "",
   });
+  const [myAddressLocation, setAddressLocation] = useState({});
   const [mapBoundaries, setMapBoundaries] = useState(null); //지도 위아래 경위도 상태
+  const [markerData, setMarkerData] = useState([]);
   // center 변수 선언
   const [center, setCenter] = useState({
     latitude: currentLocation.latitude || 0,
     longitude: currentLocation.longitude || 0,
   });
+  const [boundaries, setBoundaries] = useState({}); //꼭짓점 경위도 상태값
 
   const [markerClicked, setMarkerClicked] = useState(false); //목록보기 상태
+  const [previewStore, setPreviewStore] = useState(null);
   const mapViewRef = useRef(null);
   const isFocused = useIsFocused();
 
@@ -49,14 +60,13 @@ const Main = () => {
   };
 
   useEffect(() => {
-    // Do something with mapBoundaries, e.g. print the coordinates
     if (mapBoundaries) {
-      // console.log("");
-      // console.log("------------지도 꼭짓점-------------");
-      // console.log("최소 경도:", mapBoundaries.southWest.longitude);
-      // console.log("최소 위도:", mapBoundaries.southWest.latitude);
-      // console.log("최대 경도:", mapBoundaries.northEast.longitude);
-      // console.log("최대 위도:", mapBoundaries.northEast.latitude);
+      setBoundaries({
+        maxLon: mapBoundaries.northEast.longitude, //최대 경도
+        maxLat: mapBoundaries.northEast.latitude, //최대 위도
+        minLon: mapBoundaries.southWest.longitude, //최소 경도
+        minLat: mapBoundaries.southWest.latitude, //최소 위도
+      });
     }
   }, [mapBoundaries]);
 
@@ -64,12 +74,10 @@ const Main = () => {
   const getCurrentAddressApi = async (latitude, longitude) => {
     try {
       //도로명 api 호출
-
-      // console.log(`경위도 ${latitude} ${longitude}`)
       const response = await fetch(
-        `${baseUrl}/jat/app/users/address?longitude=${parseFloat(longitude).toFixed(
-          12
-        )}&latitude=${parseFloat(latitude).toFixed(12)}`,
+        `${baseUrl}/jat/app/users/address?longitude=${parseFloat(
+          longitude
+        ).toFixed(12)}&latitude=${parseFloat(latitude).toFixed(12)}`,
         {
           method: "GET",
           headers: {
@@ -78,36 +86,42 @@ const Main = () => {
         }
       );
       const data = await response.json();
-      if(data.error){
-        Alert.alert('조금 더 이동시켜주세요.')
+      if (data.error) {
+        Alert.alert("조금 더 이동시켜주세요.");
         return;
       }
       const result = await data.result;
-      // console.log(result);
-
+      if (result.roadAddress === "좌표가 정확하지 않음.") {
+        return;
+      }
       setCurrentAddress(result.roadAddress);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   //지도 중심 가게 마커 조회 api
   const fetchGetMarkerApi = async (latitude, longitude) => {
     try {
-      // console.log(currentAddress);
-      // console.log(
-      //   `${baseUrl}/jat/app/stores/preview?query=울산 남구 대학로33번길 18-4`
-      // );
-      // const response = await fetch(
-      //   `${baseUrl}/jat/app/stores/preview?query=울산 남구 대학로33번길 18-4`,
-      //   {
-      //     method: "GET",
-      //     headers: {
-      //       "X-ACCESS-TOKEN": jwt,
-      //     },
-      //   }
-      // );
-      // const data = await response.json();
-      // console.log(data);
+      if (Object.keys(boundaries).length === 0) {
+        return;
+      }
+      const response = await fetch(
+        `${baseUrl}/jat/app/stores/address?max_lon=${boundaries.maxLon}&max_lat=${boundaries.maxLat}&min_lon=${boundaries.minLon}&min_lat=${boundaries.minLat}`,
+        {
+          method: "GET",
+          headers: {
+            "X-ACCESS-TOKEN": jwt,
+          },
+        }
+      );
+      const data = await response.json();
+      if (!data.isSuccess) {
+        console.log(data.message);
+        return;
+      }
+      if (data.result.length === 0) {
+        return;
+      }
+      setMarkerData(data.result);
     } catch (err) {
       console.log(err);
     }
@@ -125,7 +139,6 @@ const Main = () => {
           }
 
           if (contextAddress.isChanged) {
-            console.log(contextAddress);
             handleMapReady(); //지도 꼭짓점 경위도 함수 호출
             setCurrentLocation({
               latitude: contextAddress.latitude,
@@ -145,6 +158,13 @@ const Main = () => {
             const { latitude, longitude } = location.coords;
 
             handleMapReady(); //지도 꼭짓점 경위도 함수 호출
+            setAddressLocation({ latitude, longitude }); // 내 위치 초기화
+            dispatch(
+              myChangeAddress({
+                longitude: longitude,
+                latitude: latitude,
+              })
+            );
             setCurrentLocation({ latitude, longitude });
             getCurrentAddressApi(latitude, longitude); //지도 중심 경위도를 주소로 변환하는 api호출
             fetchGetMarkerApi(latitude, longitude); //지도 중심 가게 마커 조회 api 호출
@@ -170,7 +190,10 @@ const Main = () => {
     setCenter(newCenter); // center 변수 업데이트
 
     handleMapReady();
-    getCurrentAddressApi(parseFloat(newCenter.latitude), parseFloat(newCenter.longitude)); //지도 중심 경위도를 주소로 변환하는 api호출
+    getCurrentAddressApi(
+      parseFloat(newCenter.latitude),
+      parseFloat(newCenter.longitude)
+    ); //지도 중심 경위도를 주소로 변환하는 api호출
     fetchGetMarkerApi(newCenter.latitude, newCenter.longitude);
     dispatch(
       changeAddress({
@@ -182,6 +205,7 @@ const Main = () => {
 
   const lookStoreCloseHandler = () => {
     setMarkerClicked(false);
+    setPreviewStore(null);
   };
 
   //지도 중심을 내 휴대폰 위치로 움직이는 함수
@@ -198,12 +222,12 @@ const Main = () => {
           latitudeDelta: 0.001,
           longitudeDelta: 0.001,
         });
-        console.log(
-          "업뎃 내 휴대폰 위도 : ",
-          latitude,
-          "내 휴대폰 경도 : ",
-          longitude
-        );
+        // console.log(
+        //   "업뎃 내 휴대폰 위도 : ",
+        //   latitude,
+        //   "내 휴대폰 경도 : ",
+        //   longitude
+        // );
         setCurrentLocation({ latitude, longitude }); //내 휴대폰 현재 경위도 업데이트
         getCurrentAddressApi(latitude, longitude); //내 휴대폰 현재 주소 업데이트
       }
@@ -213,19 +237,33 @@ const Main = () => {
   };
 
   //가게 누를시 호출되는 함수
-  const clickedStoreHandler = () => {
+  const clickedStoreHandler = async (storeIdx) => {
     setMarkerClicked(true);
+    const location = await Location.getCurrentPositionAsync({});
+    const { latitude, longitude } = location.coords;
+    const response = await fetch(
+      `${baseUrl}/jat/app/stores/preview?storeIdx=${storeIdx}&longitude=${longitude}&latitude=${latitude}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-ACCESS-TOKEN": jwt,
+        },
+      }
+    );
+    const data = await response.json();
+    if (!data.isSuccess) {
+      console.log(data.message);
+      return;
+    }
+    const result = await data.result;
+    setPreviewStore(result);
   };
 
   //목록보기 눌렀을때의 함수
   const moveToStores = () => {
     console.log(center);
-    // dispatch(
-    //   changeAddress({
-    //     longitude: center.longitude,
-    //     latitude: center.latitude,
-    //   })
-    // );
+
     navigation.navigate("Stores", { currentAddress: currentAddress });
   };
 
@@ -233,8 +271,7 @@ const Main = () => {
   const moveToDetailStore = () => {
     //가게 상세-메뉴로 이동(가게 id넘겨줘야함)
     navigation.navigate("StoreDetailPage", {
-      currentAddress: "울산 남구 대학로33번길 18-4",
-      storeIdx: 2,
+      storeIdx: previewStore[0].storeIdx,
     });
   };
 
@@ -275,14 +312,14 @@ const Main = () => {
           {/** 가게 마커 */}
           {markerData.map((item) => (
             <Marker
-              key={item.key}
+              key={item.storeIdx}
               coordinate={{
-                latitude: item.latitude,
-                longitude: item.longitude,
+                latitude: item.y,
+                longitude: item.x,
               }}
-              onPress={clickedStoreHandler}
+              onPress={() => clickedStoreHandler(item.storeIdx)}
             >
-              <CustomMarker title={item.title} />
+              <CustomMarker title={item.storeName} storeCategory={item.storeCategory}/>
             </Marker>
           ))}
         </MapView>
@@ -325,8 +362,8 @@ const Main = () => {
             <Gps stroke={Color.darkGray} />
           </View>
         </Pressable>
-        {markerClicked && (
-          <MainStore item={subscribeData[0]} onPress={moveToDetailStore} />
+        {markerClicked && previewStore && (
+          <MainStore item={previewStore[0]} onPress={moveToDetailStore} />
         )}
       </View>
     </SafeAreaView>

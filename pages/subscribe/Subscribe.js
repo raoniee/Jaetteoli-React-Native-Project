@@ -23,7 +23,7 @@ import { useSelector } from "react-redux";
 const Subscribe = () => {
   const [initData, setInitData] = useState([]);
   const navigation = useNavigation();
-  const myLocation = useSelector((state) => state.mapAddress);
+  const myLocation = useSelector((state) => state.myAddress);
 
   const isFocused = useIsFocused();
 
@@ -96,13 +96,6 @@ const Subscribe = () => {
           : item
       )
     );
-    // console.log(initData);
-
-    // console.log(storeIdx);
-
-    // Here, you can make the API call using axios.
-    // For demonstration purposes, let's just log the API call.
-    // console.log("API 호출: ", storeIdx);
   };
 
   const moveToDetailStore = (storeIdx) => {
@@ -122,7 +115,6 @@ const Subscribe = () => {
             color={Color.lightGray}
           />
         </View>
-
         <FlatList
           data={initData}
           scrollEnabled={true}
@@ -179,7 +171,7 @@ const Subscribe = () => {
                       <View style={styles.locationContainer}>
                         <Location />
                         <Text>
-                          {item.distance}m {item.duration}분
+                          {item.distance}m 도보 {item.duration}분
                         </Text>
                       </View>
                     </View>
@@ -207,10 +199,14 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
   },
   subscribeContainer: {
-    marginBottom: 100,
+    flex:1,
+    paddingBottom:40,
   },
   header: {
     marginBottom: 10,
+  },
+  flatContainer:{
+    flex:1,
   },
   subscribeItemContainer: {
     marginHorizontal: 26,

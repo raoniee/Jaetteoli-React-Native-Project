@@ -8,7 +8,6 @@ import {
   Text,
   View,
 } from "react-native";
-import { orderHistoryData } from "../../components/orderhistory/dummy/dummy";
 import Close from "../../assets/images/Close";
 import Color from "../../assets/colors/Color";
 import ArrowRight from "../../assets/images/ArrowRight";
@@ -26,7 +25,6 @@ const OrderHistory = ({ navigation }) => {
 
   useEffect(() => {
     if (isFocused) {
-      console.log("주문 내역 목록 api 호출");
       const fetchOrderHistory = async () => {
         try {
           const response = await fetch(`${baseUrl}/jat/app/orders`, {
@@ -41,14 +39,13 @@ const OrderHistory = ({ navigation }) => {
             console.log(data.message);
             return;
           }
-          console.log(data.result);
+          console.log(data.result)
           setInitData(data.result);
         } catch (err) {
           console.log(err);
         }
       };
       fetchOrderHistory();
-      // setInitData(orderHistoryData);
     }
   }, [isFocused]);
 
@@ -62,29 +59,49 @@ const OrderHistory = ({ navigation }) => {
     setSelectedItem(null);
   };
 
-  const yesModal = () => {
+  const yesModal = async (orderIdx) => {
     if (selectedItem) {
       // 선택된 아이템을 initData에서 제거
       setInitData((prevData) =>
-        prevData.filter((item) => item.key !== selectedItem.key)
+        prevData.filter((item) => item.orderIdx !== selectedItem.orderIdx)
       );
       //주문 내역 삭제 api 호출
       console.log("주문 내역 삭제 api 호출");
+      const requestBody = {
+        orderIdx: orderIdx,
+      };
+      const response = await fetch(`${baseUrl}/jat/app/orders`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "X-ACCESS-TOKEN": jwt,
+        },
+        body: JSON.stringify(requestBody),
+      });
+      const data = await response.json();
+      if (!data.isSuccess) {
+        console.log(data.message);
+        return;
+      }
+      console.log(data.result)
     }
     setModalVisible(false);
     setSelectedItem(null);
   };
 
   const moveToDetailStore = (storeIdx) => {
-    navigation.navigate("StoreDetailPage", {storeIdx: storeIdx});
+    navigation.navigate("StoreDetailPage", { storeIdx: storeIdx });
   };
 
-  const moveOrderDetail = () => {
-    navigation.navigate("OrderDetail");
+  const moveOrderDetail = (orderIdx) => {
+    navigation.navigate("OrderDetail", { orderIdx: orderIdx });
   };
 
-  const moveToWriteReview = () => {
-    navigation.navigate("WriteReview");
+  const moveToWriteReview = (orederIdx, storeIdx) => {
+    navigation.navigate("WriteReview", {
+      orderIdx: orederIdx,
+      storeIdx: storeIdx,
+    });
   };
 
   return (
@@ -133,17 +150,34 @@ const OrderHistory = ({ navigation }) => {
             // 배열의 요소를 숫자로 변환하여 Date 객체로 사용
             const apiYear = parseInt(apiDateArray[0]);
             const apiMonth = parseInt(apiDateArray[1]) - 1; // JavaScript에서 월은 0부터 시작
-            const apiDay = parseInt(apiDateArray[2]);
+            const apiDay = parseInt(apiDateArray[2]) + 4;
             const apiDate = new Date(apiYear, apiMonth, apiDay);
-
-            // 오늘 날짜를 생성
+            // 오늘 날짜를 생성합니다.
             const today = new Date();
-            // 두 날짜 간의 차이
-            const timeDifference = today - apiDate;
-            const daysDifference = Math.floor(
-              timeDifference / (1000 * 60 * 60 * 24)
-            );
 
+            // 한국 시간대 오프셋을 설정합니다. (한국 표준시 +09:00, 분 단위로 설정)
+            const koreaTimeOffset = 9 * 60; // 분 단위로 설정
+
+            // UTC 날짜에 한국 시간대 오프셋을 적용하여 한국 날짜 및 시간을 얻습니다.
+            const apiKoreaDate = new Date(
+              apiDate.getTime() + koreaTimeOffset * 60 * 1000
+            );
+            const todayKoreaDate = new Date(
+              today.getTime() + koreaTimeOffset * 60 * 1000
+            );
+            // 년, 월, 일 정보를 추출합니다.
+            const year = todayKoreaDate.getFullYear();
+            const month = todayKoreaDate.getMonth(); // JavaScript에서 월은 0부터 시작하므로 +1을 해줍니다.
+            const day = todayKoreaDate.getDate();
+
+            const ayear = apiKoreaDate.getFullYear();
+            const amonth = apiKoreaDate.getMonth(); // JavaScript에서 월은 0부터 시작하므로 +1을 해줍니다.
+            const aday = apiKoreaDate.getDate();
+
+            let daysDifference = -1;
+            if (year === ayear && month === amonth) {
+              daysDifference = aday - day;
+            }
             const isReview =
               daysDifference >= 0 && daysDifference <= 5 ? true : false;
             return (
@@ -189,7 +223,7 @@ const OrderHistory = ({ navigation }) => {
                       </Text>
                       <Pressable
                         style={({ pressed }) => pressed && styles.pressedItem}
-                        onPress={moveOrderDetail}
+                        onPress={() => moveOrderDetail(item.orderIdx)}
                       >
                         <View style={styles.orderDetailContainer}>
                           <Text style={styles.orderDetail}>주문상세보기</Text>
@@ -199,9 +233,11 @@ const OrderHistory = ({ navigation }) => {
                   </View>
                 </View>
                 {/* 리뷰 */}
-                {isReview && (
+                {isReview && item.reviewExist === 0 && (
                   <Pressable
-                    onPress={moveToWriteReview}
+                    onPress={() =>
+                      moveToWriteReview(item.orderIdx, item.storeIdx)
+                    }
                     android_ripple={{ color: Color.lightPurple }}
                     style={({ pressed }) => pressed && styles.pressedItem}
                   >
@@ -240,7 +276,7 @@ const OrderHistory = ({ navigation }) => {
                   </View>
                 </Pressable>
                 <Pressable
-                  onPress={yesModal}
+                  onPress={() => yesModal(selectedItem.orderIdx)}
                   android_ripple={{ color: Color.lightPurple }}
                   style={({ pressed }) => pressed && styles.pressedItem}
                 >

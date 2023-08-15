@@ -16,12 +16,12 @@ import ProfileIcon from "./assets/images/Profile";
 import AfterSearch from "./pages/search/AfterSearch";
 import BeforeSeach from "./pages/search/BeforeSearch";
 import OrderDetail from "./pages/orderhistory/OrderDetail";
-import ShopBasketPage from "./pages/cart/ShopBasketPage";
-import OrderPage from "./pages/cart/OrderPage";
-import MenuDetailPage from "./pages/store/MenuDetailPage";
-import OrderCompletePage from "./pages/cart/OrderCompletePage";
-import StoreDetailPage from "./pages/store/StoreDetailPage";
-import StoreMapPage from "./pages/store/StoreMapPage";
+import BasketPage from "./pages/BasketPage/BasketPage";
+import OrderPage from "./pages/OrderPage/OrderPage";
+import MenuDetailPage from "./pages/MenuDetailPage/MenuDetailPage";
+import OrderCompletePage from "./pages/OrderCompletePage/OrderCompletePage";
+import StoreDetailPage from "./pages/StoreDetailPage/StoreDetailPage";
+import StoreMapPage from "./pages/StoreMapPage/StoreMapPage";
 import ModifyMyInfo from "./pages/mypage/ModifyMyInfo";
 import AlramList from "./pages/mypage/AlramList";
 import ManageReview from "./pages/mypage/ManageReview";
@@ -46,6 +46,9 @@ import MembershipStart from "./pages/membership/MembershipStart";
 import MembershipAgreeDesc from "./pages/membership/MembershipAgreeDesc";
 import { MembershipProvider } from "./context/MembershipContext";
 import NewPW from "./pages/accountsearch/NewPW";
+import Withdrawal from './pages/mypage/Withdrawal';
+import DetailInfo from './pages/termsOfService/DetailInfo';
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -109,7 +112,7 @@ export default function App() {
               <Stack.Screen name="MainTabs" component={MainTabs} />
               <Stack.Screen name="InitAddress" component={InitAddress} />
               <Stack.Screen name="MapFind" component={MapFind} />
-              <Stack.Screen name="ShopBasketPage" component={ShopBasketPage} />
+              <Stack.Screen name="BasketPage" component={BasketPage} />
               <Stack.Screen name="OrderPage" component={OrderPage} />
               <Stack.Screen
                 name="OrderCompletePage"
@@ -128,14 +131,10 @@ export default function App() {
               <Stack.Screen name="WriteReview" component={WriteReview} />
               <Stack.Screen name="TermsOfService" component={TermsOfService} />
               <Stack.Screen name="ModifyUserId" component={ModifyUserId} />
-              <Stack.Screen
-                name="ModifyUserEmail"
-                component={ModifyUserEmail}
-              />
-              <Stack.Screen
-                name="ModifyUserPhoneNum"
-                component={ModifyUserPhoneNum}
-              />
+              <Stack.Screen name="ModifyUserEmail" component={ModifyUserEmail}/>
+              <Stack.Screen name="ModifyUserPhoneNum" component={ModifyUserPhoneNum}/>
+              <Stack.Screen name="Withdrawal" component={Withdrawal} />
+              <Stack.Screen name="DetailInfo" component={DetailInfo} />
             </Stack.Navigator>
           </NavigationContainer>
         </MembershipProvider>

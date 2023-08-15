@@ -1850,6 +1850,8 @@
   dependencies:
     merge-options "^3.0.4"
 
+
+
 "@react-native-community/cli-clean@11.3.5":
   version "11.3.5"
   resolved "https://registry.npmjs.org/@react-native-community/cli-clean/-/cli-clean-11.3.5.tgz"
@@ -2025,6 +2027,12 @@
   version "3.0.6"
   resolved "https://registry.npmjs.org/@react-native-community/geolocation/-/geolocation-3.0.6.tgz"
   integrity sha512-+iidKFgw1HxCJSHVnlywAKu6uerdpDAKTXLRnlsUdhgqtgTiIixb496Z267iPVFmIO1bp4lOU6UiwzmvcyXdbg==
+
+"@react-native-community/netinfo@^9.4.1":
+  version "9.4.1"
+  resolved "https://registry.npmjs.org/@react-native-community/netinfo/-/netinfo-9.4.1.tgz"
+  integrity sha512-dAbY5mfw+6Kas/GJ6QX9AZyY+K+eq9ad4Su6utoph/nxyH3whp5cMSgRNgE2VhGQVRZ/OG0qq3IaD3+wzoqJXw==
+
 
 "@react-native/assets-registry@^0.72.0":
   version "0.72.0"
@@ -6145,6 +6153,7 @@ react-native-webview@^13.3.0:
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
+
 
 react-native@*, "react-native@^0.0.0-0 || 0.60 - 0.72 || 1000.0.0", "react-native@>= 0.64.3", react-native@>=0.59, react-native@>=0.65.0, react-native@0.72.3:
   version "0.72.3"
