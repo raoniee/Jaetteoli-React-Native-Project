@@ -16,6 +16,7 @@ export default function LoginInput({
   alertresult,
   alerttext,
   vaildTest,
+  secureTextEntry,
 }) {
   const { takeRusult, userInfo } = useContext(MembershipContext);
   const [text, setText] = useState("");
@@ -30,6 +31,7 @@ export default function LoginInput({
         placeholder={placeholder}
         keyboardType={keyboardType}
         returnKeyType="done"
+        secureTextEntry={secureTextEntry}
         onBlur={vaildTest}
         onChangeText={(text) => takeRusult({ InfoType, text })}
       />

@@ -116,6 +116,7 @@ export default function MembershipAccount({ navigation }) {
             sublabel={true}
             subtitle="영문+숫자+특수기호 8자 이상"
             subinput={true}
+            secureTextEntry={true}
             subplaceholder="비밀번호 재입력"
             InfoType="userpw"
             vaildTest={() => {
