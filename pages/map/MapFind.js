@@ -10,15 +10,16 @@ import {
 import Header from "../../components/common/Header";
 import { PROVIDER_GOOGLE } from "react-native-maps";
 import MapView from "react-native-maps";
-import CustomMarker from "../../components/map/CustomMarker";
 import * as Location from "expo-location";
 import _ from "lodash"; // lodash 라이브러리 가져오기
 import Color from "../../assets/colors/Color";
 import Gps from "../../assets/images/Gps";
 import { useNavigation } from "@react-navigation/native";
-import { baseUrl, jwt } from "../../utils/baseUrl";
+import { baseUrl } from "../../utils/baseUrl";
 import { useDispatch } from "react-redux";
 import { changeAddress } from "../../store/mapAddress";
+import { getToken } from "../../utils/Cookie";
+import MyPointMarker from "../../components/map/MyPointMarker";
 
 const MapFind = () => {
   const navigation = useNavigation();
@@ -34,12 +35,21 @@ const MapFind = () => {
   const [currentLocation, setCurrentLocation] = useState({});
   const mapViewRef = useRef(null);
 
+  const [jwt, setJwt] = useState(""); // 토큰 상태 추가
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const fetchedToken = await getToken();
+      setJwt(fetchedToken);
+    };
+
+    fetchToken();
+  }, []);
+
   //내 위치 경위도를 주소로 변환하는 함수
   const getCurrentAddress = async (latitude, longitude) => {
     try {
       //도로명 api 호출
-
-      // console.log(latitude, longitude);
       const response = await fetch(
         `${baseUrl}/jat/app/users/address?longitude=${parseFloat(
           longitude
@@ -47,23 +57,16 @@ const MapFind = () => {
         {
           method: "GET",
           headers: {
-            "X-ACCESS-TOKEN":
-              "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWR4IjoyMywiaWF0IjoxNjc4OTAyOTE2LCJleHAiOjE2ODAzNzQxNDV9.zUuYJ4nfA7LuULYfmFC4CvbB8F3CVpZTMOPnqBc3cGk",
+            "X-ACCESS-TOKEN": jwt,
           },
         }
       );
       const data = await response.json();
-      // if (!data.status) {
-      //   Alert.alert('조금 더 움직여주세요.')
-      //   console.log(data);
-      //   return;
-      // }
       if (data.error) {
         Alert.alert("조금 더 이동시켜주세요.");
         return;
       }
       const result = await data.result;
-      console.log(result);
       setCurrentAddress({
         locAddress: result.locAddress,
         roadAddress: result.roadAddress,
@@ -164,7 +167,7 @@ const MapFind = () => {
             ></MapView>
           )}
         <View pointerEvents="none" style={styles.addressContainer}>
-          <CustomMarker title="" />
+          <MyPointMarker title="" />
         </View>
       </View>
 
@@ -221,7 +224,7 @@ const styles = StyleSheet.create({
   },
   mapView: {
     flex: 1,
-    marginBottom:180
+    marginBottom: 180,
   },
   map: {
     flex: 1,
@@ -254,7 +257,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "transparent",
-    paddingBottom:40
+    paddingBottom: 40,
   },
   modalContainer: {
     position: "absolute",

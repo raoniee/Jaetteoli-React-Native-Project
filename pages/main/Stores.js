@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -20,7 +19,8 @@ import { useEffect, useState } from "react";
 import Header from "../../components/common/Header";
 import { useIsFocused } from "@react-navigation/native";
 import { useSelector } from "react-redux";
-import { baseUrl, jwt } from "../../utils/baseUrl";
+import { baseUrl } from "../../utils/baseUrl";
+import { getToken } from "../../utils/Cookie";
 
 const Stores = ({ navigation, route }) => {
   const mapLocation = useSelector((state) => state.mapAddress);
@@ -32,7 +32,6 @@ const Stores = ({ navigation, route }) => {
 
   useEffect(() => {
     if (isFocused) {
-      console.log("가게 목록 api 호출");
       const mapListApi = async () => {
         try {
           const response = await fetch(
@@ -40,19 +39,16 @@ const Stores = ({ navigation, route }) => {
             {
               method: "GET",
               headers: {
-                "X-ACCESS-TOKEN": jwt,
+                "X-ACCESS-TOKEN": await getToken(),
               },
             }
           );
           const data = await response.json();
           if (!data.isSuccess) {
-            console.log(data.message);
             return;
           }
-          console.log(data.result);
           setInitData(data.result);
         } catch (err) {
-          console.log(err);
         }
       };
       mapListApi();
@@ -80,23 +76,19 @@ const Stores = ({ navigation, route }) => {
           storeIdx: storeIdx,
           yn: postSubcribed,
         };
-        console.log(`${baseUrl}/jat/app/subscription`);
         const response = await fetch(`${baseUrl}/jat/app/subscription`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-ACCESS-TOKEN": jwt,
+            "X-ACCESS-TOKEN": await getToken(),
           },
           body: JSON.stringify(requestBody),
         });
         const data = await response.json();
         if (!data.isSuccess) {
-          console.log(data.message);
           return;
         }
-        console.log(data.result);
       } catch (err) {
-        console.log(err);
       }
     };
     storeSubscribeApi(storeIdx, subscribed);

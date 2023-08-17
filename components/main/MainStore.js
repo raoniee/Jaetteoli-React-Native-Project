@@ -4,8 +4,9 @@ import Location from "../../assets/images/Location";
 import FillHeart from "../../assets/images/FillHeart";
 import EmptyHeart from "../../assets/images/EmptyHeart";
 import Color from "../../assets/colors/Color";
-import { baseUrl, jwt } from "../../utils/baseUrl";
+import { baseUrl } from "../../utils/baseUrl";
 import { useEffect, useState } from "react";
+import { getToken } from "../../utils/Cookie";
 
 const MainStore = ({ item, onPress }) => {
   const [heartFilled, setHeartFilled] = useState(false);
@@ -34,19 +35,17 @@ const MainStore = ({ item, onPress }) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-ACCESS-TOKEN": jwt,
+            "X-ACCESS-TOKEN": await getToken(),
           },
           body: JSON.stringify(requestBody),
         });
         const data = await response.json();
         if (!data.isSuccess) {
-          console.log(data.message);
           return;
         }
         // 하트 아이콘 상태를 토글하여 변경
         setHeartFilled(!heartFilled);
       } catch (err) {
-        console.log(err);
       }
     };
     storeSubscribeApi(storeIdx, heartFilled);

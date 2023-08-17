@@ -14,20 +14,18 @@ import Color from "../../assets/colors/Color";
 import SearchImg from "../../assets/images/SearchImg";
 import Clock from "../../assets/images/Clock";
 import RecentItem from "../../components/search/item/RecentItem";
-import {
-  recentSearchData,
-  popularSearchData,
-} from "../../components/search/dummy/dummy";
 import Graph from "../../assets/images/Graph";
 import PopularItem from "../../components/search/item/PopularItem";
 import { useEffect, useState } from "react";
-import { baseUrl, jwt } from "../../utils/baseUrl";
+import { baseUrl } from "../../utils/baseUrl";
+import { getToken } from "../../utils/Cookie";
 
 const BeforeSeach = ({ navigation, route }) => {
   const [inputText, setInputText] = useState(
     route.params !== undefined ? route.params.searchText : ""
   );
   const [searchData, setSearchData] = useState(null);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (route.params !== undefined) {
@@ -37,27 +35,27 @@ const BeforeSeach = ({ navigation, route }) => {
 
   useEffect(() => {
     //검색기록, 검색어 순위 api호출
-    console.log("검색기록, 검색어 순위 api호출");
     const fetchData = async () => {
+      setLoading(true)
       const response = await fetch(`${baseUrl}/jat/app/search`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "X-ACCESS-TOKEN": jwt,
+          "X-ACCESS-TOKEN": await getToken(),
         },
       });
       const data = await response.json();
       if (!data.isSuccess) {
-        console.log(data.message);
         return;
       }
       setSearchData(data.result);
+      setLoading(false)
     };
     fetchData();
   }, []);
 
   const moveToAfterSearch = () => {
-    navigation.popToTop(); // 스택에 쌓인 모든 화면을 제거하고 AfterSearch 화면으로 이동
+    navigation.pop(); // 스택에 쌓인 모든 화면을 제거하고 AfterSearch 화면으로 이동
     navigation.navigate("AfterSearch", { searchText: inputText });
   };
 
@@ -66,7 +64,7 @@ const BeforeSeach = ({ navigation, route }) => {
   };
 
   const selectedItemHandler = (name) => {
-    navigation.popToTop(); // 스택에 쌓인 모든 화면을 제거하고 AfterSearch 화면으로 이동
+    navigation.pop(); // 스택에 쌓인 모든 화면을 제거하고 AfterSearch 화면으로 이동
     navigation.navigate("AfterSearch", { searchText: name });
   }
 
@@ -108,7 +106,7 @@ const BeforeSeach = ({ navigation, route }) => {
               <Text style={styles.semiText}>전체삭제</Text>
             </View>
           </View>
-          <View style={styles.recentSearchFlatContainer}>
+          {!loading && <View style={styles.recentSearchFlatContainer}>
             {searchData && (
               <FlatList
                 data={searchData.recentWords}
@@ -120,7 +118,7 @@ const BeforeSeach = ({ navigation, route }) => {
                 }}
               />
             )}
-          </View>
+          </View>}
         </View>
 
         {/* 인기 검색어 */}

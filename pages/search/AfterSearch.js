@@ -18,10 +18,12 @@ import Globe from "../../assets/images/Globe";
 import { useEffect, useState } from "react";
 import Header from "../../components/common/Header";
 import { useIsFocused } from "@react-navigation/native";
-import { baseUrl, jwt } from "../../utils/baseUrl";
+import { baseUrl } from "../../utils/baseUrl";
 import { useSelector } from "react-redux";
+import { getToken } from "../../utils/Cookie";
 
 const AfterSearch = ({ navigation, route }) => {
+  const [loading, setLoading] = useState(true);
   const [initData, setInitData] = useState([]);
   const isFocused = useIsFocused();
   const myAddress = useSelector((state) => state.myAddress);
@@ -44,24 +46,19 @@ const AfterSearch = ({ navigation, route }) => {
           storeIdx: storeIdx,
           yn: postSubcribed,
         };
-        console.log(`${baseUrl}/jat/app/subscription`);
         const response = await fetch(`${baseUrl}/jat/app/subscription`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-ACCESS-TOKEN": jwt,
+            "X-ACCESS-TOKEN": await getToken(),
           },
           body: JSON.stringify(requestBody),
         });
         const data = await response.json();
         if (!data.isSuccess) {
-          console.log(data.message);
           return;
         }
-        console.log(data.result);
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) {}
     };
     storeSubscribeApi(storeIdx, subscribed);
     setInitData((prevData) =>
@@ -76,11 +73,15 @@ const AfterSearch = ({ navigation, route }) => {
   useEffect(() => {
     if (isFocused) {
       // 구독 가게 목록 api 호출
-      console.log("검색 가게 목록 api 호출");
       const fetchData = async () => {
+        let inputText = ""
+        if(route.params !== undefined){
+          inputText = route.params.searchText
+        }
         if (inputText === "") {
           return;
         }
+        setLoading(true);
         const requestBody = {
           searchWord: inputText,
           longitude: myAddress.longitude,
@@ -90,17 +91,17 @@ const AfterSearch = ({ navigation, route }) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-ACCESS-TOKEN": jwt,
+            "X-ACCESS-TOKEN": await getToken(),
           },
           body: JSON.stringify(requestBody),
         });
 
         const data = await response.json();
         if (!data.isSuccess) {
-          console.log(data.message);
           return;
         }
         setInitData(data.result);
+        setLoading(false);
       };
       fetchData();
     }
@@ -148,78 +149,82 @@ const AfterSearch = ({ navigation, route }) => {
         </View>
       </Pressable>
       {/* 목록 */}
-      <View style={styles.searchResultContainer}>
-        <FlatList
-          data={initData}
-          scrollEnabled={true}
-          showsVerticalScrollIndicator={true}
-          renderItem={({ item, index }) => {
-            let star;
-            if (item.rating <= 5.0 && item.rating >= 4.0) {
-              star = <FontAwesome name="star" style={styles.star} />;
-            } else if (item.rating < 4.0 && item.rating >= 2.0) {
-              star = <FontAwesome name="star-half-full" style={styles.star} />;
-            } else {
-              star = <FontAwesome name="star-o" style={styles.star} />;
-            }
-            return (
-              <Pressable onPress={() => moveToDetailStore(item.storeIdx)}>
-                <View index={index} style={styles.searchItemContainer}>
-                  <View style={styles.imgContainer}>
-                    <View style={styles.firstImgContiner}>
-                      <Image
-                        source={{ uri: `${item.storeLogoUrl}` }}
-                        resizeMode="stretch"
-                        style={styles.firstImg}
-                      />
-                    </View>
-                    <View style={styles.rightContiner}>
-                      <View style={styles.secondImgContiner}>
+      {!loading && (
+        <View style={styles.searchResultContainer}>
+          <FlatList
+            data={initData}
+            scrollEnabled={true}
+            showsVerticalScrollIndicator={true}
+            renderItem={({ item, index }) => {
+              let star;
+              if (item.star <= 5.0 && item.star >= 4.0) {
+                star = <FontAwesome name="star" style={styles.star} />;
+              } else if (item.star < 4.0 && item.star >= 2.0) {
+                star = (
+                  <FontAwesome name="star-half-full" style={styles.star} />
+                );
+              } else {
+                star = <FontAwesome name="star-o" style={styles.star} />;
+              }
+              return (
+                <Pressable onPress={() => moveToDetailStore(item.storeIdx)}>
+                  <View index={index} style={styles.searchItemContainer}>
+                    <View style={styles.imgContainer}>
+                      <View style={styles.firstImgContiner}>
                         <Image
-                          source={{ uri: `${item.storeSignUrl}` }}
+                          source={{ uri: `${item.storeLogoUrl}` }}
                           resizeMode="stretch"
-                          style={styles.secondImg}
+                          style={styles.firstImg}
                         />
                       </View>
-                      <View style={styles.thirdImgContainer}>
-                        <Image
-                          source={{ uri: `${item.storeSignUrl}` }}
-                          resizeMode="stretch"
-                          style={styles.thirdImg}
-                        />
+                      <View style={styles.rightContiner}>
+                        <View style={styles.secondImgContiner}>
+                          <Image
+                            source={{ uri: `${item.storeSignUrl}` }}
+                            resizeMode="stretch"
+                            style={styles.secondImg}
+                          />
+                        </View>
+                        <View style={styles.thirdImgContainer}>
+                          <Image
+                            source={{ uri: `${item.storeSignUrl}` }}
+                            resizeMode="stretch"
+                            style={styles.thirdImg}
+                          />
+                        </View>
                       </View>
                     </View>
-                  </View>
-                  <View style={styles.resultBottomContainer}>
-                    <View>
-                      <View style={styles.menuContainer}>
-                        <Text style={styles.menu}>{item.storeName}</Text>
-                        {star}
-                        <Text style={styles.rating}>
-                          {item.star.toFixed(1)}
-                        </Text>
+                    <View style={styles.resultBottomContainer}>
+                      <View>
+                        <View style={styles.menuContainer}>
+                          <Text style={styles.menu}>{item.storeName}</Text>
+                          {star}
+                          <Text style={styles.rating}>
+                            {item.star.toFixed(1)}
+                          </Text>
+                        </View>
+                        <View style={styles.locationContainer}>
+                          <Location />
+                          <Text>
+                            {item.distance}m 도보 {item.duration}분
+                          </Text>
+                        </View>
                       </View>
-                      <View style={styles.locationContainer}>
-                        <Location />
-                        <Text>
-                          {item.distance}m 도보 {item.duration}분
-                        </Text>
-                      </View>
+                      <TouchableOpacity
+                        onPress={() =>
+                          handleHeartClick(item.storeIdx, item.subscribed)
+                        }
+                      >
+                        {item.subscribed ? <FillHeart /> : <EmptyHeart />}
+                      </TouchableOpacity>
                     </View>
-                    <TouchableOpacity
-                      onPress={() =>
-                        handleHeartClick(item.storeIdx, item.subscribed)
-                      }
-                    >
-                      {item.subscribed ? <FillHeart /> : <EmptyHeart />}
-                    </TouchableOpacity>
                   </View>
-                </View>
-              </Pressable>
-            );
-          }}
-        />
-      </View>
+                </Pressable>
+              );
+            }}
+          />
+        </View>
+      )}
       <TouchableOpacity style={styles.mapButton} onPress={moveToMain}>
         <Globe />
         <Text style={styles.mapButtonText}>지도보기</Text>

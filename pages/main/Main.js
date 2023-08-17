@@ -18,13 +18,13 @@ import Gps from "../../assets/images/Gps";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import LocationImg from "../../assets/images/Location";
 import List from "../../assets/images/List";
-import { subscribeData } from "../../components/subscribe/dummy/dummy";
 import MainStore from "../../components/main/MainStore";
-import { baseUrl, jwt } from "../../utils/baseUrl";
+import { baseUrl } from "../../utils/baseUrl";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { changeAddress } from "../../store/mapAddress";
 import { myChangeAddress } from "../../store/myAddress";
+import { getToken } from "../../utils/Cookie";
 
 const Main = () => {
   const navigation = useNavigation();
@@ -51,6 +51,17 @@ const Main = () => {
   const [previewStore, setPreviewStore] = useState(null);
   const mapViewRef = useRef(null);
   const isFocused = useIsFocused();
+
+  const [jwt, setJwt] = useState(""); // 토큰 상태 추가
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const fetchedToken = await getToken();
+      setJwt(fetchedToken);
+    };
+
+    fetchToken();
+  }, []);
 
   const handleMapReady = async () => {
     if (mapViewRef.current) {
@@ -115,7 +126,6 @@ const Main = () => {
       );
       const data = await response.json();
       if (!data.isSuccess) {
-        console.log(data.message);
         return;
       }
       if (data.result.length === 0) {
@@ -123,7 +133,6 @@ const Main = () => {
       }
       setMarkerData(data.result);
     } catch (err) {
-      console.log(err);
     }
   };
 
@@ -222,12 +231,6 @@ const Main = () => {
           latitudeDelta: 0.001,
           longitudeDelta: 0.001,
         });
-        // console.log(
-        //   "업뎃 내 휴대폰 위도 : ",
-        //   latitude,
-        //   "내 휴대폰 경도 : ",
-        //   longitude
-        // );
         setCurrentLocation({ latitude, longitude }); //내 휴대폰 현재 경위도 업데이트
         getCurrentAddressApi(latitude, longitude); //내 휴대폰 현재 주소 업데이트
       }
@@ -253,7 +256,6 @@ const Main = () => {
     );
     const data = await response.json();
     if (!data.isSuccess) {
-      console.log(data.message);
       return;
     }
     const result = await data.result;
@@ -262,8 +264,6 @@ const Main = () => {
 
   //목록보기 눌렀을때의 함수
   const moveToStores = () => {
-    console.log(center);
-
     navigation.navigate("Stores", { currentAddress: currentAddress });
   };
 
