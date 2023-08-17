@@ -17,8 +17,9 @@ import Color from "../../assets/colors/Color";
 import Header from "../../components/common/Header";
 import { useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { baseUrl, jwt } from "../../utils/baseUrl";
+import { baseUrl } from "../../utils/baseUrl";
 import { useSelector } from "react-redux";
+import { getToken } from "../../utils/Cookie";
 
 const Subscribe = () => {
   const [initData, setInitData] = useState([]);
@@ -30,31 +31,24 @@ const Subscribe = () => {
   useEffect(() => {
     if (isFocused) {
       // 구독 가게 목록 api 호출
-      // console.log("구독 가게 목록 api 호출");
       const fetchData = async () => {
         try {
-          // console.log(
-          //   `${baseUrl}/jat/app/subscription?longitude=${myLocation.longitude}&latitude=${myLocation.latitude}`
-          // );
           const response = await fetch(
             `${baseUrl}/jat/app/subscription?longitude=${myLocation.longitude}&latitude=${myLocation.latitude}`,
             {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                "X-ACCESS-TOKEN": jwt,
+                "X-ACCESS-TOKEN": await getToken(),
               },
             }
           );
           const data = await response.json();
           if (!data.isSuccess) {
-            console.log(data.message);
             return;
           }
-          // console.log(data.result);
           setInitData(data.result);
         } catch (err) {
-          console.log(err);
         }
       };
       fetchData();
@@ -69,23 +63,19 @@ const Subscribe = () => {
           storeIdx: storeIdx,
           yn: postSubcribed,
         };
-        console.log(`${baseUrl}/jat/app/subscription`);
         const response = await fetch(`${baseUrl}/jat/app/subscription`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-ACCESS-TOKEN": jwt,
+            "X-ACCESS-TOKEN": await getToken(),
           },
           body: JSON.stringify(requestBody),
         });
         const data = await response.json();
         if (!data.isSuccess) {
-          console.log(data.message);
           return;
         }
-        console.log(data.result);
       } catch (err) {
-        console.log(err);
       }
     };
     storeSubscribeApi(storeIdx, subscribed);
@@ -199,14 +189,14 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
   },
   subscribeContainer: {
-    flex:1,
-    paddingBottom:40,
+    flex: 1,
+    paddingBottom: 40,
   },
   header: {
     marginBottom: 10,
   },
-  flatContainer:{
-    flex:1,
+  flatContainer: {
+    flex: 1,
   },
   subscribeItemContainer: {
     marginHorizontal: 26,

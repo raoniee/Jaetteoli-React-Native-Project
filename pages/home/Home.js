@@ -4,8 +4,30 @@ import image from "../../assets/images/home_bg.png";
 import Color from "../../assets/colors/Color";
 import { NavigationContainer } from "@react-navigation/native"; // 네비게이션 컨테이너
 import { createNativeStackNavigator } from "@react-navigation/native-stack"; // Stack 네비게이션
+import { getToken } from "../../utils/Cookie";
+import { useEffect, useState } from "react";
 
 const Home = ({ navigation }) => {
+
+  const [jwt, setJwt] = useState(""); // 토큰 상태 추가
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const fetchedToken = await getToken();
+      setJwt(fetchedToken);
+    };
+
+    fetchToken();
+  }, []);
+
+  const helloHandler = () => {
+    if (jwt !== "") {
+      navigation.navigate("MainTabs");
+    } else {
+      navigation.navigate("LoginStart");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
@@ -20,7 +42,7 @@ const Home = ({ navigation }) => {
                 backgroundColor={Color.white}
                 color={Color.darkPurple}
                 height={62}
-                onPress={() => navigation.navigate("LoginStart")}
+                onPress={helloHandler}
               />
             </View>
           </View>

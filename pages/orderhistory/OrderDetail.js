@@ -18,7 +18,8 @@ import ArrowLineRight from "../../assets/images/ArrowLineRight";
 import { formatPriceWithCurrency } from "../../utils/format";
 import Header from "../../components/common/Header";
 import { useNavigation } from "@react-navigation/native";
-import { baseUrl, jwt } from "../../utils/baseUrl";
+import { baseUrl } from "../../utils/baseUrl";
+import { getToken } from "../../utils/Cookie";
 
 const OrderDetail = ({ route }) => {
   const navigation = useNavigation();
@@ -36,15 +37,13 @@ const OrderDetail = ({ route }) => {
         {
           method: "GET",
           headers: {
-            "X-ACCESS-TOKEN": jwt,
+            "X-ACCESS-TOKEN": await getToken(),
           },
         }
       );
       const data = await response.json();
-      console.log(data.result);
       setDetailData(data.result);
     };
-    console.log("주문 상세 조회 api 호출");
     getOrderDetailApi();
   }, []);
 

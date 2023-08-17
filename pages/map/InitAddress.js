@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, View, Text, Pressable } from "react-native";
 import DaumPostcode from "@actbase/react-daum-postcode";
 import Color from "../../assets/colors/Color";
@@ -6,14 +6,26 @@ import SearchImg from "../../assets/images/SearchImg";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../../components/common/Header";
 import AddressHeader from "../../components/map/AddressHeader";
-import { baseUrl, jwt } from "../../utils/baseUrl";
+import { baseUrl } from "../../utils/baseUrl";
 import { useDispatch } from "react-redux";
 import { changeAddress } from "../../store/mapAddress";
+import { getToken } from "../../utils/Cookie";
 
 const InitAddress = () => {
   const navigation = useNavigation();
   const [showPostcode, setShowPostcode] = useState(false);
   const dispatch = useDispatch();
+
+  const [jwt, setJwt] = useState(""); // 토큰 상태 추가
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const fetchedToken = await getToken();
+      setJwt(fetchedToken);
+    };
+
+    fetchToken();
+  }, []);
 
   // 우편 서비스 화면 표시/숨김 상태를 토글
   const togglePostcode = () => {

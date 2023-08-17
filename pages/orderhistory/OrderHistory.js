@@ -14,8 +14,9 @@ import ArrowRight from "../../assets/images/ArrowRight";
 import { useEffect, useState } from "react";
 import Header from "../../components/common/Header";
 import { useIsFocused } from "@react-navigation/native";
-import { baseUrl, jwt } from "../../utils/baseUrl";
+import { baseUrl } from "../../utils/baseUrl";
 import { formatPriceWithCurrency } from "../../utils/format";
+import { getToken } from "../../utils/Cookie";
 
 const OrderHistory = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -31,18 +32,15 @@ const OrderHistory = ({ navigation }) => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "X-ACCESS-TOKEN": jwt,
+              "X-ACCESS-TOKEN": await getToken(),
             },
           });
           const data = await response.json();
           if (!data.isSuccess) {
-            console.log(data.message);
             return;
           }
-          console.log(data.result)
           setInitData(data.result);
         } catch (err) {
-          console.log(err);
         }
       };
       fetchOrderHistory();
@@ -66,7 +64,6 @@ const OrderHistory = ({ navigation }) => {
         prevData.filter((item) => item.orderIdx !== selectedItem.orderIdx)
       );
       //주문 내역 삭제 api 호출
-      console.log("주문 내역 삭제 api 호출");
       const requestBody = {
         orderIdx: orderIdx,
       };
@@ -74,16 +71,14 @@ const OrderHistory = ({ navigation }) => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "X-ACCESS-TOKEN": jwt,
+          "X-ACCESS-TOKEN": await getToken(),
         },
         body: JSON.stringify(requestBody),
       });
       const data = await response.json();
       if (!data.isSuccess) {
-        console.log(data.message);
         return;
       }
-      console.log(data.result)
     }
     setModalVisible(false);
     setSelectedItem(null);
