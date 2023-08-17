@@ -105,6 +105,7 @@ export default function LoginStart({ navigation }) {
         <TextInput
           style={styles.id_input}
           placeholder="아이디"
+          placeholderTextColor={Color.lightGray}
           keyboardType="ascii-capable"
           returnKeyType="done"
           onChangeText={(text) => setInputID(text)}
@@ -113,6 +114,7 @@ export default function LoginStart({ navigation }) {
         <TextInput
           style={styles.pw_input}
           placeholder="비밀번호"
+          placeholderTextColor={Color.lightGray}
           secureTextEntry={true}
           returnKeyType="done"
           onChangeText={(text) => setInputPW(text)}

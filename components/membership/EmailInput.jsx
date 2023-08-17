@@ -81,7 +81,7 @@ export default function EmailInput(props) {
         />
         <Text style={styles.at}>@</Text>
         {value === null && (
-          <TextInput style={styles.halfinput} placeholder="" readOnly="true" />
+          <TextInput style={styles.halfinput} placeholder="" readOnly={true} />
         )}
         {value === "0" && (
           <TextInput
@@ -96,35 +96,35 @@ export default function EmailInput(props) {
           <TextInput
             style={styles.halfinput}
             placeholder="naver.com"
-            readOnly="true"
+            readOnly={true}
           />
         )}
         {value === "2" && (
           <TextInput
             style={styles.halfinput}
             placeholder="gmail.com"
-            readOnly="true"
+            readOnly={true}
           />
         )}
         {value === "3" && (
           <TextInput
             style={styles.halfinput}
             placeholder="daum.net"
-            readOnly="true"
+            readOnly={true}
           />
         )}
         {value === "4" && (
           <TextInput
             style={styles.halfinput}
             placeholder="hanmail.net"
-            readOnly="true"
+            readOnly={true}
           />
         )}
         {value === "5" && (
           <TextInput
             style={styles.halfinput}
             placeholder="nate.net"
-            readOnly="true"
+            readOnly={true}
           />
         )}
       </View>
