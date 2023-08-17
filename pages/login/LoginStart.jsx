@@ -86,7 +86,7 @@ export default function LoginStart({ navigation }) {
           const truenextstep = () => navigation.navigate("TermsOfService");
           truenextstep();
         } else {
-          const falsenextstep = () => navigation.navigate("Main");
+          const falsenextstep = () => navigation.navigate("MainTabs");
           falsenextstep();
         }
       };
