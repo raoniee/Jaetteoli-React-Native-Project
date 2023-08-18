@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   TouchableHighlight,
   Image,
+  StatusBar,
 } from "react-native";
 import Button from "../../components/common/Button";
 import Color from "../../assets/colors/Color";
@@ -21,6 +22,7 @@ export default function MembershipEnd({ navigation }) {
   const { userInfo } = useContext(MembershipContext);
   return (
     <SafeAreaView style={styles.wrap}>
+      <StatusBar barStyle="dark-content" />
       <TopHeader
         title="회원가입 완료"
         onPress={() => navigation.navigate("LoginStart")}

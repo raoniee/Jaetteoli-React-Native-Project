@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   TouchableHighlight,
   Image,
+  StatusBar,
 } from "react-native";
 import Checkbox from "expo-checkbox";
 import Button from "../../components/common/Button";
@@ -27,6 +28,7 @@ import { useEffect } from "react";
 export default function MembershipStart({ navigation }) {
   return (
     <SafeAreaView style={styles.wrap}>
+      <StatusBar barStyle="dark-content" />
       <TopHeader
         title="회원가입"
         onPress={() => navigation.navigate("LoginStart")}

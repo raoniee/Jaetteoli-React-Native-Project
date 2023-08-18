@@ -56,7 +56,7 @@ export const getUserID = async () => {
 };
 
 //removeData
-export const removeUserID = async (USERID_KEY) => {
+export const removeUserID = async () => {
   try {
     await AsyncStorage.removeItem(USERID_KEY);
   } catch (e) {

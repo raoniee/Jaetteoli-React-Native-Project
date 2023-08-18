@@ -11,6 +11,7 @@ import {
   TouchableHighlight,
   Image,
   Dimensions,
+  StatusBar,
 } from "react-native";
 import Button from "../../components/common/Button";
 import Color from "../../assets/colors/Color";
@@ -35,16 +36,16 @@ export default function MembershipAgreeDesc({ navigation, route }) {
   function titlevalue(val) {
     var result = "";
     switch (val) {
-      case "mandatoryOne":
+      case "m1":
         result = AgreeDescm1.map((agree) => agree.title);
         break;
-      case "mandatoryTwo":
+      case "m2":
         result = AgreeDescm2.map((agree) => agree.title);
         break;
-      case "selectiveOne":
+      case "s1":
         result = AgreeDescs1.map((agree) => agree.title);
         break;
-      case "all":
+      case "s2":
         result = AgreeDescs2.map((agree) => agree.title);
         break;
     }
@@ -54,16 +55,16 @@ export default function MembershipAgreeDesc({ navigation, route }) {
   function descvalue(val) {
     var result = "";
     switch (val) {
-      case "mandatoryOne":
+      case "m1":
         result = AgreeDescm1.map((agree) => agree.desc);
         break;
-      case "mandatoryTwo":
+      case "m2":
         result = AgreeDescm2.map((agree) => agree.desc);
         break;
-      case "selectiveOne":
+      case "s1":
         result = AgreeDescs1.map((agree) => agree.desc);
         break;
-      case "all":
+      case "s2":
         result = AgreeDescs2.map((agree) => agree.desc);
         break;
     }
@@ -76,16 +77,8 @@ export default function MembershipAgreeDesc({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.wrap}>
-      <Header
-        title={() => {
-          if (type) {
-            titlevalue(type);
-          } else {
-            titlevalue(stype);
-          }
-        }}
-        right={0}
-      />
+      <StatusBar barStyle="dark-content" />
+      <Header title={titlevalue(title)} right={0} />
       <View style={styles.container}>
         <View style={styles.agreeinfo}>
           <View style={styles.datebox}>
@@ -93,15 +86,7 @@ export default function MembershipAgreeDesc({ navigation, route }) {
             <Text style={styles.date}>09:19:24 AM</Text>
           </View>
           <ScrollView style={styles.agreebox}>
-            <Text style={styles.agreetext}>
-              {() => {
-                if (type) {
-                  descvalue(type);
-                } else {
-                  descvalue(stype);
-                }
-              }}
-            </Text>
+            <Text style={styles.agreetext}>{descvalue(title)}</Text>
           </ScrollView>
         </View>
         <Button

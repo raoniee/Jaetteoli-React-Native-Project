@@ -1,5 +1,11 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { StyleSheet, SafeAreaView, View, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Dimensions,
+  StatusBar,
+} from "react-native";
 import Color from "../../assets/colors/Color";
 import Button from "../../components/common/Button";
 import Header from "../../components/common/Header";
@@ -101,6 +107,7 @@ export default function MembershipInfo({ navigation }) {
   };
   return (
     <SafeAreaView style={styles.wrap}>
+      <StatusBar barStyle="dark-content" />
       <Header title="기본정보" right={0} />
       <View style={{ ...styles.container, marginTop: getnumber ? 77 : 134 }}>
         <View style={styles.userinfo_box}>
