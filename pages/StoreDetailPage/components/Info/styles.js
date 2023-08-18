@@ -1,7 +1,10 @@
 import styled from "styled-components/native";
+import {windowWidth} from "../../../../utils/dimensions";
 
 export const InfoWrapper = styled.View`
-    width: 360px;
+  width: ${windowWidth-32}px;
+  margin-left: 16px;
+  margin-right: 16px;
   display: flex;
   flex-direction: column;
   padding: ${({isFirst}) => isFirst ? '20px' : '33px'} 0;

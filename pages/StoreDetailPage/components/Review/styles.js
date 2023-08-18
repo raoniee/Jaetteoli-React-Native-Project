@@ -1,7 +1,10 @@
 import styled from "styled-components/native";
+import {windowWidth} from "../../../../utils/dimensions";
 
 export const StarRatingWrapper = styled.View`
-  width: 360px;
+  width: ${windowWidth-32}px;
+  margin-left: 16px;
+  margin-right: 16px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -46,7 +49,7 @@ export const StarRatingDistributionSection = styled.View`
 `
 
 export const StarRatingDistributionBox1 = styled.View`
-    display: flex;
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 5px;
@@ -70,7 +73,7 @@ export const StarRatingDistributionBox2 = styled.View`
 `
 
 export const StarRatingDistributionBar = styled.View`
-  width: 184px;
+  width: ${(windowWidth-32) / 2}px;
   height: 12px;
   border-radius: 5px;
   background: #F8F8F8;
@@ -78,7 +81,7 @@ export const StarRatingDistributionBar = styled.View`
 `
 
 export const StarRatingDistributionBarFill = styled.View`
-  width: ${({percentage}) => 184/100*percentage}px;
+  width: ${({percentage}) => ((windowWidth-32) / 2)/100*percentage}px;
   height: 12px;
   background: #F6C844;
   border-radius: 5px 0px 5px 5px;
@@ -104,7 +107,9 @@ export const ReviewInfoWrapper = styled.View`
 export const ReviewInfoSection = styled.View`
   display: flex;
   flex-direction: row;
-  width: 360px;
+  width: ${windowWidth-32}px;
+  margin-left: 16px;
+  margin-right: 16px;
   padding: 15px 0;
   justify-content: flex-start;
   align-items: flex-end;
@@ -132,7 +137,9 @@ export const ReviewInfoReplyCountText = styled.Text`
 `
 
 export const ReviewInfoSection2 = styled.View`
-  width: 360px;
+  width: ${windowWidth-32}px;
+  margin-left: 16px;
+  margin-right: 16px;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -185,7 +192,9 @@ export const ReviewWrapper = styled.View`
 export const ReviewSection = styled.View`
   position: relative;
   display: flex;
-  width: 360px;
+  width: ${windowWidth-32}px;
+  margin-left: 16px;
+  margin-right: 16px;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
@@ -239,6 +248,7 @@ export const UserNameText = styled.Text`
   font-style: normal;
   font-weight: 500;
   line-height: 35px; /* 233.333% */
+  width: ${windowWidth - 32 - 43 - 60}px;
 `
 
 export const UserStarRatingSection = styled.View`
@@ -268,8 +278,8 @@ export const UserReviewText = styled.Text`
 
 export const UserReviewImage = styled.Image`
   margin: 10px 0 10px;
-  width: 360px;
-  height: 360px;
+  width: ${windowWidth- 32}px;
+  height: ${windowWidth- 32}px;
   border-radius: 30px;
 `
 
@@ -324,8 +334,8 @@ export const ReplySection = styled.View`
 export const ModalTitleSection = styled.View`
   display: flex;
   flex-direction: row;
-  width: 343px;
-  padding: 20px 0;
+  width: 100%;
+  padding: 20px 25px;
   justify-content: space-between;
   align-items: center;
 `
@@ -353,11 +363,12 @@ export const ModalSection = styled.View`
   flex-direction: column;
   gap: 30px;
   align-items: flex-start;
-  padding: 20px 0 109px;
+  width: 100%;
+  padding: 20px 16px 109px;
 `
 
 export const ModalBox = styled.View`
-  width: 360px;
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

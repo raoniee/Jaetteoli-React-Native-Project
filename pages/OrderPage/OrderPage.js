@@ -24,6 +24,7 @@ import Ellipse0 from 'assets/images/Ellipse0.svg';
 import Header from "components/common/Header";
 import CustomModal from "components/Heo/modal/CustomModal";
 import CustomModaless from "components/Heo/modal/CustomModaless";
+import {totalHeight, windowWidth} from "../../utils/dimensions";
 
 
 export default function OrderPage({ navigation }) {
@@ -286,21 +287,21 @@ const Container = styled.ScrollView`
   display: flex;
   flex-direction: column;
   background: #FFF;
+  height: ${totalHeight - 44}px;
 `
 
 const OrderWrapper = styled.View`
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   gap: ${props => props.gap}px;
   border-bottom-width: 1px;
   border-bottom-color: #AAA;
-  padding: 30px 0;
+  padding: 30px 16px;
 `
 
 const ShopWrapper = styled.View`
   display: flex;
-  width: 360px;
   height: 35px;
   gap: 10px;
   flex-direction: row;
@@ -323,10 +324,10 @@ const ShopText = styled.Text`
 `
 
 const ShopAddressWrapper = styled.View`
-  width: 360px;
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: flex-start;
 `
 
 const ShopAddressText = styled.Text`
@@ -337,7 +338,7 @@ const ShopAddressText = styled.Text`
   font-weight: 500;
   line-height: 20px; /* 133.333% */
   padding: 0 15px 0 6px;
-  max-width: 300px;
+  flex: 1;
 `
 
 const ShopAddressCopyTouch = styled.TouchableOpacity`
@@ -363,7 +364,7 @@ const CommonTextSection = styled.View`
   position: relative;
   display: flex;
   flex-direction: row;
-  width: 360px;
+  width: 100%;
   align-items: center;
   gap: 10px
 `
@@ -380,8 +381,8 @@ const CommonText = styled.Text`
 const PickupTimeSection = styled.View`
   display: flex;
   flex-direction: row;
+  width: ${windowWidth - 32}px;
   padding: 10px 20px;
-  width: 360px;
   justify-content: space-between;
   align-items: center;
   border-radius: 15px;
@@ -459,7 +460,7 @@ const PhoneSafeText = styled.Text`
 
 const RequestSection = styled.View`
   display: flex;
-  width: 360px;
+  width: ${windowWidth - 32}px;
   padding: 13px 20px;
   align-items: flex-start;
   border-radius: 15px;
@@ -492,7 +493,7 @@ const CreditCardSection = styled.View`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 360px;
+  width: ${windowWidth - 32}px;
 `
 
 const CreditCardBox = styled.TouchableOpacity`
@@ -533,7 +534,7 @@ const CreditText = styled.Text`
 
 const CreditTotalPriceSection = styled.View`
   display: flex;
-  width: 360px;
+  width: 100%;
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
@@ -559,7 +560,7 @@ const PaymentWrapper = styled.View`
 const PaymentButton = styled.TouchableOpacity`
   display: flex;
   flex-direction: row;
-  width: 360px;
+  width: ${windowWidth - 32}px;
   height: 50px;
   justify-content: center;
   align-items: center;

@@ -7,8 +7,6 @@ import {WithLocalSvg} from "react-native-svg";
 import {getMenuInfo} from '../../utils/getMenuInfo'
 // styles
 import {
-    StoreTextBox,
-    StoreText,
     MenuTitleSection,
     MenuTitleBox,
     MenuTitleText,
@@ -56,24 +54,6 @@ export default function MenuComponent({storeIdx}) {
 
     return (
         <>
-            <StoreTextBox>
-                <StoreText numberOfLines={isExpanded ? undefined : 5}>
-                    매장 확장이전과 메뉴 개편으로 새롭게 출발합니다.
-                    칼국수 재료와 조개류도 업그레이드 되었어요.가격이상의 퀄리티와 맛으로 보답하겠습니다.
-                    매장 확장이전과 메뉴 개편으로 새롭게 출발합니다.
-                    칼국수 재료와 조개류 매장 확장이전과 메뉴 개편으로 새롭게 출발합니다.
-                    칼국수 재료와 조개류도 업그레이드 되었어요.가격이상의 퀄리티와 맛으로 보답하겠습니다.
-                    매장 확장이전과 메뉴 개편으로 새롭게 출발합니다.
-                    칼국수 재료와 조개류
-                </StoreText>
-                <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
-                    <WithLocalSvg
-                        style={{ transform: [{ rotate: isExpanded ? '180deg' : '0deg'}] }}
-                        width={24}
-                        height={22.75}
-                        asset={DownSVG} />
-                </TouchableOpacity>
-            </StoreTextBox>
             <MenuComponent2 menuList={menuState.mainMenuList} storeIdx={storeIdx} main={true}/>
             <MenuComponent2 menuList={menuState.sideMenuList} storeIdx={storeIdx} main={false}/>
         </>

@@ -1,29 +1,10 @@
 import styled from "styled-components/native";
-
-export const StoreTextBox = styled.View `
-  display: flex;
-  width: 360px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-`
-
-export const StoreText = styled.Text`
-  width: 100%;
-  margin-top: 20px;
-  color: #000;
-  font-family: "Pretendard-Regular";
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 25px; /* 156.25% */
-`
+import {windowWidth} from "../../../../utils/dimensions";
 
 export const MenuTitleSection = styled.View`  
   width: 100%;
   margin-top: ${({main}) => main ? '30px': 0};
-  padding: 7px 0 7px;
+  padding: 7px 16px 7px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -35,7 +16,7 @@ export const MenuTitleSection = styled.View`
 `
 
 export const MenuTitleBox = styled.View`
-  width: 360px;
+  width: 100%;
   padding: 0 10px;
   display: flex;
   flex-direction: row;
@@ -64,7 +45,9 @@ export const MenuWrapper = styled.View`
 `
 
 export const MenuSection = styled.View`
-    width: 360px;
+  width: ${windowWidth-32}px;
+  margin-left: 16px;
+  margin-right: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
