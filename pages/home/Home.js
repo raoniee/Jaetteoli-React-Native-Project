@@ -1,4 +1,4 @@
-import { StyleSheet, ImageBackground, View, Text } from "react-native";
+import { StyleSheet, ImageBackground, View, Text, StatusBar } from "react-native";
 import Button from "../../components/common/Button";
 import image from "../../assets/images/home_bg.png";
 import Color from "../../assets/colors/Color";
@@ -31,6 +31,7 @@ const Home = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle='light-content' />
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
         <View style={styles.imageDarker}>
           <View style={styles.textBtnWrapper}>
@@ -70,7 +71,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     backgroundColor: "rgba(0, 0, 0, 0.3)",
-    opacity: "30%",
     justifyContent: "center",
   },
   textBtnWrapper: {
