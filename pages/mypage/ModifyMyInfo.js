@@ -10,6 +10,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Close from '../../assets/images/Close';
 import Modal from 'react-native-modal';
 import Button from '../../components/common/Button';
+import { removeToken } from '../../utils/Cookie';
 
 const ModifyMyInfo = () => {
 
@@ -161,6 +162,11 @@ const ModifyMyInfo = () => {
         setLogoutModalVisible(false);
     };
 
+    const yesLogoutModal = async () => {
+        await removeToken()
+        navigation.popToTop()
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <Header title='내 정보 수정' />
@@ -241,6 +247,7 @@ const ModifyMyInfo = () => {
                                 </View>
                             </Pressable>
                             <Pressable
+                                onPress={yesLogoutModal}
                                 android_ripple={{ color: Color.lightPurple }}
                                 style={({ pressed }) => pressed && styles.pressedItem}
                             >
