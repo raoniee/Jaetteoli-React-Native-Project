@@ -1,4 +1,5 @@
-import {baseUrl, jwt} from "utils/baseUrl";
+import {baseUrl} from "utils/baseUrl";
+import {getToken} from "utils/Cookie";
 
 export const getMenuDetailInfo = async (todaymenuIdx, check = false) => {
     /*
@@ -7,6 +8,7 @@ export const getMenuDetailInfo = async (todaymenuIdx, check = false) => {
     * status: 2 => 매진X
     */
     const apiUrl = baseUrl+`/jat/app/menus/detail?todaymenuIdx=${todaymenuIdx}`;
+    const jwt = await getToken();
 
     const requestOptions = {
         method: 'GET',

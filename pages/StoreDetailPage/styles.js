@@ -36,6 +36,7 @@ export const StoreNameText = styled.Text`
   font-size: 24px;
   font-style: normal;
   font-weight: 600;
+  width: 215px;
 `
 
 export const StoreRatingSection = styled.View`
@@ -139,10 +140,11 @@ export const StoreMap = styled.View`
 `
 
 export const StoreAddressWrapper = styled.View`
-    width: 360px;
+  width: 360px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   margin-top: 17px;
 `
 
@@ -165,6 +167,7 @@ export const StoreAddressText = styled.Text`
   font-style: normal;
   font-weight: 500;
   line-height: 20px; /* 142.857% */
+  width: 290px;
 `
 
 export const StoreAddressCopyText = styled.Text`

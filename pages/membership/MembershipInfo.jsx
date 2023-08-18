@@ -84,7 +84,10 @@ export default function MembershipInfo({ navigation }) {
         );
         const data = await response.json();
         if (!data["isSuccess"]) {
-          console.log("");
+          if (data.result.validIdentify === 0) {
+            alert("인증번호를 다시 확인해주세요!");
+          }
+          //console.log(data.result.validIdentify);
           return;
         }
         const nextstep = () => {

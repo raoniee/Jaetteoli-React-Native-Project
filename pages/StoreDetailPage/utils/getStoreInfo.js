@@ -1,7 +1,10 @@
-import {baseUrl, jwt} from "utils/baseUrl";
+import {baseUrl} from "utils/baseUrl";
+import {getToken} from "utils/Cookie";
 
 export const getStoreInfo = async (storeIdx, userLocation) => {
     const apiUrl = baseUrl+`/jat/app/stores/info?storeIdx=${storeIdx}&longitude=${userLocation.longitude ? userLocation.longitude : 0}&latitude=${userLocation.latitude ? userLocation.latitude : 0}`;
+    const jwt = await getToken();
+
     const requestOptions = {
         method: 'GET',
         headers: {

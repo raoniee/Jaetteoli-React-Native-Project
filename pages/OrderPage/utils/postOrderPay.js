@@ -1,4 +1,5 @@
-import {baseUrl, jwt} from "utils/baseUrl";
+import {baseUrl} from "utils/baseUrl";
+import {getToken} from "utils/Cookie";
 
 export const postOrderPay = async (storeIdx, request, date) => {
     /*
@@ -8,6 +9,7 @@ export const postOrderPay = async (storeIdx, request, date) => {
     * */
 
     const apiUrl = baseUrl+"/jat/app/basket/order";
+    const jwt = await getToken();
 
     const requestOptions = {
         method: 'POST',

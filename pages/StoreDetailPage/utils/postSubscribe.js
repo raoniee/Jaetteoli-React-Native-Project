@@ -1,7 +1,10 @@
-import {baseUrl, jwt} from "utils/baseUrl";
+import {baseUrl} from "utils/baseUrl";
+import {getToken} from "utils/Cookie";
 
 export const postSubscribe = async (check, storeIdx) => {
     const apiUrl = baseUrl+`/jat/app/subscription`;
+    const jwt = await getToken();
+
     const requestOptions = {
         method: 'POST',
         headers: {

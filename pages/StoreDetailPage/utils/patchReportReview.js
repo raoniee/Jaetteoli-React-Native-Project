@@ -1,7 +1,9 @@
-import {baseUrl, jwt} from "utils/baseUrl";
+import {baseUrl} from "utils/baseUrl";
+import {getToken} from "utils/Cookie";
 
 export const patchReportReview = async (reviewIdx) => {
     const apiUrl = baseUrl + `/jat/app/reviews/report`;
+    const jwt = await getToken();
 
     const requestOptions = {
         method: 'PATCH',
