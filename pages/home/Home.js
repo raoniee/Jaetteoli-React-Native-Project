@@ -2,25 +2,11 @@ import { StyleSheet, ImageBackground, View, Text, StatusBar } from "react-native
 import Button from "../../components/common/Button";
 import image from "../../assets/images/home_bg.png";
 import Color from "../../assets/colors/Color";
-import { NavigationContainer } from "@react-navigation/native"; // 네비게이션 컨테이너
-import { createNativeStackNavigator } from "@react-navigation/native-stack"; // Stack 네비게이션
 import { getToken } from "../../utils/Cookie";
-import { useEffect, useState } from "react";
 
 const Home = ({ navigation }) => {
 
-  useEffect(() => {
-    const fetchToken = async () => {
-      const fetchedToken = await getToken();
-      console.log(fetchedToken)
-      setJwt(fetchedToken);
-    };
-
-    fetchToken();
-  }, []);
-
   const helloHandler = async() => {
-    console.log()
     const jwt = await getToken();
     if (jwt) {
       navigation.navigate("MainTabs");
