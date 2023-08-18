@@ -4,7 +4,8 @@ import {useEffect, useState} from "react";
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import { WithLocalSvg } from 'react-native-svg';
 // utils
-import {baseUrl, jwt} from "utils/baseUrl";
+import {baseUrl} from "utils/baseUrl";
+import {getToken} from "utils/Cookie"
 // styles
 import styled from 'styled-components/native';
 // images
@@ -70,8 +71,9 @@ export default function Header({ color, backgroundColor, title, left = 1, right 
 
 
 
-    const getData = () => {
-        const apiUrl = baseUrl+"/jat/app/basket/count";
+    const getData = async () => {
+        const apiUrl = baseUrl + "/jat/app/basket/count";
+        const jwt = await getToken();
 
         const requestOptions = {
             method: 'GET',
@@ -80,16 +82,18 @@ export default function Header({ color, backgroundColor, title, left = 1, right 
             },
         };
 
-        fetch(apiUrl, requestOptions)
-            .then(response => response.json())
-            .then(data => {
-                if (data.code === 1000)
-                    setNums(data.result.basketCount);
-            })
-            .catch(error => {
-                console.log('Error fetching data:', error);
-            })
+        try {
+            const response = await fetch(apiUrl, requestOptions);
+            const data = await response.json();
+
+            if (data.code === 1000) {
+                setNums(data.result.basketCount);
+            }
+        } catch (error) {
+            console.log('Error fetching data:', error);
+        }
     }
+
 
     return (
         <View style={{ position: 'relative', backgroundColor: backgroundColor ? backgroundColor : null}}>
