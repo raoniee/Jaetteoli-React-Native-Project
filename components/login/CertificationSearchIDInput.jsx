@@ -3,8 +3,11 @@ import Color from "../../assets/colors/Color";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { MembershipContext } from "../../context/MembershipContext";
 
-export default function CertificationInput(InfoType) {
-  const { takeCertificationNum, userInfo } = useContext(MembershipContext);
+export default function CertificationSearchIDInput({
+  takeresult,
+  name,
+  phonenum,
+}) {
   const [remainingTime, setRemainingTime] = useState(180); // 초기 제한 시간을 3분(180초)으로 설정
   const [timeEnd, setTimeEnd] = useState(false);
 
@@ -26,15 +29,14 @@ export default function CertificationInput(InfoType) {
     setRemainingTime(180);
 
     const requestBody = {
-      phoneNum: userInfo.phone,
-      name: userInfo.name,
-      birth: userInfo.birthday,
+      phoneNum: phonenum,
+      name: name,
     };
 
-    //console.log(requestBody);
+    console.log(requestBody);
     try {
       const response = await fetch(
-        "https://www.insung.shop/jat/app/users/authy",
+        "https://www.insung.shop/jat/app/users/uid-lost",
         {
           method: "POST",
           headers: {
@@ -62,21 +64,21 @@ export default function CertificationInput(InfoType) {
           placeholder="인증번호 입력"
           keyboardType="number-pad"
           returnKeyType="done"
-          onChangeText={(text) => takeCertificationNum(text)}
+          onChangeText={(text) => takeresult(text)}
         />
         <Text style={styles.timer}>
           {Math.floor(remainingTime / 60)}:
           {String(remainingTime % 60).padStart(2, "0")}
         </Text>
       </View>
-      <Text style={styles.resend} onPress={handleretry}>
-        인증번호 재전송
-      </Text>
       {timeEnd && (
         <Text style={styles.alert}>
           인증 시간이 만료되었습니다. 인증을 다시 진행해주세요.
         </Text>
       )}
+      <Text style={styles.resend} onPress={handleretry}>
+        인증번호 재전송
+      </Text>
     </>
   );
 }
@@ -107,8 +109,7 @@ const styles = StyleSheet.create({
   alert: {
     color: Color.red,
     paddingLeft: 20,
-    marginBottom: 50,
-    fontSize: 12,
+    marginBottom: 10,
   },
   resend: {
     width: "100%",
@@ -117,6 +118,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Color.gray,
     textDecorationLine: "underline",
-    marginBottom: 10,
+    marginBottom: 50,
   },
 });
