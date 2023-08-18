@@ -48,6 +48,7 @@ import { MembershipProvider } from "./context/MembershipContext";
 import NewPW from "./pages/accountsearch/NewPW";
 import Withdrawal from "./pages/mypage/Withdrawal";
 import DetailInfo from "./pages/termsOfService/DetailInfo";
+import TabBarHeart from './assets/images/TabBarHeart';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -168,6 +169,12 @@ function MainTabs() {
           position: "absolute",
           overflow: "visible",
           zIndex: 10,
+          height: 92,
+        },
+        tabBarLabelStyle: {
+          fontFamily: 'Pretendard-SemiBold',
+          fontSize: 11,
+          marginBottom: 5,
         },
         tabBarActiveTintColor: Color.darkPurple, // 탭이 활성화되었을 때 글자 색상
         tabBarInactiveTintColor: Color.gray, // 탭이 비활성화되었을 때 글자 색상
@@ -179,7 +186,7 @@ function MainTabs() {
         component={HomeStack}
         options={{
           tabBarIcon: ({ color, size }) => <HomeIcon stroke={color} />,
-        }}
+        }}n
       />
       <Tab.Screen
         name="검색"
@@ -202,9 +209,8 @@ function MainTabs() {
         name="구독"
         component={SubscribeStack}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="heart" color={color} size={size} />
-          ),
+          tabBarIcon: ({ color, size }) => 
+            <TabBarHeart stroke={color} />
         }}
       />
       <Tab.Screen
