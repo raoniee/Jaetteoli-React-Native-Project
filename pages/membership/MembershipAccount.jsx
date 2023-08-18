@@ -11,6 +11,7 @@ import {
   TouchableHighlight,
   Image,
   Dimensions,
+  StatusBar,
 } from "react-native";
 import Color from "../../assets/colors/Color";
 import Button from "../../components/common/Button";
@@ -85,6 +86,7 @@ export default function MembershipAccount({ navigation }) {
 
   return (
     <SafeAreaView style={styles.wrap}>
+      <StatusBar barStyle="dark-content" />
       <TopHeader
         title="기본정보"
         onPress={() => navigation.navigate("LoginStart")}

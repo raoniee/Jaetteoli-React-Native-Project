@@ -11,6 +11,7 @@ import {
   TouchableHighlight,
   Image,
   Dimensions,
+  StatusBar,
 } from "react-native";
 import Color from "../../assets/colors/Color";
 import { MembershipContext } from "../../context/MembershipContext";
@@ -85,7 +86,7 @@ export default function NewPW({ navigation }) {
           const truenextstep = () => navigation.navigate("TermsOfService");
           truenextstep();
         } else {
-          const falsenextstep = () => navigation.navigate("Main");
+          const falsenextstep = () => navigation.navigate("MainTabs");
           falsenextstep();
         }
       };
@@ -98,6 +99,7 @@ export default function NewPW({ navigation }) {
 
   return (
     <SafeAreaView style={styles.wrap}>
+      <StatusBar barStyle="dark-content" />
       <TopHeader
         title="아이디-비밀번호 찾기"
         onPress={() => navigation.navigate("LoginStart")}

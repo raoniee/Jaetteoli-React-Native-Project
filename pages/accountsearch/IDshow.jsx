@@ -11,6 +11,7 @@ import {
   TouchableHighlight,
   Image,
   Dimensions,
+  StatusBar,
 } from "react-native";
 import Color from "../../assets/colors/Color";
 import Button from "../../components/common/Button";
@@ -26,6 +27,7 @@ export default function IDshow({ navigation }) {
 
   return (
     <SafeAreaView style={styles.wrap}>
+      <StatusBar barStyle="dark-content" />
       <TopHeader
         title="아이디-비밀번호 찾기"
         onPress={() => navigation.navigate("LoginStart")}

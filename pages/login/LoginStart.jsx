@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   TouchableHighlight,
   Image,
+  StatusBar,
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native"; // 네비게이션 컨테이너
 import { createNativeStackNavigator } from "@react-navigation/native-stack"; // Stack 네비게이션
@@ -18,7 +19,13 @@ import Color from "../../assets/colors/Color";
 import logo from "../../assets/images/logo.png";
 import GoMembership from "../../components/login/GoMembership";
 import Check from "../../assets/images/Check";
-import { getToken, setToken, setUserID, getUserID } from "../../utils/Cookie";
+import {
+  getToken,
+  setToken,
+  setUserID,
+  getUserID,
+  removeUserID,
+} from "../../utils/Cookie";
 import * as Location from "expo-location";
 import { MembershipContext } from "../../context/MembershipContext";
 import { useEffect } from "react";
@@ -28,14 +35,13 @@ export default function LoginStart({ navigation }) {
   const [inputPW, setInputPW] = useState("");
   const [saveId, SetSaveId] = useState(false);
 
-  // useEffect(async () => {
-  //   const savedvalue = await getUserID();
-  //   if (savedvalue) {
-  //     SetSaveId(true);
-  //   } else {
-  //     SetSaveId(false);
-  //   }
-  // }, []);
+  const GetID = async () => {
+    setInputID(await getUserID());
+  };
+
+  useEffect(() => {
+    GetID();
+  }, []);
 
   const handleSaveId = () => SetSaveId((prev) => !prev);
 
@@ -77,6 +83,8 @@ export default function LoginStart({ navigation }) {
       setToken(loginSuccess.jwt);
       if (saveId) {
         setUserID(inputID);
+      } else {
+        removeUserID();
       }
       //console.log(loginSuccess);
       //console.log("jwt저장확인용", await getToken());
@@ -103,6 +111,7 @@ export default function LoginStart({ navigation }) {
 
   return (
     <SafeAreaView style={styles.wrap}>
+      <StatusBar barStyle="dark-content" />
       <View style={styles.container}>
         <Image style={styles.logo} source={logo} />
         <TextInput
@@ -112,7 +121,7 @@ export default function LoginStart({ navigation }) {
           keyboardType="ascii-capable"
           returnKeyType="done"
           onChangeText={(text) => setInputID(text)}
-          //value=""
+          value={inputID}
         />
         <TextInput
           style={styles.pw_input}
