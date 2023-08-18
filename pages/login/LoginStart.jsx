@@ -50,7 +50,7 @@ export default function LoginStart({ navigation }) {
       password: inputPW,
     };
 
-    console.log(requestBody);
+    //console.log(requestBody);
     try {
       const response = await fetch(
         "https://www.insung.shop/jat/app/users/login",
@@ -65,8 +65,11 @@ export default function LoginStart({ navigation }) {
 
       const data = await response.json();
       if (!data["isSuccess"]) {
-        console.log(data["code"]);
-        console.log(data["message"]);
+        //console.log(data["code"]);
+        //console.log(data["message"]);
+        if (data["code"] === 2000) {
+          alert("아이디 또는 비밀번호를 확인해주세요!");
+        }
         return;
       }
       const loginSuccess = data["result"];
@@ -75,9 +78,9 @@ export default function LoginStart({ navigation }) {
       if (saveId) {
         setUserID(inputID);
       }
-      console.log(loginSuccess);
-      console.log("jwt저장확인용", await getToken());
-      console.log("아이디저장확인용", await getUserID());
+      //console.log(loginSuccess);
+      //console.log("jwt저장확인용", await getToken());
+      //console.log("아이디저장확인용", await getUserID());
 
       const fetchCurrentLocationAndAddress = async () => {
         const { status } = await Location.requestForegroundPermissionsAsync();

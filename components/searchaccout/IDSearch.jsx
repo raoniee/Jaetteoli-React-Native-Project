@@ -14,7 +14,7 @@ import {
 import Color from "../../assets/colors/Color";
 import { MembershipContext } from "../../context/MembershipContext";
 import Button from "../common/Button";
-import CertificationSearchInput from "../login/CertificationSearchInput";
+import CertificationSearchIDInput from "../login/CertificationSearchIDInput";
 import SearchLoginInput from "../login/SearchLoginInput";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HIGHT } = Dimensions.get("window");
@@ -57,7 +57,7 @@ export default function IDSearch({ navigation }) {
         name: form.inputName,
       };
 
-      console.log(requestBody);
+      //console.log(requestBody);
       try {
         const response = await fetch(
           "https://www.insung.shop/jat/app/users/uid-lost",
@@ -86,7 +86,6 @@ export default function IDSearch({ navigation }) {
         name: form.inputName,
         certificationNum: form.inputCertificationnum,
       };
-      console.log(requestBody);
 
       try {
         const response = await fetch(
@@ -102,7 +101,7 @@ export default function IDSearch({ navigation }) {
         const data = await response.json();
         setSearchID(data.result);
         if (!data["isSuccess"]) {
-          console.log("");
+          alert("인증번호를 다시 확인해주세요!");
           return;
         }
         const nextstep = () => {
@@ -153,7 +152,11 @@ export default function IDSearch({ navigation }) {
           alerttext="휴대폰 번호(01012345678)의 형식이 맞지 않습니다."
         />
         {getnumber && (
-          <CertificationSearchInput takeresult={takeCertificationNum} />
+          <CertificationSearchIDInput
+            takeresult={takeCertificationNum}
+            phonenum={form.inputPhonenum}
+            name={form.inputName}
+          />
         )}
       </View>
       {!getnumber && (
