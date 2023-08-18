@@ -12,7 +12,7 @@ import {useRoute} from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { basketAddAction } from "store/basketAdd";
 // utils
-import {statusBarHeight, totalHeight} from 'utils/dimensions'
+import {statusBarHeight, totalHeight, windowHeight, windowWidth} from 'utils/dimensions'
 import {multiApiAddBasket} from "./utils/multiApiAddBasket";
 import {getMenuDetailInfo} from "./utils/getMenuDetailInfo";
 import {postAddBasket} from "./utils/postAddBasket";
@@ -28,6 +28,7 @@ import WarningSVG from 'assets/images/warning.svg';
 import CustomModaless from "components/Heo/modal/CustomModaless";
 import CustomModal from "components/Heo/modal/CustomModal";
 import Header from 'components/common/Header';
+import {LinearGradient} from "expo-linear-gradient";
 
 
 export default function MenuDetailPage({ navigation }) {
@@ -112,100 +113,108 @@ export default function MenuDetailPage({ navigation }) {
 
             <FoodImg resizeMode="cover" source={{uri: menuState.menuUrl}} />
             <Header
+                statusBar='white'
                 color="white"
                 navigation={navigation}/>
-            <Container showsVerticalScrollIndicator={false}>
-                <MenuContainer>
-                    <View>
-                        <MenuInfoWrapper>
-                            <MenuTitleSection>
-                                <MenuTitleText1>
-                                    {menuState.menuName}
-                                </MenuTitleText1>
-                                <MenuTitleText2>
-                                    {menuState.composition}
-                                </MenuTitleText2>
-                            </MenuTitleSection>
-                            <MenuDescriptionText numberOfLines={isExpanded ? undefined : 2}>
-                                {menuState.description}
-                            </MenuDescriptionText>
-                            <MenuDescriptionButton onPress={() => setIsExpanded(!isExpanded)}>
+            <MenuContainer>
+                <Container showsVerticalScrollIndicator={false}>
+                    <MenuInfoWrapper>
+                        <MenuTitleSection>
+                            <MenuTitleText1>
+                                {menuState.menuName}
+                            </MenuTitleText1>
+                            <MenuTitleText2>
+                                {menuState.composition}
+                            </MenuTitleText2>
+                        </MenuTitleSection>
+                        <MenuDescriptionText numberOfLines={isExpanded ? undefined : 2}>
+                            {menuState.description}
+                        </MenuDescriptionText>
+                        <MenuDescriptionButton onPress={() => setIsExpanded(!isExpanded)}>
+                            <WithLocalSvg
+                                style={{ transform: [{ rotate: isExpanded ? '180deg' : '0deg'}] }}
+                                width={24}
+                                height={22.75}
+                                asset={DownSVG} />
+                        </MenuDescriptionButton>
+                        <QuantityLeftSection>
+                            <WithLocalSvg
+                                width={13.5}
+                                height={13.5}
+                                asset={WarningSVG} />
+                            <QuantityLeftText>
+                                {`재고 ${menuState.remain}개`}
+                            </QuantityLeftText>
+                        </QuantityLeftSection>
+                    </MenuInfoWrapper>
+                    <MenuPriceWrapper>
+                        <MenuPriceText>
+                            가격
+                        </MenuPriceText>
+                        <MenuPriceSection>
+                            <OriginalPriceSection>
+                                <OriginalPriceText>
+                                    {menuState.originPrice.toLocaleString()}원
+                                </OriginalPriceText>
+                                <DiscountRateText>
+                                    {menuState.discount} %
+                                </DiscountRateText>
+                            </OriginalPriceSection>
+                            <WithLocalSvg
+                                width={24}
+                                height={22.75}
+                                asset={ArrowRightSVG} />
+                            <DiscountPriceText>
+                                {menuState.todayPrice.toLocaleString()}원
+                            </DiscountPriceText>
+                        </MenuPriceSection>
+                    </MenuPriceWrapper>
+                    <MenuQuantityWrapper>
+                        <MenuQuantityText>
+                            수량
+                        </MenuQuantityText>
+                        <MenuQuantitySection>
+                            <TouchableOpacity onPress={() => {
+                                if (quantity > 1)
+                                    setQuantity(quantity-1)
+                            }}>
                                 <WithLocalSvg
-                                    style={{ transform: [{ rotate: isExpanded ? '180deg' : '0deg'}] }}
-                                    width={24}
-                                    height={22.75}
-                                    asset={DownSVG} />
-                            </MenuDescriptionButton>
-                            <QuantityLeftSection>
+                                    width={22}
+                                    height={20}
+                                    asset={MinusSVG} />
+                            </TouchableOpacity>
+                            <MenuQuantityText2>
+                                {quantity}개
+                            </MenuQuantityText2>
+                            <TouchableOpacity onPress={() => {
+                                if (quantity < menuState.remain)
+                                    setQuantity(quantity + 1)
+                            }}>
                                 <WithLocalSvg
-                                    width={13.5}
-                                    height={13.5}
-                                    asset={WarningSVG} />
-                                <QuantityLeftText>
-                                    {`재고 ${menuState.remain}개`}
-                                </QuantityLeftText>
-                            </QuantityLeftSection>
-                        </MenuInfoWrapper>
-                        <MenuPriceWrapper>
-                            <MenuPriceText>
-                                가격
-                            </MenuPriceText>
-                            <MenuPriceSection>
-                                <OriginalPriceSection>
-                                    <OriginalPriceText>
-                                        {menuState.originPrice.toLocaleString()}원
-                                    </OriginalPriceText>
-                                    <DiscountRateText>
-                                        {menuState.discount} %
-                                    </DiscountRateText>
-                                </OriginalPriceSection>
-                                <WithLocalSvg
-                                    width={24}
-                                    height={22.75}
-                                    asset={ArrowRightSVG} />
-                                <DiscountPriceText>
-                                    {menuState.todayPrice.toLocaleString()}원
-                                </DiscountPriceText>
-                            </MenuPriceSection>
-                        </MenuPriceWrapper>
-                        <MenuQuantityWrapper>
-                            <MenuQuantityText>
-                                수량
-                            </MenuQuantityText>
-                            <MenuQuantitySection>
-                                <TouchableOpacity onPress={() => {
-                                    if (quantity > 1)
-                                        setQuantity(quantity-1)
-                                }}>
-                                    <WithLocalSvg
-                                        width={22}
-                                        height={20}
-                                        asset={MinusSVG} />
-                                </TouchableOpacity>
-                                <MenuQuantityText2>
-                                    {quantity}개
-                                </MenuQuantityText2>
-                                <TouchableOpacity onPress={() => {
-                                    if (quantity < menuState.remain)
-                                        setQuantity(quantity + 1)
-                                }}>
-                                    <WithLocalSvg
-                                        width={22}
-                                        height={20}
-                                        asset={PlusSVG} />
-                                </TouchableOpacity>
-                            </MenuQuantitySection>
-                        </MenuQuantityWrapper>
-                    </View>
-                    <MenuOrderWrapper>
-                        <MenuOrderButton onPress={() => handleAddBasket()}>
-                            <MenuOrderText>
-                                {(menuState.todayPrice * quantity).toLocaleString()}원 담기
-                            </MenuOrderText>
-                        </MenuOrderButton>
-                    </MenuOrderWrapper>
-                </MenuContainer>
-            </Container>
+                                    width={22}
+                                    height={20}
+                                    asset={PlusSVG} />
+                            </TouchableOpacity>
+                        </MenuQuantitySection>
+                    </MenuQuantityWrapper>
+                </Container>
+                <LinearGradient
+                    colors={['rgba(255,255,255,1)', 'rgba(255,255,255,0)']}
+                    style={{position: 'absolute', top: 0, left: 0, right: 0, height: 30}}
+                />
+                <LinearGradient
+                    colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
+                    style={{position: 'absolute', bottom: 130, left: 0, right: 0, height: 30}}
+                />
+                <MenuOrderWrapper>
+                    <MenuOrderButton onPress={() => handleAddBasket()}>
+                        <MenuOrderText>
+                            {(menuState.todayPrice * quantity).toLocaleString()}원 담기
+                        </MenuOrderText>
+                    </MenuOrderButton>
+                </MenuOrderWrapper>
+            </MenuContainer>
+
 
             <CustomModal isVisible={visibleModal}>
                 <ModalWrapper>
@@ -263,34 +272,37 @@ const FoodImg = styled.Image`
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 333px;
-`
-
-const Container = styled.ScrollView`
-  position: absolute;
-  top: ${Platform.OS === 'ios' ? 227 + statusBarHeight : 227}px;
-  left: 0;
-  width: 100%;
-  height: ${totalHeight - 227}px;
-  border-radius: 30px 30px 0 0;
-  background: white;
+  width: ${windowWidth}px;
+  height: ${windowWidth * 0.7}px;
 `
 
 const MenuContainer = styled.View`
+  background: white;
+  border-radius: 30px 30px 0 0;
+  position: absolute;
+  top: ${windowWidth * 0.7 - 30}px;
+  left: 0;
+  overflow: hidden;
+  
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  width: ${windowWidth}px;
+  padding: 0 16px;
+  height: ${windowHeight - (windowWidth * 0.7 - 30)}px;
+`
+
+const Container = styled.ScrollView`
+  flex: 1;
   width: 100%;
-  min-height: 100%;
 `
 
 const MenuInfoWrapper = styled.View`
   position: relative;
-  width: 360px;
   display: flex;
-  padding: 30px 0 25px 0;
+  padding-top: 30px;
+  padding-bottom: 25px;
   flex-direction: column;
   align-items: flex-start;
   gap: 20px;
@@ -322,6 +334,8 @@ const MenuTitleSection = styled.View`
   justify-content: flex-start;
   align-items: flex-start;
   gap: 5px;
+  width: 100%;
+  width: ${windowWidth - 32 - 90}px;
 `
 
 const MenuTitleText1 = styled.Text`
@@ -331,7 +345,7 @@ const MenuTitleText1 = styled.Text`
   font-style: normal;
   font-weight: 600;
   display: flex;
-  width: 280px;
+  width: 100%;
 `
 
 const MenuTitleText2 = styled.Text`
@@ -362,7 +376,6 @@ const MenuDescriptionButton = styled.TouchableOpacity`
 
 const MenuPriceWrapper = styled.View`
   box-sizing: border-box;
-  width: 360px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -428,7 +441,6 @@ const DiscountPriceText = styled.Text`
 
 
 const MenuQuantityWrapper = styled.View`
-  width: 360px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -452,6 +464,7 @@ const MenuQuantitySection = styled.View`
   padding:0 22px;
   gap: 40px;
   border-radius: 15px;
+  margin-bottom: 30px;
   background: #F8F8F8;
 `
 
@@ -465,13 +478,13 @@ const MenuQuantityText2 = styled.Text`
 `
 
 const MenuOrderWrapper = styled.View`
-    padding: 40px 0;
+  padding: 40px 0;
+  width: 100%;
 `
 
 const MenuOrderButton = styled.TouchableOpacity`
   display: flex;
   flex-direction: row;
-  width: 360px;
   height: 50px;
   justify-content: center;
   align-items: center;

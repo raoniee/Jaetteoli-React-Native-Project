@@ -1,9 +1,10 @@
 import styled from "styled-components/native";
+import {totalHeight, windowWidth} from "../../utils/dimensions";
 
 export const Container = styled.FlatList`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: ${totalHeight-44}px;
 `
 
 export const StoreDetailWrapper = styled.View`
@@ -14,11 +15,11 @@ export const StoreDetailWrapper = styled.View`
 `
 
 export const StoreInformationSection = styled.View`
-width: 360px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 41px 10px 0;
+  padding: 41px 26px 0;
+  width: 100%;
 `
 
 export const StoreNameSection = styled.View`
@@ -35,7 +36,7 @@ export const StoreNameText = styled.Text`
   font-size: 24px;
   font-style: normal;
   font-weight: 600;
-  width: 215px;
+  width: ${windowWidth - 52 - 121}px;
 `
 
 export const StoreRatingSection = styled.View`
@@ -96,17 +97,16 @@ export const StoreWantedText = styled.Text`
 `
 
 export const StoreInformationSection2 = styled.View`
-width: 360px;
   flex-direction: row;
-  padding: 32px 0 5px;
-  gap: 60px;
+  padding: 32px 56px 5px;
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: flex-start;
 `
 
 export const StoreInformationTouch = styled.TouchableOpacity`
-    display: flex;
+  display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
@@ -131,15 +131,20 @@ export const StoreInformationTouchText = styled.Text`
 `
 
 export const StoreMap = styled.View`
-  width: 360px;
+  width: ${windowWidth-32}px;
+  margin-left: 16px;
+  margin-right: 16px;
   height: 134px;
   border-radius: 20px;
   border: 1px solid #AAA;
   margin-top: 20px;
+  overflow: hidden;
 `
 
 export const StoreAddressWrapper = styled.View`
-  width: 360px;
+  width: ${windowWidth-32}px;
+  margin-left: 16px;
+  margin-right: 16px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -152,10 +157,11 @@ export const StoreAddressSection = styled.View`
   flex-direction: row;
   align-items: flex-start;
   gap: 5px;
+  width: ${windowWidth - 32 - 50}px;
 `
 
 export const StoreAddressTextBox = styled.View`
-display: flex;
+  display: flex;
   flex-direction: column;
 `
 
@@ -180,7 +186,9 @@ export const StoreAddressCopyText = styled.Text`
 `
 
 export const NavigationBar = styled.View`
-  width: 360px;
+  width: ${windowWidth-32}px;
+  margin-left: 16px;
+  margin-right: 16px;
   margin-top: 50px;
   display: flex;
   flex-direction: row;

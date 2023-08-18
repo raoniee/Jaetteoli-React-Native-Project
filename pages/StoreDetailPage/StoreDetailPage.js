@@ -37,7 +37,6 @@ export default function StoreDetailPage({navigation}) {
         detailIngredientInfo: null,
         subscribeCheck: null
     });
-    const [ selected, setSelected ] = useState(1);
     const dispatch = useDispatch()
     const basketAdd = useSelector(({basketAdd}) => basketAdd.add)
     const userLocation = useSelector(({myAddress}) => myAddress)
@@ -81,34 +80,7 @@ export default function StoreDetailPage({navigation}) {
                                     </Styles.StoreRatingText>
                                 </Styles.StoreRatingSection>
                             </Styles.StoreNameSection>
-                            <TouchableWithoutFeedback onPress={() => {
-                                const temp = { ...storeState };
-                                if (temp.subscribeCheck){
-                                    temp.subscribeCheck = !temp.subscribeCheck;
-                                    temp.subscribeCount--;
-                                    postSubscribe(0, storeIdx)
-                                }
-                                else{
-                                    temp.subscribeCheck = !temp.subscribeCheck;
-                                    temp.subscribeCount++;
-                                    postSubscribe(1, storeIdx)
-                                }
-                                setStoreState(temp);
-                            }}>
-                                <Styles.StoreWantedBox>
-                                    <Svg width="22" height="23" viewBox="0 0 22 23" fill={storeState.subscribeCheck ? '#8377E9' : 'none'}>
-                                        <Path
-                                            d="M11.0134 3.6265C4.89497 -3.59166 -2.89207 5.59509 3.22632 12.8132L11.0134 22L18.8004 12.8132C24.8721 5.65021 17.085 -3.53654 11.0134 3.6265Z"
-                                            stroke="#8377E9"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"/>
-                                    </Svg>
-                                    <Styles.StoreWantedText>
-                                        {storeState.subscribeCount}
-                                    </Styles.StoreWantedText>
-                                </Styles.StoreWantedBox>
-                            </TouchableWithoutFeedback>
+                            <SubscribeBox storeIdx={storeIdx} subscribe={storeState.subscribeCheck} subscribeCount={storeState.subscribeCount}/>
                         </Styles.StoreInformationSection>
                         <Styles.StoreInformationSection2>
                             <Styles.StoreInformationTouch onPress={async () => {
@@ -218,29 +190,7 @@ export default function StoreDetailPage({navigation}) {
                                 </Styles.StoreAddressCopyText>
                             </TouchableOpacity>
                         </Styles.StoreAddressWrapper>
-                        <Styles.NavigationBar>
-                            <Styles.MenuBox onPress={() => setSelected(1)}>
-                                <Styles.MenuText selected={selected === 1}>
-                                    메뉴
-                                </Styles.MenuText>
-                                {selected === 1 && <Styles.Line />}
-                            </Styles.MenuBox>
-                            <Styles.MenuBox onPress={() => setSelected(2)}>
-                                <Styles.MenuText selected={selected === 2}>
-                                    정보
-                                </Styles.MenuText>
-                                {selected === 2 && <Styles.Line />}
-                            </Styles.MenuBox>
-                            <Styles.MenuBox onPress={() => setSelected(3)}>
-                                <Styles.MenuText selected={selected === 3}>
-                                    리뷰
-                                </Styles.MenuText>
-                                {selected === 3 && <Styles.Line />}
-                            </Styles.MenuBox>
-                        </Styles.NavigationBar>
-                        {selected === 1 && <MenuComponent storeIdx={storeIdx}/>}
-                        {selected === 2 && <InfoComponent storeIdx={storeIdx}/>}
-                        {selected === 3 && <ReviewComponent storeIdx={storeIdx}/>}
+                        <NavigationBox storeIdx={storeIdx} />
                     </Styles.StoreDetailWrapper>
                 )}/>
 
@@ -250,6 +200,45 @@ export default function StoreDetailPage({navigation}) {
                 text='장바구니에 메뉴를 추가했습니다.'/>
 
         </SafeAreaView>
+    )
+}
+
+function SubscribeBox({storeIdx, subscribe, subscribeCount}) {
+    const [subscribeState, setSubscribeState] = useState(0);
+    const [subscribeCountState, setsSubscribeCountState] = useState(0);
+
+    useEffect(() => {
+        setSubscribeState(subscribe);
+        setsSubscribeCountState(subscribeCount)
+    }, [subscribe, subscribeCount])
+
+    return (
+
+        <TouchableWithoutFeedback onPress={() => {
+            if (subscribeState){
+                setsSubscribeCountState(subscribeCountState-1);
+                postSubscribe(0, storeIdx)
+            }
+            else{
+                setsSubscribeCountState(subscribeCountState+1);
+                postSubscribe(1, storeIdx)
+            }
+            setSubscribeState(!subscribeState);
+        }}>
+            <Styles.StoreWantedBox>
+                <Svg width="22" height="23" viewBox="0 0 22 23" fill={subscribeState ? '#8377E9' : 'none'}>
+                    <Path
+                        d="M11.0134 3.6265C4.89497 -3.59166 -2.89207 5.59509 3.22632 12.8132L11.0134 22L18.8004 12.8132C24.8721 5.65021 17.085 -3.53654 11.0134 3.6265Z"
+                        stroke="#8377E9"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"/>
+                </Svg>
+                <Styles.StoreWantedText>
+                    {subscribeCountState}
+                </Styles.StoreWantedText>
+            </Styles.StoreWantedBox>
+        </TouchableWithoutFeedback>
     )
 }
 
@@ -281,4 +270,36 @@ function StarBox({seq, score}) {
         </Styles.EmptyView>
     )
 
+}
+
+function NavigationBox({storeIdx}) {
+    const [selected, setSelected] = useState(1);
+
+    return (
+        <>
+            <Styles.NavigationBar>
+                <Styles.MenuBox onPress={() => setSelected(1)}>
+                    <Styles.MenuText selected={selected === 1}>
+                        메뉴
+                    </Styles.MenuText>
+                    {selected === 1 && <Styles.Line />}
+                </Styles.MenuBox>
+                <Styles.MenuBox onPress={() => setSelected(2)}>
+                    <Styles.MenuText selected={selected === 2}>
+                        정보
+                    </Styles.MenuText>
+                    {selected === 2 && <Styles.Line />}
+                </Styles.MenuBox>
+                <Styles.MenuBox onPress={() => setSelected(3)}>
+                    <Styles.MenuText selected={selected === 3}>
+                        리뷰
+                    </Styles.MenuText>
+                    {selected === 3 && <Styles.Line />}
+                </Styles.MenuBox>
+            </Styles.NavigationBar>
+            {selected === 1 && <MenuComponent storeIdx={storeIdx}/>}
+            {selected === 2 && <InfoComponent storeIdx={storeIdx}/>}
+            {selected === 3 && <ReviewComponent storeIdx={storeIdx}/>}
+        </>
+    )
 }

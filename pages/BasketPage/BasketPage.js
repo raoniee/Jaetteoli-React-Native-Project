@@ -1,5 +1,6 @@
 // react-native, expo
 import React, {useEffect, useState} from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
 import {useIsFocused} from "@react-navigation/native";
 import {
     TouchableOpacity,
@@ -99,8 +100,8 @@ export default function BasketPage({ navigation }) {
             <Header
                 title='장바구니'
                 backgroundColor='white'/>
-            <ContainerScrollView showsVerticalScrollIndicator={false}>
-                <Container>
+            <Container>
+                <ContainerScrollView showsVerticalScrollIndicator={false} >
                     <CartContainer>
                         <ShopWrapper>
                             <TouchableWithoutFeedback onPress={() => navigation.navigate('StoreDetailPage', {storeIdx: basketState.storeIdx})}>
@@ -119,13 +120,11 @@ export default function BasketPage({ navigation }) {
                                         <TouchableWithoutFeedback
                                             key={items.basketIdx}
                                             onPress={() => navigation.navigate('MenuDetailPage', {
-                                            storeIdx: items.storeIdx,
-                                            menuIdx: items.todaymenuIdx,
-                                        })}>
+                                                storeIdx: items.storeIdx,
+                                                menuIdx: items.todaymenuIdx,
+                                            })}>
                                             <MenuWrapper>
                                                 <CancelTouch onPress={() => {
-                                                    const basketList = basketState.basketItems.filter(item => item.basketIdx !== items.basketIdx)
-                                                    //setBasketState({...basketState, basketItems: basketList})
                                                     handleModifyBasket(items.basketIdx, 0, 'remove')
                                                 }}>
                                                     <WithLocalSvg
@@ -134,61 +133,61 @@ export default function BasketPage({ navigation }) {
                                                         asset={CancelSVG} />
                                                 </CancelTouch>
                                                 <MenuImage resizeMode="cover" source={{uri: items.menuUrl}} />
-                                                    <MenuSection>
-                                                        <MenuTitle>
-                                                            {items.menuName}
-                                                        </MenuTitle>
-                                                        <OriginalPriceSection>
-                                                            <OriginalPriceText>
-                                                                {items.price.toLocaleString() + '원'}
-                                                            </OriginalPriceText>
-                                                            <DiscountRate>
-                                                                {items.discount.toString() + ' %'}
-                                                            </DiscountRate>
-                                                        </OriginalPriceSection>
-                                                        <DiscountSection>
-                                                            <WithLocalSvg
-                                                                width={24}
-                                                                height={22.75}
-                                                                asset={ArrowRightSVG} />
-                                                            <DiscountPriceText>
-                                                                {items.todayPrice.toLocaleString() + '원'}
-                                                            </DiscountPriceText>
-                                                        </DiscountSection>
-                                                        <TouchableWithoutFeedback>
-                                                            <QuantitySection>
-                                                                <TouchableOpacity onPress={() => {
-                                                                    const temp = { ...basketState };
-                                                                    if (temp.basketItems[index].count > 1){
-                                                                        temp.basketItems[index].count--;
-                                                                        handleModifyBasket(items.basketIdx, 0, 'count')
-                                                                        setBasketState(temp)
-                                                                    }
-                                                                }}>
-                                                                    <WithLocalSvg
-                                                                        width={22}
-                                                                        height={20}
-                                                                        asset={MinusSVG} />
-                                                                </TouchableOpacity>
-                                                                <QuantityText>
-                                                                    {items.count.toString()+ '개'}
-                                                                </QuantityText>
-                                                                <TouchableOpacity onPress={() => {
-                                                                    const temp = { ...basketState };
-                                                                    if (temp.basketItems[index].count < 99){
-                                                                        temp.basketItems[index].count++;
-                                                                        handleModifyBasket(items.basketIdx, 1, 'count')
-                                                                        setBasketState(temp)
-                                                                    }
-                                                                }}>
-                                                                    <WithLocalSvg
-                                                                        width={22}
-                                                                        height={20}
-                                                                        asset={PlusSVG} />
-                                                                </TouchableOpacity>
-                                                            </QuantitySection>
-                                                        </TouchableWithoutFeedback>
-                                                    </MenuSection>
+                                                <MenuSection>
+                                                    <MenuTitle>
+                                                        {items.menuName}
+                                                    </MenuTitle>
+                                                    <OriginalPriceSection>
+                                                        <OriginalPriceText>
+                                                            {items.price.toLocaleString() + '원'}
+                                                        </OriginalPriceText>
+                                                        <DiscountRate>
+                                                            {items.discount.toString() + ' %'}
+                                                        </DiscountRate>
+                                                    </OriginalPriceSection>
+                                                    <DiscountSection>
+                                                        <WithLocalSvg
+                                                            width={24}
+                                                            height={22.75}
+                                                            asset={ArrowRightSVG} />
+                                                        <DiscountPriceText>
+                                                            {items.todayPrice.toLocaleString() + '원'}
+                                                        </DiscountPriceText>
+                                                    </DiscountSection>
+                                                    <TouchableWithoutFeedback>
+                                                        <QuantitySection>
+                                                            <TouchableOpacity onPress={() => {
+                                                                const temp = { ...basketState };
+                                                                if (temp.basketItems[index].count > 1){
+                                                                    temp.basketItems[index].count--;
+                                                                    handleModifyBasket(items.basketIdx, 0, 'count')
+                                                                    setBasketState(temp)
+                                                                }
+                                                            }}>
+                                                                <WithLocalSvg
+                                                                    width={22}
+                                                                    height={20}
+                                                                    asset={MinusSVG} />
+                                                            </TouchableOpacity>
+                                                            <QuantityText>
+                                                                {items.count.toString()+ '개'}
+                                                            </QuantityText>
+                                                            <TouchableOpacity onPress={() => {
+                                                                const temp = { ...basketState };
+                                                                if (temp.basketItems[index].count < 99){
+                                                                    temp.basketItems[index].count++;
+                                                                    handleModifyBasket(items.basketIdx, 1, 'count')
+                                                                    setBasketState(temp)
+                                                                }
+                                                            }}>
+                                                                <WithLocalSvg
+                                                                    width={22}
+                                                                    height={20}
+                                                                    asset={PlusSVG} />
+                                                            </TouchableOpacity>
+                                                        </QuantitySection>
+                                                    </TouchableWithoutFeedback>
+                                                </MenuSection>
                                             </MenuWrapper>
                                         </TouchableWithoutFeedback>
                                     )
@@ -196,26 +195,35 @@ export default function BasketPage({ navigation }) {
                             }
                         </MenuContainer>
                     </CartContainer>
-                    <CartOrderWrapper>
-                        <CartOrderButton onPress={checkConnection}>
-                            <CartOrderText>
-                                주문하기
-                            </CartOrderText>
-                        </CartOrderButton>
-                        <CartQuantitySection>
-                            <CartQuantityText>
-                                담은 갯수 : {basketState.totalMenuCount}개
-                            </CartQuantityText>
-                            <CartQuantityText>
-                                /
-                            </CartQuantityText>
-                            <CartTotalPriceText>
-                                총 {basketState.totalMenuPrice.toLocaleString()}원
-                            </CartTotalPriceText>
-                        </CartQuantitySection>
-                    </CartOrderWrapper>
-                </Container>
-            </ContainerScrollView>
+                </ContainerScrollView>
+                <LinearGradient
+                    colors={['rgba(255,255,255,1)', 'rgba(255,255,255,0)']}
+                    style={{position: 'absolute', top: 0, left: 0, right: 0, height: 20}}
+                />
+                <LinearGradient
+                    colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
+                    style={{position: 'absolute', bottom: 140, left: 0, right: 0, height: 20}}
+                />
+                <CartOrderWrapper>
+                    <CartOrderButton onPress={checkConnection}>
+                        <CartOrderText>
+                            주문하기
+                        </CartOrderText>
+                    </CartOrderButton>
+                    <CartQuantitySection>
+                        <CartQuantityText>
+                            담은 갯수 : {basketState.totalMenuCount}개
+                        </CartQuantityText>
+                        <CartQuantityText>
+                            /
+                        </CartQuantityText>
+                        <CartTotalPriceText>
+                            총 {basketState.totalMenuPrice.toLocaleString()}원
+                        </CartTotalPriceText>
+                    </CartQuantitySection>
+                </CartOrderWrapper>
+            </Container>
+
 
             <CustomModal
                 isVisible={visibleModal}
@@ -233,7 +241,6 @@ export default function BasketPage({ navigation }) {
                     </TouchableOpacity>
                 </DisconnectedWrapper>
             </CustomModal>
-
             <CustomModaless
                 isVisible={visibleModaless}
                 setVisible={() => setVisibleModaless(false)}
@@ -242,28 +249,27 @@ export default function BasketPage({ navigation }) {
     )
 }
 
-const ContainerScrollView = styled.ScrollView`
-  background: #FFF;
-  height: ${totalHeight-44}px;
-`
-
 const Container = styled.View`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 100%;
+  height: ${totalHeight-44}px;
+`
+
+const ContainerScrollView = styled.ScrollView`
+  background: #FFF;
+  flex: 1;
 `
 
 const CartContainer = styled.View`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 `
 
 const ShopWrapper = styled.View`
   display: flex;
-  width: 360px;
-  margin: 18px 0 22px;
+  margin: 18px 16px 22px;
   flex-direction: row;
   justify-content: flex-start;
 `
@@ -295,6 +301,8 @@ const MenuContainer = styled.View`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
+  padding: 0 16px 40px;
 `
 
 const MenuWrapper = styled.View`
@@ -304,7 +312,6 @@ const MenuWrapper = styled.View`
   align-items: flex-start;
   justify-content: flex-start;
   gap: 15px;
-  width: 360px;
   border-radius: 30px;
   background: #FFF;
   padding: 14px 29px 15px 12px;
@@ -331,6 +338,7 @@ const MenuImage = styled.Image`
 const MenuSection = styled.View`
   display: flex;
   height: 100%;
+  flex: 1;
   flex-direction: column;
   align-items: flex-start;
 `
@@ -343,7 +351,6 @@ const MenuTitle = styled.Text`
   font-weight: 600;
   line-height: 35px;
   margin-bottom: 15px;
-  width: 180px;
   flex-wrap: wrap;
 `
 
@@ -396,7 +403,7 @@ const QuantitySection = styled.View`
   justify-content: space-between;
   align-items: center;
   height: 35px;
-  width: 187px;
+  width: 100%;
   padding:0 22px;
   border-radius: 15px;
   background: #F8F8F8;
@@ -420,7 +427,7 @@ const CancelTouch = styled.TouchableOpacity`
 const CartQuantitySection = styled.View`
   position: absolute;
   width: 200px;
-  top: 108px;
+  top: 0px;
   right: 0px;
   display: flex;
   flex-direction: row;
@@ -448,16 +455,13 @@ const CartTotalPriceText = styled.Text`
 const CartOrderWrapper = styled.View`
   position: relative;
   display: flex;
-  align-items: center;
-  width: 360px;
-  margin: 0 auto;
-  padding: 163px 0 40px;
+  margin: 0 16px;
+  padding: 50px 0 40px;
 `
 
 const CartOrderButton = styled.TouchableOpacity`
   display: flex;
   flex-direction: row;
-  width: 360px;
   height: 50px;
   justify-content: center;
   align-items: center;
