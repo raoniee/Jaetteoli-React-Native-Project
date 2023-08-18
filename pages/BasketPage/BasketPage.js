@@ -123,74 +123,73 @@ export default function BasketPage({ navigation }) {
                                             menuIdx: items.todaymenuIdx,
                                         })}>
                                             <MenuWrapper>
-                                            <CancelTouch onPress={() => {
-                                                const basketList = basketState.basketItems.filter(item => item.basketIdx !== items.basketIdx)
-                                                //setBasketState({...basketState, basketItems: basketList})
-                                                handleModifyBasket(items.basketIdx, 0, 'remove')
-                                            }}>
-                                                <WithLocalSvg
-                                                    width={12}
-                                                    height={12}
-                                                    asset={CancelSVG} />
-                                            </CancelTouch>
-                                            <MenuImage resizeMode="cover" source={{uri: items.menuUrl}} />
-                                                <MenuSection>
-                                                    <MenuTitle>
-                                                        {items.menuName}
-                                                    </MenuTitle>
-                                                    <OriginalPriceSection>
-                                                        <OriginalPriceText>
-                                                            {items.price.toLocaleString() + '원'}
-                                                        </OriginalPriceText>
-                                                        <DiscountRate>
-                                                            {items.discount.toString() + ' %'}
-                                                        </DiscountRate>
-                                                    </OriginalPriceSection>
-                                                    <DiscountSection>
-                                                        <WithLocalSvg
-                                                            width={24}
-                                                            height={22.75}
-                                                            asset={ArrowRightSVG} />
-                                                        <DiscountPriceText>
-                                                            {items.todayPrice.toLocaleString() + '원'}
-                                                        </DiscountPriceText>
-                                                    </DiscountSection>
-                                                    <TouchableWithoutFeedback>
-                                                        <QuantitySection>
-                                                            <TouchableOpacity onPress={() => {
-                                                                const temp = { ...basketState };
-                                                                if (temp.basketItems[index].count > 1){
-                                                                    temp.basketItems[index].count--;
-                                                                    handleModifyBasket(items.basketIdx, 0, 'count')
-                                                                    setBasketState(temp)
-                                                                }
-                                                            }}>
-                                                                <WithLocalSvg
-                                                                    width={22}
-                                                                    height={20}
-                                                                    asset={MinusSVG} />
-                                                            </TouchableOpacity>
-                                                            <QuantityText>
-                                                                {items.count.toString()+ '개'}
-                                                            </QuantityText>
-                                                            <TouchableOpacity onPress={() => {
-                                                                const temp = { ...basketState };
-                                                                if (temp.basketItems[index].count < 99){
-                                                                    temp.basketItems[index].count++;
-                                                                    handleModifyBasket(items.basketIdx, 1, 'count')
-                                                                    setBasketState(temp)
-                                                                }
-                                                            }}>
-                                                                <WithLocalSvg
-                                                                    width={22}
-                                                                    height={20}
-                                                                    asset={PlusSVG} />
-                                                            </TouchableOpacity>
-                                                        </QuantitySection>
-                                                    </TouchableWithoutFeedback>
-
-                                                </MenuSection>
-                                        </MenuWrapper>
+                                                <CancelTouch onPress={() => {
+                                                    const basketList = basketState.basketItems.filter(item => item.basketIdx !== items.basketIdx)
+                                                    //setBasketState({...basketState, basketItems: basketList})
+                                                    handleModifyBasket(items.basketIdx, 0, 'remove')
+                                                }}>
+                                                    <WithLocalSvg
+                                                        width={12}
+                                                        height={12}
+                                                        asset={CancelSVG} />
+                                                </CancelTouch>
+                                                <MenuImage resizeMode="cover" source={{uri: items.menuUrl}} />
+                                                    <MenuSection>
+                                                        <MenuTitle>
+                                                            {items.menuName}
+                                                        </MenuTitle>
+                                                        <OriginalPriceSection>
+                                                            <OriginalPriceText>
+                                                                {items.price.toLocaleString() + '원'}
+                                                            </OriginalPriceText>
+                                                            <DiscountRate>
+                                                                {items.discount.toString() + ' %'}
+                                                            </DiscountRate>
+                                                        </OriginalPriceSection>
+                                                        <DiscountSection>
+                                                            <WithLocalSvg
+                                                                width={24}
+                                                                height={22.75}
+                                                                asset={ArrowRightSVG} />
+                                                            <DiscountPriceText>
+                                                                {items.todayPrice.toLocaleString() + '원'}
+                                                            </DiscountPriceText>
+                                                        </DiscountSection>
+                                                        <TouchableWithoutFeedback>
+                                                            <QuantitySection>
+                                                                <TouchableOpacity onPress={() => {
+                                                                    const temp = { ...basketState };
+                                                                    if (temp.basketItems[index].count > 1){
+                                                                        temp.basketItems[index].count--;
+                                                                        handleModifyBasket(items.basketIdx, 0, 'count')
+                                                                        setBasketState(temp)
+                                                                    }
+                                                                }}>
+                                                                    <WithLocalSvg
+                                                                        width={22}
+                                                                        height={20}
+                                                                        asset={MinusSVG} />
+                                                                </TouchableOpacity>
+                                                                <QuantityText>
+                                                                    {items.count.toString()+ '개'}
+                                                                </QuantityText>
+                                                                <TouchableOpacity onPress={() => {
+                                                                    const temp = { ...basketState };
+                                                                    if (temp.basketItems[index].count < 99){
+                                                                        temp.basketItems[index].count++;
+                                                                        handleModifyBasket(items.basketIdx, 1, 'count')
+                                                                        setBasketState(temp)
+                                                                    }
+                                                                }}>
+                                                                    <WithLocalSvg
+                                                                        width={22}
+                                                                        height={20}
+                                                                        asset={PlusSVG} />
+                                                                </TouchableOpacity>
+                                                            </QuantitySection>
+                                                        </TouchableWithoutFeedback>
+                                                    </MenuSection>
+                                            </MenuWrapper>
                                         </TouchableWithoutFeedback>
                                     )
                                 )
@@ -303,9 +302,9 @@ const MenuWrapper = styled.View`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 15px;
   width: 360px;
-  height: 203px;
   border-radius: 30px;
   background: #FFF;
   padding: 14px 29px 15px 12px;
@@ -344,6 +343,8 @@ const MenuTitle = styled.Text`
   font-weight: 600;
   line-height: 35px;
   margin-bottom: 15px;
+  width: 180px;
+  flex-wrap: wrap;
 `
 
 const OriginalPriceSection = styled.View`

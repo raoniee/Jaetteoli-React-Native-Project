@@ -1,7 +1,9 @@
-import {baseUrl, jwt} from "utils/baseUrl";
+import {baseUrl} from "utils/baseUrl";
+import {getToken} from "utils/Cookie";
 
 export const getReviewInfo = async (storeIdx) => {
     const apiUrl = baseUrl+`/jat/app/stores/info/details?storeIdx=${storeIdx}&type=review`;
+    const jwt = await getToken();
 
     const requestOptions = {
         method: 'GET',

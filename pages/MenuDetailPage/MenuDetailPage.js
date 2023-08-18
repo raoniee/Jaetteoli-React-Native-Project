@@ -319,18 +319,19 @@ const QuantityLeftText = styled.Text`
 const MenuTitleSection = styled.View`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-start;
   gap: 5px;
 `
 
 const MenuTitleText1 = styled.Text`
   color: #000;
-  text-align: center;
   font-family: "Pretendard-SemiBold";
   font-size: 24px;
   font-style: normal;
   font-weight: 600;
+  display: flex;
+  width: 280px;
 `
 
 const MenuTitleText2 = styled.Text`
@@ -340,6 +341,7 @@ const MenuTitleText2 = styled.Text`
   font-style: normal;
   font-weight: 500;
   line-height: 35px;
+  width: 280px;
 `
 
 const MenuDescriptionText = styled.Text`

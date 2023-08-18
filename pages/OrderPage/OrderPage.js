@@ -126,7 +126,7 @@ export default function OrderPage({ navigation }) {
                             height={24}
                             asset={PhoneSVG} />
                         <CommonText>
-                            010-1234-5678
+                            {storePhone.slice(0, 3) + "-" + storePhone.slice(3, 7) + "-" + storePhone.slice(7, 11)}
                         </CommonText>
                         <PhoneChangeTouch>
                             <PhoneChangeText>
@@ -337,6 +337,7 @@ const ShopAddressText = styled.Text`
   font-weight: 500;
   line-height: 20px; /* 133.333% */
   padding: 0 15px 0 6px;
+  max-width: 300px;
 `
 
 const ShopAddressCopyTouch = styled.TouchableOpacity`

@@ -1,4 +1,5 @@
-import {baseUrl, jwt} from "utils/baseUrl";
+import {baseUrl} from "utils/baseUrl";
+import {getToken} from "utils/Cookie";
 
 export const getBasket = async (todaymenuIdx = 0, basket = true) => {
     /*
@@ -8,6 +9,7 @@ export const getBasket = async (todaymenuIdx = 0, basket = true) => {
     * status: 3 => 메뉴 중복X or 장바구니 빔
     */
     const apiUrl = baseUrl+"/jat/app/basket";
+    const jwt = await getToken();
 
     const requestOptions = {
         method: 'GET',

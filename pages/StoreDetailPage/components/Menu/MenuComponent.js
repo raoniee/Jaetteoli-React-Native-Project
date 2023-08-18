@@ -33,13 +33,6 @@ import DownSVG from "assets/images/down.svg";
 import WarningSVG from "assets/images/warning.svg";
 import ArrowRightSVG from "assets/images/arrow_right.svg";
 
-
-
-
-
-
-
-
 export default function MenuComponent({storeIdx}) {
     const [ menuState, setMenuState ] = useState({
         storeIdx: null,
