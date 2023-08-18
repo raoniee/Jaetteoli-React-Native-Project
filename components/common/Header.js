@@ -97,7 +97,14 @@ export default function Header({ color, backgroundColor, title, left = 1, right 
 
     return (
         <View style={{ position: 'relative', backgroundColor: backgroundColor ? backgroundColor : null}}>
-            <StatusBar barStyle={statusBar === 'black' ? "dark-content" : 'light-content' } />
+            {
+                (() => {
+                    if (focus){
+                        if (statusBar === 'black') return <StatusBar barStyle={'dark-content'} />;
+                        else return <StatusBar barStyle={'light-content'} />;
+                    }
+                })()
+            }
             <HeaderWrapper>
                 <LeftComponent />
                 <HeaderRightWrapper>
