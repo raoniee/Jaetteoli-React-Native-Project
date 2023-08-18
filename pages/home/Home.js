@@ -14,6 +14,7 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     const fetchToken = async () => {
       const fetchedToken = await getToken();
+      console.log(fetchedToken)
       setJwt(fetchedToken);
     };
 
@@ -21,7 +22,7 @@ const Home = ({ navigation }) => {
   }, []);
 
   const helloHandler = () => {
-    if (jwt !== "") {
+    if (jwt) {
       navigation.navigate("MainTabs");
     } else {
       navigation.navigate("LoginStart");

@@ -9,7 +9,8 @@ import Header from '../../components/common/Header';
 import * as ImagePicker from 'expo-image-picker';
 import Close from '../../assets/images/Close';
 import Modal from 'react-native-modal';
-import { baseUrl, jwt } from "../../utils/baseUrl";
+import { baseUrl } from "../../utils/baseUrl";
+import { getToken } from '../../utils/Cookie';
 
 const WriteReview = () => {
 
@@ -34,7 +35,7 @@ const WriteReview = () => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'X-ACCESS-TOKEN': jwt,
+                'X-ACCESS-TOKEN': await getToken(),
             },
         };
         try {
@@ -82,7 +83,7 @@ const WriteReview = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-ACCESS-TOKEN': jwt,
+                'X-ACCESS-TOKEN': await getToken(),
             },
             body: formData,
         };

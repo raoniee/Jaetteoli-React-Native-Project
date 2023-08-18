@@ -6,16 +6,17 @@ import ArrowRight from '../../assets/images/ArrowRight';
 import Star from '../../assets/images/Star';
 import profile from '../../assets/images/profile.png';
 import Header from '../../components/common/Header';
-import { baseUrl, jwt } from "../../utils/baseUrl";
+import { baseUrl } from "../../utils/baseUrl";
 import { useNavigation } from '@react-navigation/native';
-import Close from '../../assets/images/Close';
 import Modal from 'react-native-modal';
+import { getToken } from '../../utils/Cookie';
 
 const ManageReview = () => {
 
     // 사용자 리뷰 데이터
     const [reviews, setReviews] = useState([]);
     const [reviewCount, setReviewCount] = useState(0)
+
 
     // 컴포넌트가 마운트 될 경우 내가 쓴 리뷰 조회 api 요청
     useEffect(() => {
@@ -29,7 +30,7 @@ const ManageReview = () => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'X-ACCESS-TOKEN': jwt,
+                'X-ACCESS-TOKEN': await getToken(),
             },
         };
         try {
@@ -69,7 +70,7 @@ const ManageReview = () => {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
-                'X-ACCESS-TOKEN': jwt,
+                'X-ACCESS-TOKEN': await getToken(),
             },
             body: JSON.stringify(requestBody),
         };
