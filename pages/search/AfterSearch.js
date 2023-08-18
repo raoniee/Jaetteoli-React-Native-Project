@@ -119,7 +119,7 @@ const AfterSearch = ({ navigation, route }) => {
   };
 
   const moveToMain = () => {
-    navigation.navigate("Main");
+    navigation.navigate("홈");
   };
 
   return (
