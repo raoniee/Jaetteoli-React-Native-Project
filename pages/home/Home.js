@@ -9,8 +9,6 @@ import { useEffect, useState } from "react";
 
 const Home = ({ navigation }) => {
 
-  const [jwt, setJwt] = useState(""); // 토큰 상태 추가
-
   useEffect(() => {
     const fetchToken = async () => {
       const fetchedToken = await getToken();
@@ -21,7 +19,9 @@ const Home = ({ navigation }) => {
     fetchToken();
   }, []);
 
-  const helloHandler = () => {
+  const helloHandler = async() => {
+    console.log()
+    const jwt = await getToken();
     if (jwt) {
       navigation.navigate("MainTabs");
     } else {
