@@ -140,7 +140,7 @@ const WhiteLeft = () => {
 const DefaultBell = () => {
     const navigation = useNavigation();
     return (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('AlramList')}>
                 <WithLocalSvg
                     width={24}
                     height={24}
@@ -152,7 +152,7 @@ const DefaultBell = () => {
 const WhiteBell = () => {
     const navigation = useNavigation();
     return (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('AlramList')}>
                 <WithLocalSvg
                     width={24}
                     height={24}
