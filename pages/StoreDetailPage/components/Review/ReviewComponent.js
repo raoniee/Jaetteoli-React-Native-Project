@@ -278,8 +278,7 @@ const ReviewWrapperMemoComponent = React.memo(({item, setVisibleModal, setReport
                     <Styles.UserReviewImage
                         key={item.reviewIdx}
                         resizeMode="cover"
-                        source={{url: item.review_url}} />
-
+                        source={{uri: item.review_url}} />
                 }
                 <Styles.UserReviewText>
                     {item.contents}

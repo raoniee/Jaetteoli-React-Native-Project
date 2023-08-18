@@ -278,8 +278,8 @@ export const UserReviewText = styled.Text`
 
 export const UserReviewImage = styled.Image`
   margin: 10px 0 10px;
-  width: 360px;
-  height: 360px;
+  width: ${windowWidth- 32}px;
+  height: ${windowWidth- 32}px;
   border-radius: 30px;
 `
 
