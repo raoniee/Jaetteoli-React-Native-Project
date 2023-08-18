@@ -70,9 +70,22 @@ export default function MembershipAgreeDesc({ navigation, route }) {
     return result;
   }
 
+  // {
+  //   descvalue(type);
+  // }
+
   return (
     <SafeAreaView style={styles.wrap}>
-      <Header title={titlevalue(type)} right={0} />
+      <Header
+        title={() => {
+          if (type) {
+            titlevalue(type);
+          } else {
+            titlevalue(stype);
+          }
+        }}
+        right={0}
+      />
       <View style={styles.container}>
         <View style={styles.agreeinfo}>
           <View style={styles.datebox}>
@@ -80,7 +93,15 @@ export default function MembershipAgreeDesc({ navigation, route }) {
             <Text style={styles.date}>09:19:24 AM</Text>
           </View>
           <ScrollView style={styles.agreebox}>
-            <Text style={styles.agreetext}>{descvalue(type)}</Text>
+            <Text style={styles.agreetext}>
+              {() => {
+                if (type) {
+                  descvalue(type);
+                } else {
+                  descvalue(stype);
+                }
+              }}
+            </Text>
           </ScrollView>
         </View>
         <Button
