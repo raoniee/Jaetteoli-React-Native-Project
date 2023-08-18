@@ -31,7 +31,6 @@ export const StoreNameSection = styled.View`
 
 export const StoreNameText = styled.Text`
   color: #000;
-  text-align: center;
   font-family: "Pretendard-SemiBold";
   font-size: 24px;
   font-style: normal;
