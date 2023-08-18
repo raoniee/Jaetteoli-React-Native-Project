@@ -1,4 +1,5 @@
-import {baseUrl, jwt} from "utils/baseUrl";
+import {baseUrl} from "utils/baseUrl";
+import {getToken} from "utils/Cookie";
 
 export const postAddBasket = async (storeIdx, menuIdx, quantity, sameStoreCheck = 0) => {
     /*
@@ -6,6 +7,7 @@ export const postAddBasket = async (storeIdx, menuIdx, quantity, sameStoreCheck 
     * status: 1 => 성공
     */
     const apiUrl = baseUrl+"/jat/app/basket";
+    const jwt = await getToken();
 
     const requestOptions = {
         method: 'POST',

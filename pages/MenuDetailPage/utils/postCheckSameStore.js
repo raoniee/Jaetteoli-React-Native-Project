@@ -1,4 +1,5 @@
-import {baseUrl, jwt} from "utils/baseUrl";
+import {baseUrl} from "utils/baseUrl";
+import {getToken} from "utils/Cookie";
 
 export const postCheckSameStore = async (storeIdx) => {
     /*
@@ -7,6 +8,7 @@ export const postCheckSameStore = async (storeIdx) => {
     * status: 2 => 같은 가게
     */
     const apiUrl = baseUrl+"/jat/app/basket/same-store";
+    const jwt = await getToken();
 
     const requestOptions = {
         method: 'POST',

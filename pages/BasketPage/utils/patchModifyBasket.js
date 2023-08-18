@@ -1,4 +1,5 @@
-import {baseUrl, jwt} from "../../../utils/baseUrl";
+import {baseUrl} from "utils/baseUrl";
+import {getToken} from "utils/Cookie";
 
 export const patchModifyBasket = async ({basketIdx, inDecrease = 1, patchStatus = 'count', result = true} = {}) => {
     /*
@@ -7,6 +8,7 @@ export const patchModifyBasket = async ({basketIdx, inDecrease = 1, patchStatus 
     * status: 2 => 성공 and 데이터X
     * */
     const apiUrl = baseUrl + "/jat/app/basket";
+    const jwt = await getToken();
 
     const requestOptions = {
         method: 'PATCH',
