@@ -10,11 +10,11 @@ import {totalHeight} from 'utils/dimensions'
 import styled from "styled-components/native";
 // components
 import Header from "components/common/Header";
-import CustomMarker from "components/Heo/CustomMarker";
+import CustomMarker from "../../components/map/CustomMarker";
 
 export default function StoreMapPage() {
     const route = useRoute()
-    const {latitude, longitude} = route.params
+    const {latitude, longitude, categoryIdx, name} = route.params
 
     return (
         <SafeAreaView style={{backgroundColor: 'white'}}>
@@ -41,7 +41,7 @@ export default function StoreMapPage() {
                             longitude: longitude,
                         }}
                     >
-                        <CustomMarker />
+                        <CustomMarker title={name} storeCategory={categoryIdx}/>
                     </Marker>
                 </MapView>
             </Container>

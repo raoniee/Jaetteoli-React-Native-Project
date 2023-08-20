@@ -17,15 +17,16 @@ import * as Styles from './styles'
 // components
 import Header from "components/common/Header"
 import CustomModaless from "components/Heo/modal/CustomModaless";
-import CustomMarker from "components/Heo/CustomMarker";
+import CustomMarker from "../../components/map/CustomMarker";
 import MenuComponent from "./components/Menu/MenuComponent";
 import InfoComponent from "./components/Info/InfoComponent";
 import ReviewComponent from "./components/Review/ReviewComponent";
 
 export default function StoreDetailPage({navigation}) {
     const [ storeState, setStoreState ] = useState({
-        storeIdx: null,
+        storeIdx: 0,
         storeName: null,
+        categoryIdx: 0,
         storePhone: null,
         x: null,
         y: null,
@@ -122,7 +123,7 @@ export default function StoreDetailPage({navigation}) {
                                     원산지 보기
                                 </Styles.StoreInformationTouchText>
                             </Styles.StoreInformationTouch>
-                            <Styles.StoreInformationTouch onPress={() => navigation.navigate('StoreMapPage', {latitude: storeState.y, longitude: storeState.x})}>
+                            <Styles.StoreInformationTouch onPress={() => navigation.navigate('StoreMapPage', {latitude: storeState.y, longitude: storeState.x , categoryIdx: storeState.categoryIdx, name: storeState.storeName})}>
                                 <Styles.StoreInformationTouchSVGBox>
                                     <Svg width="25" height="24" viewBox="0 0 25 24" fill="none">
                                         <Path
@@ -162,7 +163,7 @@ export default function StoreDetailPage({navigation}) {
                                             longitude: storeState.x
                                         }}
                                     >
-                                        <CustomMarker />
+                                        <CustomMarker storeCategory={storeState.categoryIdx}/>
                                     </Marker>
                                 </MapView>
                             }
