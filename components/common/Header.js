@@ -1,6 +1,6 @@
 // react-native, expo
-import {View, TouchableOpacity, StatusBar} from 'react-native';
-import {useEffect, useState} from "react";
+import {View, TouchableOpacity, StatusBar, Platform} from 'react-native';
+import React, {useEffect, useState} from "react";
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import { WithLocalSvg } from 'react-native-svg';
 // utils
@@ -52,7 +52,8 @@ const HeaderTitle = styled.Text`
   font-weight: 500;
 `
 
-export default function Header({ color, backgroundColor, title, left = 1, right = 1, statusBar = 'black'}) {
+
+function Header({ color, backgroundColor, title, left = 1, right = 1, statusBar = 'black'}) {
     const LeftComponent = left === 0 ? EmptyView : left === 1 ? color === 'white' ? WhiteLeft : DefaultLeft : X;
     const BellComponent = right === 1 ? color === 'white' ? WhiteBell : DefaultBell : EmptyView;
     const BasketComponent = right === 1 ? color === 'white' ? WhiteCart : DefaultCart : EmptyView;
@@ -63,11 +64,24 @@ export default function Header({ color, backgroundColor, title, left = 1, right 
 
 
     useEffect(() => {
-        if (focus === true){
-            console.log("(헤더)현재 페이지 이름: ", currentPage)
-            getData()
+        if (focus === true) {
+            console.log("(헤더)페이지 렌더링: ", currentPage);
+
+            if (statusBar === 'black') {
+                StatusBar.setBarStyle('dark-content');
+
+                // Android만 backgroundColor 설정
+                if (Platform.OS === 'android') {
+                    StatusBar.setBackgroundColor("transparent");
+                }
+            } else {
+                StatusBar.setBarStyle('light-content');
+            }
+
+            getData();
         }
-    }, [focus])
+    }, [focus]);
+
 
 
 
@@ -97,14 +111,7 @@ export default function Header({ color, backgroundColor, title, left = 1, right 
 
     return (
         <View style={{ position: 'relative', backgroundColor: backgroundColor ? backgroundColor : null}}>
-            {
-                (() => {
-                    if (focus){
-                        if (statusBar === 'black') return <StatusBar barStyle={'dark-content'} />;
-                        else return <StatusBar barStyle={'light-content'} />;
-                    }
-                })()
-            }
+
             <HeaderWrapper>
                 <LeftComponent />
                 <HeaderRightWrapper>
@@ -123,12 +130,12 @@ export default function Header({ color, backgroundColor, title, left = 1, right 
 const DefaultLeft = () => {
     const navigation = useNavigation();
     return (
-    <TouchableOpacity onPress={() => navigation.pop()}>
-        <WithLocalSvg
-            width={25}
-            height={24}
-            asset={DefaultLeftSVG} />
-    </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.pop()}>
+            <WithLocalSvg
+                width={25}
+                height={24}
+                asset={DefaultLeftSVG} />
+        </TouchableOpacity>
     )
 }
 
@@ -147,25 +154,25 @@ const WhiteLeft = () => {
 const DefaultBell = () => {
     const navigation = useNavigation();
     return (
-            <TouchableOpacity onPress={() => navigation.navigate('AlramList')}>
-                <WithLocalSvg
-                    width={24}
-                    height={24}
-                    asset={DefaultBellSVG}/>
-            </TouchableOpacity>
-        )
+        <TouchableOpacity onPress={() => navigation.navigate('AlramList')}>
+            <WithLocalSvg
+                width={24}
+                height={24}
+                asset={DefaultBellSVG}/>
+        </TouchableOpacity>
+    )
 }
 
 const WhiteBell = () => {
     const navigation = useNavigation();
     return (
-            <TouchableOpacity onPress={() => navigation.navigate('AlramList')}>
-                <WithLocalSvg
-                    width={24}
-                    height={24}
-                    asset={WhiteBellSVG}/>
-            </TouchableOpacity>
-        )
+        <TouchableOpacity onPress={() => navigation.navigate('AlramList')}>
+            <WithLocalSvg
+                width={24}
+                height={24}
+                asset={WhiteBellSVG}/>
+        </TouchableOpacity>
+    )
 }
 
 const DefaultCart = ({nums}) => {
@@ -241,3 +248,17 @@ const BasketQuantityText = styled.Text`
   font-style: normal;
   font-weight: 500;
 `
+
+
+function areHeadEqual(prevProps, nextProps) {
+    return (
+        prevProps.color === nextProps.color &&
+        prevProps.backgroundColor === nextProps.backgroundColor &&
+        prevProps.title === nextProps.title &&
+        prevProps.left === nextProps.left &&
+        prevProps.right === nextProps.right &&
+        prevProps.statusBar === nextProps.statusBar
+    );
+}
+
+export default React.memo(Header, areHeadEqual);
