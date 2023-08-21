@@ -2,7 +2,6 @@
 import React, {useEffect, useState} from "react";
 import {Path, Svg, WithLocalSvg} from "react-native-svg";
 import {TouchableOpacity, TouchableWithoutFeedback} from "react-native";
-// redux
 // utils
 import {getReviewInfo} from "../../utils/getReviewInfo";
 import {patchReportReview} from "../../utils/patchReportReview";
@@ -11,6 +10,7 @@ import * as Styles from './styles'
 // images
 import CheckSVG from "assets/images/check.svg";
 import SortBySVG from "assets/images/sort_by.svg";
+import DefaultProfileSVG from "assets/images/defualtProfile.svg";
 // components
 import CustomModal from "components/Heo/modal/CustomModal";
 
@@ -233,9 +233,18 @@ const ReviewWrapperMemoComponent = React.memo(({item, setVisibleModal, setReport
         <Styles.ReviewSection>
             <Styles.ReviewBox>
                 <Styles.UserSection>
-                    <Styles.UserImage
-                        resizeMode="cover"
-                        source={{uri: item.customerProfileUrl ?? 'https://s3-alpha-sig.figma.com/img/0b1c/cdaa/a30575a764567a374d6535d068a76cd5?Expires=1691366400&Signature=RU25a1vejlMhrknJLUTmimzavWhsKzj8-jQteqYwsHlLQjSxNEyV9l3l6jZJUirWJV1Mtqq2FTRmdcpmH3grOGOwdR2rS~UQ9BmKRlkckmXbDNa7RlBqrnaLZSJdYYP7LPzZqQHFy9cgDFGQW1sqdFY4kAMfLVMuNClkO968Pr64aiP3G2nci4NHqxByHm8zxmblhVqfZnzXePzKF9TXPjKMihu3wGDCIKYmAtlPwiT60M5Ub1NGXpXT5MYGqI9F7kAwsNJMYg60wsccwnCyn7CoZ3PhJMCDDX11YVAZpBTXTW3KgJKbudfAAv~h1p9jMuq5oDCzwSq9pkqTjrt9oQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'}}/>
+                    {
+                        item.customerProfileUrl ?
+                            <Styles.UserImage
+                                resizeMode="cover"
+                                source={{uri: item.customerProfileUrl}}/> :
+                            <WithLocalSvg
+                                width={43}
+                                height={43}
+                                asset={DefaultProfileSVG}
+                            />
+
+                    }
                     <Styles.UserBox>
                         <Styles.UserNameText numberOfLines={1} ellipsizeMode='tail'>
                             {item.customerName}
