@@ -11,10 +11,8 @@ const AlramList = () => {
         const { status } = await Notifications.getPermissionsAsync();
         if (status === 'granted') {
             setIsEnabled(true)
-            console.log('ㅇㅋ')
         } else if (status === 'denied') {
             setIsEnabled(false)
-            console.log('ㄴㄴ')
         }
     };
 

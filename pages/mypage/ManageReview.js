@@ -86,7 +86,6 @@ const ManageReview = () => {
                 console.log(data.message);
             }
         } catch (error) {
-            console.log('서버가 아직 안켜져있습니다.')
             console.log(error)
         }
     }
