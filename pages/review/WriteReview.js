@@ -58,7 +58,6 @@ const WriteReview = () => {
     const [reviewPic, setReviewPic] = useState('');
 
     const deleteReviewPic = () => {
-        console.log(reviewPic)
         setReviewPic('');
     }
 
@@ -97,7 +96,6 @@ const WriteReview = () => {
                 console.log(data.message);
             }
         } catch (error) {
-            console.log('서버가 아직 안켜져있습니다.')
             console.log(error)
         }
     }
@@ -142,7 +140,6 @@ const WriteReview = () => {
 
         if (!result.canceled) {
             setReviewPic(result.assets[0].uri)
-            console.log(result.assets[0].uri)
         }
     };
 
@@ -176,8 +173,8 @@ const WriteReview = () => {
             quality: 1,
         });
 
-        if (!result.cancelled) {
-            setReviewPic(result.uri);
+        if (!result.canceled) {
+            setReviewPic(result.assets[0].uri);
         }
     };
 

@@ -83,7 +83,6 @@ const ModifyMyInfo = () => {
 
         if (!result.canceled) {
             setUserProfile(result.assets[0].uri)
-            console.log(result.assets[0].uri)
         }
     };
 
@@ -117,8 +116,8 @@ const ModifyMyInfo = () => {
             quality: 1,
         });
 
-        if (!result.cancelled) {
-            setUserProfile(result.uri);
+        if (!result.canceled) {
+            setUserProfile(result.assets[0].uri);
         }
     };
 
