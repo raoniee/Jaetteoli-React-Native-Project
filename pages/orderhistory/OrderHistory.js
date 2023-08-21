@@ -40,8 +40,7 @@ const OrderHistory = ({ navigation }) => {
             return;
           }
           setInitData(data.result);
-        } catch (err) {
-        }
+        } catch (err) {}
       };
       fetchOrderHistory();
     }
@@ -175,6 +174,8 @@ const OrderHistory = ({ navigation }) => {
             }
             const isReview =
               daysDifference >= 0 && daysDifference <= 5 ? true : false;
+            console.log(item.menuUrl);
+            const exsistImage = item.menuUrl ? true : false;
             return (
               <View index={item.orderIdx} style={styles.orderItemContainer}>
                 {/* 날짜 */}
@@ -195,11 +196,20 @@ const OrderHistory = ({ navigation }) => {
                 {/* 메뉴명 */}
                 <View style={styles.menuOuterContainer}>
                   <View style={styles.imgContainer}>
-                    <Image
-                      source={require("../../components/orderhistory/dummy/image1.png")}
-                      resizeMode="stretch"
-                      style={styles.image}
-                    />
+                    {exsistImage && (
+                      <Image
+                        source={{ uri: `${item.menuUrl}` }}
+                        resizeMode="stretch"
+                        style={styles.image}
+                      />
+                    )}
+                    {!exsistImage && (
+                      <Image
+                        source={require("../../assets/images/profile.png")}
+                        resizeMode="stretch"
+                        style={styles.image}
+                      />
+                    )}
                   </View>
                   <View style={styles.textContainer}>
                     <Pressable
