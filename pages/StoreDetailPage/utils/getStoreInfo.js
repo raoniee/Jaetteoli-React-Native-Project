@@ -1,8 +1,11 @@
 import {baseUrl} from "utils/baseUrl";
 import {getToken} from "utils/Cookie";
+import * as Location from "expo-location";
 
-export const getStoreInfo = async (storeIdx, userLocation) => {
-    const apiUrl = baseUrl+`/jat/app/stores/info?storeIdx=${storeIdx}&longitude=${userLocation.longitude ? userLocation.longitude : 0}&latitude=${userLocation.latitude ? userLocation.latitude : 0}`;
+export const getStoreInfo = async (storeIdx) => {
+    const location = await Location.getCurrentPositionAsync({});
+    const { latitude, longitude } = location.coords;
+    const apiUrl = baseUrl+`/jat/app/stores/info?storeIdx=${storeIdx}&longitude=${longitude ? longitude : 0}&latitude=${latitude ? latitude : 0}`;
     const jwt = await getToken();
 
     const requestOptions = {
