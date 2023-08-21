@@ -21,6 +21,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { baseUrl } from "../../utils/baseUrl";
 import { useSelector } from "react-redux";
 import { getToken } from "../../utils/Cookie";
+import * as Locations from "expo-location";
 
 const AfterSearch = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
@@ -74,9 +75,11 @@ const AfterSearch = ({ navigation, route }) => {
     if (isFocused) {
       // 구독 가게 목록 api 호출
       const fetchData = async () => {
-        let inputText = ""
-        if(route.params !== undefined){
-          inputText = route.params.searchText
+        const location = await Locations.getCurrentPositionAsync({});
+        const { latitude, longitude } = location.coords;
+        let inputText = "";
+        if (route.params !== undefined) {
+          inputText = route.params.searchText;
         }
         if (inputText === "") {
           return;
@@ -84,8 +87,8 @@ const AfterSearch = ({ navigation, route }) => {
         setLoading(true);
         const requestBody = {
           searchWord: inputText,
-          longitude: myAddress.longitude,
-          latitude: myAddress.latitude,
+          longitude: longitude,
+          latitude: latitude,
         };
         const response = await fetch(`${baseUrl}/jat/app/search`, {
           method: "POST",

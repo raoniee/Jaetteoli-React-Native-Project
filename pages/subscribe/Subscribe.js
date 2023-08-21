@@ -20,6 +20,7 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { baseUrl } from "../../utils/baseUrl";
 import { useSelector } from "react-redux";
 import { getToken } from "../../utils/Cookie";
+import * as Locations from "expo-location";
 
 const Subscribe = () => {
   const [initData, setInitData] = useState([]);
@@ -33,8 +34,11 @@ const Subscribe = () => {
       // 구독 가게 목록 api 호출
       const fetchData = async () => {
         try {
+          const location = await Locations.getCurrentPositionAsync({});
+          const { latitude, longitude } = location.coords;
           const response = await fetch(
-            `${baseUrl}/jat/app/subscription?longitude=${myLocation.longitude}&latitude=${myLocation.latitude}`,
+
+            `${baseUrl}/jat/app/subscription?longitude=${longitude}&latitude=${latitude}`,
             {
               method: "GET",
               headers: {

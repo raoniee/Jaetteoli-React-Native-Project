@@ -50,7 +50,7 @@ export default function StoreDetailPage({navigation}) {
 
     async function fetchAndProcessStoreInfo() {
         try {
-            const storeInfo = await getStoreInfo(storeIdx, userLocation)
+            const storeInfo = await getStoreInfo(storeIdx)
             setStoreState(storeInfo)
         } catch (error) {
             console.log('Error:', error)
