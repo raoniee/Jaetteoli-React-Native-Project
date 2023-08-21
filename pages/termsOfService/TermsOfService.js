@@ -17,6 +17,8 @@ const TermsOfService = () => {
     const [location, setLocation] = useState(false);
     const [alram, setAlram] = useState(false);
 
+    const navigation = useNavigation();
+
     const locationAgree = () => {
         setLocation((prevState) => !prevState)
     }
@@ -72,10 +74,9 @@ const TermsOfService = () => {
                 await requestNotificationPermission();
             }
             await requestLocationPermission();
+            navigation.navigate("MainTabs");
         }
     };
-
-    const navigation = useNavigation();
 
     const moveToDetailInfo = (service) => {
         navigation.navigate("DetailInfo", { service: service })
