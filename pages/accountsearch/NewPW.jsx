@@ -21,6 +21,7 @@ import GoMembership from "../../components/login/GoMembership";
 import SearchLoginInput from "../../components/login/SearchLoginInput";
 import TopHeader from "../../components/login/TopHeader";
 import * as Location from "expo-location";
+import * as Notifications from "expo-notifications";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HIGHT } = Dimensions.get("window");
 
@@ -81,7 +82,7 @@ export default function NewPW({ navigation }) {
 
       // 네비게이션
       const fetchCurrentLocationAndAddress = async () => {
-        const { status } = await Location.requestForegroundPermissionsAsync();
+        const { status } = await Notifications.getPermissionsAsync();
         if (status !== "granted") {
           const truenextstep = () => navigation.navigate("TermsOfService");
           truenextstep();

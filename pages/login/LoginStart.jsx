@@ -29,6 +29,7 @@ import {
 import * as Location from "expo-location";
 import { MembershipContext } from "../../context/MembershipContext";
 import { useEffect } from "react";
+import * as Notifications from "expo-notifications";
 
 export default function LoginStart({ navigation }) {
   const [inputID, setInputID] = useState("");
@@ -91,7 +92,7 @@ export default function LoginStart({ navigation }) {
       //console.log("아이디저장확인용", await getUserID());
 
       const fetchCurrentLocationAndAddress = async () => {
-        const { status } = await Location.requestForegroundPermissionsAsync();
+        const { status } = await Notifications.getPermissionsAsync();
         console.log(status);
         if (status !== "granted") {
           const truenextstep = () => navigation.navigate("TermsOfService");
