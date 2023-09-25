@@ -15,9 +15,7 @@
 - 실시간으로 갱신되는 할인 품목들을 확인하고 할인된 가격에 음식을 구매 할 수 있다.
 - 발생 가능한 폐기비용을 줄여준다.
 - 판매자들과 소비자들에게 안전하고 신뢰 가능한 음식 서비스를 제공한다.
-
 <br>
-
 ![](https://velog.velcdn.com/images/raoni/post/fbb2a57d-1449-4a8c-8597-9f137f91e3ed/image.png)
 ![](https://velog.velcdn.com/images/raoni/post/2f7df688-13be-4a8d-ac5d-33028ac3d23a/image.png)
 
@@ -107,5 +105,167 @@
 
 
 ## 👀 실제 동작 시연 (직접 시연)
-[https://www.notion.so/5d6330c3c52340e89ddc0cbaffd87a1b?pvs=4](https://www.notion.so/5d6330c3c52340e89ddc0cbaffd87a1b?pvs=4)
+[https://www.notion.so/Web-App-2bf20e3211ac4a7bac4752b4ec8bbbca?pvs=4](https://www.notion.so/Web-App-2bf20e3211ac4a7bac4752b4ec8bbbca?pvs=4)
 
+## 🙋🏻 **What did I do**
+
+### 🍩 판매자 (Web)
+
+<details>
+<summary>로그인</summary>
+<div markdown="1">
+
+- 아이디 및 비밀번호 유효성 검사
+- 아이디 저장 기능
+- 자동 로그인
+**→ 아이디 저장, 자동 로그인 Cookies 저장**
+
+
+
+</div>
+</details>
+<details>
+<summary>회원가입</summary>
+<div markdown="1">
+
+- 동의 페이지 : 전체동의 기능, 개별 동의 기능, 동의 상세 페이지 팝업
+**→ 각각의 동의 Redux로 업데이트 및 저장**
+- 정보 입력 페이지 : 이름, 생년월일, 휴대폰 번호, 인증 번호, 아이디, 비밀번호, 이메일 유효성 검사 및 인증번호 카운트 다운 기능 
+**→ 유효성 검사 useCallback 사용 , 정보 Redux로 업데이트 및 저장**
+- 결과 페이지
+**→ 회원 동의, 정보 Redux 값 api 전송**
+
+
+
+</div>
+</details>
+<details>
+<summary>아이디 & 비밀번호 찾기</summary>
+<div markdown="1">
+
+- 아이디 찾기 페이지: 이름, 휴대폰 번호, 인증 번호 유효성 검사 및 인증번호 카운트 다운 기능
+- 아이디 결과 페이지: 
+**→ useLocation 사용**
+- 비밀번호 찾기 페이지: 아이디, 휴대폰 번호, 인증 번호 유효성 검사 및 인증번호 카운트 다운 기능
+- 새 비밀번호 설정 페이지: 새 비밀번호, 새 비밀번호 확인 유효성 검사
+**→ useLocation 사용**
+
+
+
+</div>
+</details>
+<details>
+<summary>아쉬운 점</summary>
+<div markdown="1">
+
+- 이름, 생년월일, 휴대폰 번호, 이메일, 아이디, 비밀번호 등등 유효성 검사만의 custom 함수를 생성했음 코드가 더 깔끔했을 것
+- api Fetch 함수를 GET, POST, PATCH 별로 생성했음 코드가 더 깔끔했을 것
+
+
+
+</div>
+</details>
+
+<br>
+
+
+### ⚙️ 관리자 (Web)
+
+<details>
+<summary>가게 등록 승인 페이지</summary>
+<div markdown="1">
+
+- 가게 목록 보기 및 페이지 네이션
+→ 깔끔한 UI를 위해 react-js-pagination 라이브러리 사용
+
+
+
+</div>
+</details>
+<details>
+<summary>리뷰 관리 페이지</summary>
+<div markdown="1">
+
+- 리뷰 전체 보기 (이름, 별점, 가게 정보, 댓글 상세, 이미지보기)
+- 리뷰 삭제 및 유지 기능
+- 리뷰 전체 페이지네이션
+
+
+
+</div>
+</details>
+<details>
+<summary>아쉬운 점과 깨달은 점</summary>
+<div markdown="1">
+
+- 판매자 관점에서도 리뷰 페이지가 쓰이는데 초기 회의에서 급급하다 보니 컴포넌트 재사용을 못한 점
+- 이슈: api 명세를 잘 이해하지 못해 리뷰 삭제 및 유지 api 요청에서 에러 메세지가 왔었다
+→ 해결: 비동기 함수로 api를 쓸 때는 컴포넌트 프롭스에서 값이 잘 올라오는지 확인해야하고, 
+api 명세가 이해가 안되는 점은 벡엔드와 바로 소통해야 잘못된 점을 업데이트 할 수 있다.
+
+
+
+</div>
+</details>
+
+<br>
+
+### 🍽️ 구매자 (App)
+
+<details>
+<summary>로그인</summary>
+<div markdown="1">
+
+- 아이디 및 비밀번호 유효성 검사
+- 아이디 저장 기능
+- 자동 로그인
+**→ 아이디 저장, 자동 로그인 Async Storage 저장**
+
+
+
+</div>
+</details>
+<details>
+<summary>회원가입</summary>
+<div markdown="1">
+
+- 동의 페이지 : 전체동의 기능, 개별 동의 기능, 동의 상세 페이지 팝업
+**→ 각각의 동의 Context api 로 업데이트 및 저장**
+- 정보 입력 페이지 : 이름, 생년월일, 휴대폰 번호, 인증 번호, 아이디, 비밀번호, 이메일 유효성 검사 및 인증번호 카운트 다운 기능 
+**→ 유효성 검사 useCallback 사용 , 정보 context api 로 업데이트 및 저장**
+- 결과 페이지
+**→ 회원 동의, 정보 Context api 값 api 전송**
+
+
+
+</div>
+</details>
+<details>
+<summary>아이디 & 비밀번호 찾기</summary>
+<div markdown="1">
+
+- 아이디 찾기 페이지: 이름, 휴대폰 번호, 인증 번호 유효성 검사 및 인증번호 카운트 다운 기능
+- 아이디 결과 페이지: 
+**→ Context api 사용**
+- 비밀번호 찾기 페이지: 아이디, 휴대폰 번호, 인증 번호 유효성 검사 및 인증번호 카운트 다운 기능
+- 새 비밀번호 설정 페이지: 새 비밀번호, 새 비밀번호 확인 유효성 검사
+**→Context api 사용**
+
+
+
+</div>
+</details>
+<details>
+<summary>아쉬운 점과 깨달은 점</summary>
+<div markdown="1">
+
+- React로 만든 Web버전에서 컴포넌트 재사용의 코드 유지 보수 중요성을 깨닫고, 
+React-Native인 App에서는 Page와 Component로 폴더 구조를 나눠 작업을 했다.
+→ 스크럼 시간에 팀원들끼리 훨씬 더 소통하기 원할했고, 서로 코드를 참고하기에도 편했다.
+- 상태관리를 Web 버전에서는 Redux를 사용하고, App버전에서는 Context api를 사용했다.
+→ 이번 프로젝트에서 Context를 써도 큰 불편함이 없었기에 불필요한 라이브러리인 Redux를 안써도 무방했겠다는 생각을 했다. 하지만, 전역적으로 깊은 상태관리에서는 Redux가 더 직접적으로 관리할 수 있겠다는 점을 깨닫기도 했다.
+
+
+
+</div>
+</details>
