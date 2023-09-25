@@ -16,8 +16,9 @@
 - 발생 가능한 폐기비용을 줄여준다.
 - 판매자들과 소비자들에게 안전하고 신뢰 가능한 음식 서비스를 제공한다.
 <br>
-![](https://velog.velcdn.com/images/raoni/post/2aeed140-1c19-4db6-81d8-7df4ae9449f8/image.png)<br>
-![](https://velog.velcdn.com/images/raoni/post/a4b6898e-6cfd-47a7-8d2c-c3a5c53fa1ab/image.png)
+<img src="https://velog.velcdn.com/images/raoni/post/2aeed140-1c19-4db6-81d8-7df4ae9449f8/image.png" width="600"/>
+<img src="https://velog.velcdn.com/images/raoni/post/a4b6898e-6cfd-47a7-8d2c-c3a5c53fa1ab/image.png" width="600"/>
+
 
 <br>
 
