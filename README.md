@@ -23,7 +23,8 @@
 <br>
 
 ### 💡 2-2. 판매자, 구매자 각각의 입장에서 물건을 사고 팔 수 있도록 구현하였습니다.
-![](https://velog.velcdn.com/images/raoni/post/650e708a-d87b-449f-8f76-21b2bf89b5d3/image.png)
+<img src="https://velog.velcdn.com/images/raoni/post/650e708a-d87b-449f-8f76-21b2bf89b5d3/image.png" width="600"/>
+
 
 
 <br>
