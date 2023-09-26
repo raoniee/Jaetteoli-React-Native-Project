@@ -1,5 +1,5 @@
 
-## 📡 1. VM <배포용 IP주소> 
+# 📡 1. VM <배포용 IP주소> 
 
 - 배포용 IP 주소 (현재 서버 중지)
 [https://www.insung.shop](https://www.insung.shop)
@@ -7,14 +7,15 @@
 
 <br>
 
-## 🔎 2. 서비스 소개 및 기능
+# 🔎 2. 서비스 소개 및 기능
 
-### 🏡 2-1. 프로젝트 서비스 소개
+## 🏡 2-1. 프로젝트 서비스 소개
 
 - 매일 발생하는 재고 식품을 할인된 가격으로 판매할 수 있다.
 - 실시간으로 갱신되는 할인 품목들을 확인하고 할인된 가격에 음식을 구매 할 수 있다.
 - 발생 가능한 폐기비용을 줄여준다.
 - 판매자들과 소비자들에게 안전하고 신뢰 가능한 음식 서비스를 제공한다.
+
 <br>
 <img src="https://velog.velcdn.com/images/raoni/post/2aeed140-1c19-4db6-81d8-7df4ae9449f8/image.png" width="800"/>
 <img src="https://velog.velcdn.com/images/raoni/post/a4b6898e-6cfd-47a7-8d2c-c3a5c53fa1ab/image.png" width="800"/>
@@ -22,15 +23,14 @@
 
 <br>
 
-### 💡 2-2. 판매자, 구매자 각각의 입장에서 물건을 사고 팔 수 있도록 구현하였습니다.
+## 💡 2-2. 판매자, 구매자 각각의 입장에서 물건을 사고 팔 수 있도록 구현하였습니다.
 <img src="https://velog.velcdn.com/images/raoni/post/650e708a-d87b-449f-8f76-21b2bf89b5d3/image.png" width="800"/>
-
 
 
 <br>
 
 
-### 🧑🏻‍🍳 2-3. 판매자 페이지 별 화면
+## 🧑🏻‍🍳 2-3. 판매자 페이지 별 화면
 
 |||
 |---|---|
@@ -49,7 +49,7 @@
 
 <br>
 
-### 🙋🏻 2-4. 구매자 페이지 별 화면
+## 🙋🏻 2-4. 구매자 페이지 별 화면
 |||
 |------|---|
 |![](https://velog.velcdn.com/images/raoni/post/86c4c8a1-e04a-42cd-b866-63b887b1c782/image.png)|![](https://velog.velcdn.com/images/raoni/post/3590bf2c-e707-462b-8165-a4e31c458131/image.png)|
@@ -83,34 +83,43 @@
 |![](https://velog.velcdn.com/images/raoni/post/1a4210b1-20c9-44fe-95d7-d47ae84752bb/image.png)|![](https://velog.velcdn.com/images/raoni/post/99bae1d8-85e3-4899-8503-8312b1d90c8a/image.png)|
 |알림센터 화면|내 정보 수정 화면|
 
+<br>
 
-### 🖥️ 2-5. 기술 스택
-#### 판매자 화면 (웹)
+# 🖥️ 3. 기술 스택
+## 판매자 화면 (웹)
 - React
 - Redux
 
-#### 구매자 화면 (앱)
+## 구매자 화면 (앱)
 - React Native
 - Redux
 - xcode
 - expo
 
-### 🧷 2-6. APi 문서
+<br>
+
+# 🧷 4. APi 문서
 [https://docs.google.com/spreadsheets/d/1hR-vChgKXHmXQk5oXA3tq_3WOnSCR2WnJVpdXZDa1ZI/edit#gid=588458306](https://docs.google.com/spreadsheets/d/1hR-vChgKXHmXQk5oXA3tq_3WOnSCR2WnJVpdXZDa1ZI/edit#gid=588458306)
-
-### 🖌️ 2-7. Figma 문서
-[https://www.figma.com/file/jnAcxzUFlM1Ht6nyt8hfQJ/%EC%9E%AC%EB%96%A8%EC%9D%B4?type=design&node-id=0-1&mode=design&t=sjlyde3MQqOoLfeL-0](https://www.figma.com/file/jnAcxzUFlM1Ht6nyt8hfQJ/%EC%9E%AC%EB%96%A8%EC%9D%B4?type=design&node-id=0-1&mode=design&t=sjlyde3MQqOoLfeL-0)
-
 
 <br>
 
+# 🖌️ 5. Figma 문서
+[https://www.figma.com/file/jnAcxzUFlM1Ht6nyt8hfQJ/%EC%9E%AC%EB%96%A8%EC%9D%B4?type=design&node-id=0-1&mode=design&t=sjlyde3MQqOoLfeL-0](https://www.figma.com/file/jnAcxzUFlM1Ht6nyt8hfQJ/%EC%9E%AC%EB%96%A8%EC%9D%B4?type=design&node-id=0-1&mode=design&t=sjlyde3MQqOoLfeL-0)
 
+<br>
 
-## 👀 실제 동작 시연 (직접 시연)
+# 👀 6. 실제 동작 시연 (직접 시연)
 [https://www.notion.so/Web-App-2bf20e3211ac4a7bac4752b4ec8bbbca?pvs=4](https://www.notion.so/Web-App-2bf20e3211ac4a7bac4752b4ec8bbbca?pvs=4)
 
-## 🙋🏻 **What did I do**
+<br>
 
+# 🙋🏻 7. What did I do
+## - 구현 기능
+- React, React-Native 개발 언어를 사용하여 식품 중개 플랫폼 서비스로 데모데이 출전
+- 재사용 가능한 컴포넌트 폴더 구조 제안 후, 7일 시간 단축
+- 회원가입, 자동 로그인, 리뷰 관리 기능 판매자, 관리자, 구매자 버전 별로 상태 관리 가능한 Redux와 Context 적용하여 개발
+
+## - 구현 상세 설명
 ### 🍩 판매자 (Web)
 
 <details>
